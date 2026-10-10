@@ -22,8 +22,11 @@ export function layoutRows(bars: ScoreBar[], availableWidth: number, settings: D
   const left = 8 + Object.values(settings.left).filter(Boolean).length * 20 * settings.scale;
   const right = 8 + Object.values(settings.right).filter(Boolean).length * 20 * settings.scale;
   const padding = Math.min(settings.noteSize * settings.scale * 1.6, (width - left - right) / settings.beatsPerRow);
-  const nominalUnit = Math.max(1, (width - left - right - padding / 2) / settings.beatsPerRow);
-  return groupBars(bars, settings.beatsPerRow).map(row => {
+  const groups = groupBars(bars, settings.beatsPerRow);
+  const joins = Math.max(0, ...groups.map(row => row.length - 1));
+  const joinSpace = Math.min(settings.noteSize * settings.scale * .6, padding * .4);
+  const nominalUnit = Math.max(1, (width - left - right - padding / 2 - joins * joinSpace) / settings.beatsPerRow);
+  return groups.map(row => {
     const barIds = row.map(bar => bar.id);
     if (changed && !barIds.some(id => changed.includes(id))) return { barIds, layouts: [], width };
     const display = (index: number, noteSize: number): DisplaySettings => ({ ...settings, noteSize,
@@ -44,8 +47,10 @@ export function layoutRows(bars: ScoreBar[], availableWidth: number, settings: D
       const local = display(index, noteSize);
       const base = layoutBar(bar, 0, local, editing);
       const lineStart = index === 0 ? left : 0;
-      const lineEnd = lineStart + unit * bar.meter[0] + (index === 0 ? padding / 2 : 0);
-      const musicStart = lineStart + (index === 0 ? padding : padding / 2);
+      const before = index > 0 ? joinSpace / 2 : 0;
+      const after = index < joins ? joinSpace / 2 : 0;
+      const lineEnd = lineStart + unit * bar.meter[0] + (index === 0 ? padding / 2 : 0) + before + after;
+      const musicStart = lineStart + (index === 0 ? padding : padding / 2) + before;
       const musicWidth = unit * bar.meter[0];
       const tickSpan = barTicks(bar);
       return { ...base, width: lineEnd + (index === row.length - 1 ? right : 0),

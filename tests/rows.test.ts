@@ -44,7 +44,12 @@ test('beat columns align across measures and rows while staff lines join at barl
   const [a,b] = first.layouts;
   const step = a.columns[1].x - a.columns[0].x;
   assert.ok(Math.abs(step - (b.columns[1].x - b.columns[0].x)) < .001);
-  assert.ok(Math.abs(a.width + b.columns[0].x - a.columns[3].x - step) < .001);
+  const joinGap = a.width + b.columns[0].x - a.columns[3].x;
+  assert.ok(joinGap > step);
+  assert.ok(joinGap <= step * 1.5);
+  const beforeLine = a.lineEnd - a.columns[3].x;
+  const afterLine = b.columns[0].x - b.lineStart;
+  assert.ok(Math.abs(beforeLine - afterLine) < step * .15);
   assert.equal(a.lineEnd, a.width + b.lineStart);
   assert.equal(a.top, b.top);
   assert.equal(a.gap, b.gap);

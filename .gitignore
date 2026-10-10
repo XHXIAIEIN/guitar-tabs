@@ -1,0 +1,7 @@
+.tmp/
+.trash/
+node_modules/
+dist/
+coverage/
+*.log
+.local/

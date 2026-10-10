@@ -1,0 +1,354 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="920" viewBox="0 0 1280 920">
+<title>小蜜蜂 六线谱</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" fill="#111">
+<text x="48" y="42" font-size="28">小蜜蜂</text>
+<text x="48" y="72" font-size="15" fill="#555">4/4 · 标准调弦 E B G D A E · 练习速度 60 BPM</text>
+<text x="82" y="95" font-size="13" fill="#555">1</text>
+<path d="M 72 148 H 362" stroke="#777" fill="none"/>
+<text x="46" y="153" font-size="14" fill="#555">1</text>
+<path d="M 72 166 H 362" stroke="#777" fill="none"/>
+<text x="46" y="171" font-size="14" fill="#555">2</text>
+<path d="M 72 184 H 362" stroke="#777" fill="none"/>
+<text x="46" y="189" font-size="14" fill="#555">3</text>
+<path d="M 72 202 H 362" stroke="#777" fill="none"/>
+<text x="46" y="207" font-size="14" fill="#555">4</text>
+<path d="M 72 220 H 362" stroke="#777" fill="none"/>
+<text x="46" y="225" font-size="14" fill="#555">5</text>
+<path d="M 72 238 H 362" stroke="#777" fill="none"/>
+<text x="46" y="243" font-size="14" fill="#555">6</text>
+<path d="M 72 148 V 238 M 362 148 V 238" stroke="#111" fill="none"/>
+<rect x="89" y="172" width="22" height="24" fill="white"/>
+<text x="100" y="191" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="100" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 100 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 106 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="151.0" y="190" width="22" height="24" fill="white"/>
+<text x="162.0" y="209" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="162.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 162.0 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 168.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="213.0" y="190" width="22" height="24" fill="white"/>
+<text x="224.0" y="209" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="224.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 224.0 124)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 230.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<text x="372" y="95" font-size="13" fill="#555">2</text>
+<path d="M 362 148 H 652" stroke="#777" fill="none"/>
+<path d="M 362 166 H 652" stroke="#777" fill="none"/>
+<path d="M 362 184 H 652" stroke="#777" fill="none"/>
+<path d="M 362 202 H 652" stroke="#777" fill="none"/>
+<path d="M 362 220 H 652" stroke="#777" fill="none"/>
+<path d="M 362 238 H 652" stroke="#777" fill="none"/>
+<path d="M 362 148 V 238 M 652 148 V 238" stroke="#111" fill="none"/>
+<rect x="379" y="190" width="22" height="24" fill="white"/>
+<text x="390" y="209" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="390" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 390 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 396 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="441.0" y="190" width="22" height="24" fill="white"/>
+<text x="452.0" y="209" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="452.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 452.0 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 458.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="503.0" y="190" width="22" height="24" fill="white"/>
+<text x="514.0" y="209" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="514.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 514.0 124)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 520.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<text x="662" y="95" font-size="13" fill="#555">3</text>
+<path d="M 652 148 H 942" stroke="#777" fill="none"/>
+<path d="M 652 166 H 942" stroke="#777" fill="none"/>
+<path d="M 652 184 H 942" stroke="#777" fill="none"/>
+<path d="M 652 202 H 942" stroke="#777" fill="none"/>
+<path d="M 652 220 H 942" stroke="#777" fill="none"/>
+<path d="M 652 238 H 942" stroke="#777" fill="none"/>
+<path d="M 652 148 V 238 M 942 148 V 238" stroke="#111" fill="none"/>
+<rect x="669" y="208" width="22" height="24" fill="white"/>
+<text x="680" y="227" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="680" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 680 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 686 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="731.0" y="190" width="22" height="24" fill="white"/>
+<text x="742.0" y="209" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="742.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 742.0 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 748.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="793.0" y="190" width="22" height="24" fill="white"/>
+<text x="804.0" y="209" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="804.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 804.0 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 810.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="855.0" y="190" width="22" height="24" fill="white"/>
+<text x="866.0" y="209" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="866.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 866.0 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 872.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<text x="952" y="95" font-size="13" fill="#555">4</text>
+<path d="M 942 148 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 166 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 184 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 202 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 220 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 238 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 148 V 238 M 1232 148 V 238" stroke="#111" fill="none"/>
+<rect x="959" y="172" width="22" height="24" fill="white"/>
+<text x="970" y="191" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="970" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 970 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 976 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="1021.0" y="172" width="22" height="24" fill="white"/>
+<text x="1032.0" y="191" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="1032.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 1032.0 124)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 1038.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<rect x="1083.0" y="172" width="22" height="24" fill="white"/>
+<text x="1094.0" y="191" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="1094.0" cy="124" rx="6.5" ry="4.2" transform="rotate(-18 1094.0 124)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 1100.0 124 V 98" stroke="#111" stroke-width="1.6"/>
+<text x="82" y="300" font-size="13" fill="#555">5</text>
+<path d="M 72 353 H 362" stroke="#777" fill="none"/>
+<text x="46" y="358" font-size="14" fill="#555">1</text>
+<path d="M 72 371 H 362" stroke="#777" fill="none"/>
+<text x="46" y="376" font-size="14" fill="#555">2</text>
+<path d="M 72 389 H 362" stroke="#777" fill="none"/>
+<text x="46" y="394" font-size="14" fill="#555">3</text>
+<path d="M 72 407 H 362" stroke="#777" fill="none"/>
+<text x="46" y="412" font-size="14" fill="#555">4</text>
+<path d="M 72 425 H 362" stroke="#777" fill="none"/>
+<text x="46" y="430" font-size="14" fill="#555">5</text>
+<path d="M 72 443 H 362" stroke="#777" fill="none"/>
+<text x="46" y="448" font-size="14" fill="#555">6</text>
+<path d="M 72 353 V 443 M 362 353 V 443" stroke="#111" fill="none"/>
+<rect x="89" y="377" width="22" height="24" fill="white"/>
+<text x="100" y="396" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="100" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 100 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 106 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="151.0" y="395" width="22" height="24" fill="white"/>
+<text x="162.0" y="414" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="162.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 162.0 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 168.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="213.0" y="395" width="22" height="24" fill="white"/>
+<text x="224.0" y="414" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="224.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 224.0 329)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 230.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<text x="372" y="300" font-size="13" fill="#555">6</text>
+<path d="M 362 353 H 652" stroke="#777" fill="none"/>
+<path d="M 362 371 H 652" stroke="#777" fill="none"/>
+<path d="M 362 389 H 652" stroke="#777" fill="none"/>
+<path d="M 362 407 H 652" stroke="#777" fill="none"/>
+<path d="M 362 425 H 652" stroke="#777" fill="none"/>
+<path d="M 362 443 H 652" stroke="#777" fill="none"/>
+<path d="M 362 353 V 443 M 652 353 V 443" stroke="#111" fill="none"/>
+<rect x="379" y="395" width="22" height="24" fill="white"/>
+<text x="390" y="414" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="390" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 390 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 396 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="441.0" y="395" width="22" height="24" fill="white"/>
+<text x="452.0" y="414" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="452.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 452.0 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 458.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="503.0" y="395" width="22" height="24" fill="white"/>
+<text x="514.0" y="414" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="514.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 514.0 329)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 520.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<text x="662" y="300" font-size="13" fill="#555">7</text>
+<path d="M 652 353 H 942" stroke="#777" fill="none"/>
+<path d="M 652 371 H 942" stroke="#777" fill="none"/>
+<path d="M 652 389 H 942" stroke="#777" fill="none"/>
+<path d="M 652 407 H 942" stroke="#777" fill="none"/>
+<path d="M 652 425 H 942" stroke="#777" fill="none"/>
+<path d="M 652 443 H 942" stroke="#777" fill="none"/>
+<path d="M 652 353 V 443 M 942 353 V 443" stroke="#111" fill="none"/>
+<rect x="669" y="413" width="22" height="24" fill="white"/>
+<text x="680" y="432" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="680" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 680 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 686 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="731.0" y="395" width="22" height="24" fill="white"/>
+<text x="742.0" y="414" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="742.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 742.0 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 748.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="793.0" y="377" width="22" height="24" fill="white"/>
+<text x="804.0" y="396" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="804.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 804.0 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 810.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<rect x="855.0" y="377" width="22" height="24" fill="white"/>
+<text x="866.0" y="396" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="866.0" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 866.0 329)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 872.0 329 V 303" stroke="#111" stroke-width="1.6"/>
+<text x="952" y="300" font-size="13" fill="#555">8</text>
+<path d="M 942 353 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 371 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 389 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 407 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 425 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 443 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 353 V 443 M 1232 353 V 443" stroke="#111" fill="none"/>
+<rect x="959" y="395" width="22" height="24" fill="white"/>
+<text x="970" y="414" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="970" cy="329" rx="6.5" ry="4.2" transform="rotate(-18 970 329)" fill="white" stroke="#111" stroke-width="1.5"/>
+<text x="82" y="505" font-size="13" fill="#555">9</text>
+<path d="M 72 558 H 362" stroke="#777" fill="none"/>
+<text x="46" y="563" font-size="14" fill="#555">1</text>
+<path d="M 72 576 H 362" stroke="#777" fill="none"/>
+<text x="46" y="581" font-size="14" fill="#555">2</text>
+<path d="M 72 594 H 362" stroke="#777" fill="none"/>
+<text x="46" y="599" font-size="14" fill="#555">3</text>
+<path d="M 72 612 H 362" stroke="#777" fill="none"/>
+<text x="46" y="617" font-size="14" fill="#555">4</text>
+<path d="M 72 630 H 362" stroke="#777" fill="none"/>
+<text x="46" y="635" font-size="14" fill="#555">5</text>
+<path d="M 72 648 H 362" stroke="#777" fill="none"/>
+<text x="46" y="653" font-size="14" fill="#555">6</text>
+<path d="M 72 558 V 648 M 362 558 V 648" stroke="#111" fill="none"/>
+<rect x="89" y="600" width="22" height="24" fill="white"/>
+<text x="100" y="619" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="100" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 100 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 106 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="151.0" y="600" width="22" height="24" fill="white"/>
+<text x="162.0" y="619" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="162.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 162.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 168.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="213.0" y="600" width="22" height="24" fill="white"/>
+<text x="224.0" y="619" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="224.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 224.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 230.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="275.0" y="600" width="22" height="24" fill="white"/>
+<text x="286.0" y="619" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="286.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 286.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 292.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<text x="372" y="505" font-size="13" fill="#555">10</text>
+<path d="M 362 558 H 652" stroke="#777" fill="none"/>
+<path d="M 362 576 H 652" stroke="#777" fill="none"/>
+<path d="M 362 594 H 652" stroke="#777" fill="none"/>
+<path d="M 362 612 H 652" stroke="#777" fill="none"/>
+<path d="M 362 630 H 652" stroke="#777" fill="none"/>
+<path d="M 362 648 H 652" stroke="#777" fill="none"/>
+<path d="M 362 558 V 648 M 652 558 V 648" stroke="#111" fill="none"/>
+<rect x="379" y="600" width="22" height="24" fill="white"/>
+<text x="390" y="619" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="390" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 390 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 396 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="441.0" y="600" width="22" height="24" fill="white"/>
+<text x="452.0" y="619" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="452.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 452.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 458.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="503.0" y="600" width="22" height="24" fill="white"/>
+<text x="514.0" y="619" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="514.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 514.0 534)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 520.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<text x="662" y="505" font-size="13" fill="#555">11</text>
+<path d="M 652 558 H 942" stroke="#777" fill="none"/>
+<path d="M 652 576 H 942" stroke="#777" fill="none"/>
+<path d="M 652 594 H 942" stroke="#777" fill="none"/>
+<path d="M 652 612 H 942" stroke="#777" fill="none"/>
+<path d="M 652 630 H 942" stroke="#777" fill="none"/>
+<path d="M 652 648 H 942" stroke="#777" fill="none"/>
+<path d="M 652 558 V 648 M 942 558 V 648" stroke="#111" fill="none"/>
+<rect x="669" y="600" width="22" height="24" fill="white"/>
+<text x="680" y="619" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="680" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 680 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 686 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="731.0" y="600" width="22" height="24" fill="white"/>
+<text x="742.0" y="619" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="742.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 742.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 748.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="793.0" y="600" width="22" height="24" fill="white"/>
+<text x="804.0" y="619" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="804.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 804.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 810.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="855.0" y="600" width="22" height="24" fill="white"/>
+<text x="866.0" y="619" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="866.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 866.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 872.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<text x="952" y="505" font-size="13" fill="#555">12</text>
+<path d="M 942 558 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 576 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 594 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 612 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 630 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 648 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 558 V 648 M 1232 558 V 648" stroke="#111" fill="none"/>
+<rect x="959" y="600" width="22" height="24" fill="white"/>
+<text x="970" y="619" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="970" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 970 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 976 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="1021.0" y="600" width="22" height="24" fill="white"/>
+<text x="1032.0" y="619" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="1032.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 1032.0 534)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 1038.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<rect x="1083.0" y="582" width="22" height="24" fill="white"/>
+<text x="1094.0" y="601" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="1094.0" cy="534" rx="6.5" ry="4.2" transform="rotate(-18 1094.0 534)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 1100.0 534 V 508" stroke="#111" stroke-width="1.6"/>
+<text x="82" y="710" font-size="13" fill="#555">13</text>
+<path d="M 72 763 H 362" stroke="#777" fill="none"/>
+<text x="46" y="768" font-size="14" fill="#555">1</text>
+<path d="M 72 781 H 362" stroke="#777" fill="none"/>
+<text x="46" y="786" font-size="14" fill="#555">2</text>
+<path d="M 72 799 H 362" stroke="#777" fill="none"/>
+<text x="46" y="804" font-size="14" fill="#555">3</text>
+<path d="M 72 817 H 362" stroke="#777" fill="none"/>
+<text x="46" y="822" font-size="14" fill="#555">4</text>
+<path d="M 72 835 H 362" stroke="#777" fill="none"/>
+<text x="46" y="840" font-size="14" fill="#555">5</text>
+<path d="M 72 853 H 362" stroke="#777" fill="none"/>
+<text x="46" y="858" font-size="14" fill="#555">6</text>
+<path d="M 72 763 V 853 M 362 763 V 853" stroke="#111" fill="none"/>
+<rect x="89" y="787" width="22" height="24" fill="white"/>
+<text x="100" y="806" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="100" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 100 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 106 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="151.0" y="805" width="22" height="24" fill="white"/>
+<text x="162.0" y="824" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="162.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 162.0 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 168.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="213.0" y="805" width="22" height="24" fill="white"/>
+<text x="224.0" y="824" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="224.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 224.0 739)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 230.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<text x="372" y="710" font-size="13" fill="#555">14</text>
+<path d="M 362 763 H 652" stroke="#777" fill="none"/>
+<path d="M 362 781 H 652" stroke="#777" fill="none"/>
+<path d="M 362 799 H 652" stroke="#777" fill="none"/>
+<path d="M 362 817 H 652" stroke="#777" fill="none"/>
+<path d="M 362 835 H 652" stroke="#777" fill="none"/>
+<path d="M 362 853 H 652" stroke="#777" fill="none"/>
+<path d="M 362 763 V 853 M 652 763 V 853" stroke="#111" fill="none"/>
+<rect x="379" y="805" width="22" height="24" fill="white"/>
+<text x="390" y="824" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="390" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 390 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 396 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="441.0" y="805" width="22" height="24" fill="white"/>
+<text x="452.0" y="824" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="452.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 452.0 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 458.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="503.0" y="805" width="22" height="24" fill="white"/>
+<text x="514.0" y="824" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="514.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 514.0 739)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 520.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<text x="662" y="710" font-size="13" fill="#555">15</text>
+<path d="M 652 763 H 942" stroke="#777" fill="none"/>
+<path d="M 652 781 H 942" stroke="#777" fill="none"/>
+<path d="M 652 799 H 942" stroke="#777" fill="none"/>
+<path d="M 652 817 H 942" stroke="#777" fill="none"/>
+<path d="M 652 835 H 942" stroke="#777" fill="none"/>
+<path d="M 652 853 H 942" stroke="#777" fill="none"/>
+<path d="M 652 763 V 853 M 942 763 V 853" stroke="#111" fill="none"/>
+<rect x="669" y="823" width="22" height="24" fill="white"/>
+<text x="680" y="842" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="680" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 680 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 686 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="731.0" y="805" width="22" height="24" fill="white"/>
+<text x="742.0" y="824" text-anchor="middle" font-size="22">2</text>
+<ellipse cx="742.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 742.0 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 748.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="793.0" y="787" width="22" height="24" fill="white"/>
+<text x="804.0" y="806" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="804.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 804.0 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 810.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<rect x="855.0" y="787" width="22" height="24" fill="white"/>
+<text x="866.0" y="806" text-anchor="middle" font-size="22">0</text>
+<ellipse cx="866.0" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 866.0 739)" fill="#111" stroke="#111" stroke-width="1.5"/>
+<path d="M 872.0 739 V 713" stroke="#111" stroke-width="1.6"/>
+<text x="952" y="710" font-size="13" fill="#555">16</text>
+<path d="M 942 763 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 781 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 799 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 817 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 835 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 853 H 1232" stroke="#777" fill="none"/>
+<path d="M 942 763 V 853 M 1232 763 V 853" stroke="#111" fill="none"/>
+<rect x="959" y="823" width="22" height="24" fill="white"/>
+<text x="970" y="842" text-anchor="middle" font-size="22">3</text>
+<ellipse cx="970" cy="739" rx="6.5" ry="4.2" transform="rotate(-18 970 739)" fill="white" stroke="#111" stroke-width="1.5"/>
+<path d="M 1227 763 V 853" stroke="#111" stroke-width="3"/>
+</g></svg>

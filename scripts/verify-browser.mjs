@@ -34,6 +34,11 @@ try{
     report.folders={group:true,bundleWithDifferentNames:true,duplicateBasenames:true};
   }
   await song('twinkle-star').tap();await ready();assert.equal((await state()).notationWorker.worker,true);
+  assert.equal((await state()).display.beatsPerRow,8);assert.equal((await state()).rows[0].length,2);
+  await a('settings').click();await page.locator('#beats-per-row').selectOption('4');
+  await page.waitForFunction(()=>JSON.parse(document.querySelector('#verification-state').textContent).rows[0].length===1);
+  await page.locator('#beats-per-row').selectOption('8');await close();
+  await page.waitForFunction(()=>JSON.parse(document.querySelector('#verification-state').textContent).rows[0].length===2);
   await page.screenshot({path:fileURLToPath(new URL('verify-browser__mobile-read.png',out))});
   await a('mode').tap();await page.locator('.fret').first().tap();assert.equal((await state()).selection.string,3);
   await page.locator('#fret').fill('12');await page.locator('#fret').press('Tab');

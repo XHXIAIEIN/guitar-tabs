@@ -12,6 +12,7 @@ export interface BarLayout {
   musicWidth: number;
   totalTicks: number;
   tickSpan: number;
+  settings?: DisplaySettings;
   columns: { tick: number; x: number; beatId?: string }[];
 }
 export function layoutBar(bar: ScoreBar, availableWidth: number, settings: DisplaySettings, editing = false): BarLayout {

@@ -6,13 +6,14 @@ export interface DisplaySettings {
   stringGap: number;
   noteSize: number;
   showRhythm: boolean;
+  beatsPerRow: number;
 }
 export const CANDIDATES: Record<'a' | 'b', DisplaySettings> = {
-  a: { left: { tab: false, string: true, pitch: false }, right: { string: false, pitch: true }, lineWeight: 'uniform', scale: 1, stringGap: 18, noteSize: 23, showRhythm: true },
-  b: { left: { tab: false, string: true, pitch: false }, right: { string: false, pitch: false }, lineWeight: 'graded', scale: 1, stringGap: 23, noteSize: 27, showRhythm: true }
+  a: { left: { tab: false, string: true, pitch: false }, right: { string: false, pitch: true }, lineWeight: 'uniform', scale: 1, stringGap: 18, noteSize: 23, showRhythm: true, beatsPerRow: 8 },
+  b: { left: { tab: false, string: true, pitch: false }, right: { string: false, pitch: false }, lineWeight: 'graded', scale: 1, stringGap: 23, noteSize: 27, showRhythm: true, beatsPerRow: 8 }
 };
 export const DEFAULT_DISPLAY: DisplaySettings = {
   left: { tab: false, string: true, pitch: false },
   right: { string: false, pitch: false },
-  lineWeight: 'uniform', scale: 1, stringGap: 18, noteSize: 22, showRhythm: false
+  lineWeight: 'uniform', scale: 1, stringGap: 18, noteSize: 22, showRhythm: false, beatsPerRow: 8
 };

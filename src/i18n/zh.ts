@@ -9,6 +9,7 @@ export const zh: Record<keyof typeof en, string> = {
   position: '第 {bar} 小节 · 第 {beat} 拍 · {string} 弦',
   leftLabels: '左侧标签', rightLabels: '右侧标签', stringNumber: '弦号', pitch: '音名',
   lineWeight: '弦线粗细', uniform: '统一细线', graded: '按弦区分', size: '谱面大小', spacing: '弦间距',
+  beatsPerRow: '每行拍数', beatsPerRowHint: '按完整小节排列。',
   import: '导入曲谱', export: '导出 alphaTex', backup: '备份曲库', restore: '恢复曲库',
   title: '曲名', tempo: '速度', saved: '已保存', saving: '正在保存…', saveFailed: '保存失败。请导出备份或重试。',
   retry: '重试', loading: '正在载入曲谱…', empty: '新建或导入一首曲谱。',

@@ -1,5 +1,6 @@
 import { exportAlphaTex, parseAlphaTex } from '../formats/alphatex';
 import { layoutBar } from '../notation/layout';
+import { layoutRows } from '../notation/rows';
 import { validateScore } from '../score/validate';
 import type { RequestEnvelope, ReplyEnvelope } from './protocol';
 import { importExternal } from '../formats/external';
@@ -16,6 +17,7 @@ scope.onmessage = ({ data: { id, version, task, locale } }) => {
       case 'export': reply.result = exportAlphaTex(task.score); break;
       case 'import': reply.result = importExternal(task.data, task.name); break;
       case 'layout-bars': reply.result = task.bars.map(bar => layoutBar(bar, task.width, task.settings, task.editing)); break;
+      case 'layout-rows': reply.result = layoutRows(task.bars, task.width, task.settings, task.editing, task.changed); break;
       case 'layout':
         validateScore(task.score);
         reply.result = task.score.bars.filter(bar => !task.bars || task.bars.includes(bar.id)).map(bar => layoutBar(bar, task.width, task.settings));

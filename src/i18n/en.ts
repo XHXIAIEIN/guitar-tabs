@@ -8,6 +8,7 @@ export const en = {
   position: 'Bar {bar} · Beat {beat} · String {string}',
   leftLabels: 'Left labels', rightLabels: 'Right labels', stringNumber: 'String number', pitch: 'Note name',
   lineWeight: 'String lines', uniform: 'Uniform', graded: 'By string', size: 'Score size', spacing: 'String spacing',
+  beatsPerRow: 'Beats per row', beatsPerRowHint: 'Keep complete bars together.',
   import: 'Import score', export: 'Export alphaTex', backup: 'Back up library', restore: 'Restore library',
   title: 'Title', tempo: 'Tempo', saved: 'Saved', saving: 'Saving…', saveFailed: 'Save failed. Export a backup or retry.',
   retry: 'Retry', loading: 'Loading score…', empty: 'Create or import your first score.',

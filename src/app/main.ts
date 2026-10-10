@@ -12,6 +12,7 @@ import { icon } from '../ui/icons';
 import { button, dialogHeader, clockTime, errorPanel, libraryPage, scorePage, editorTools, settingsPanel } from '../ui/templates';
 import { escapeHtml as esc, renderBar } from '../notation/svg';
 import { locate, type BarLayout } from '../notation/layout';
+import type { ScoreRowLayout } from '../notation/rows';
 
 const root = document.querySelector<HTMLDivElement>('#app')!;
 const repo = new ScoreRepository();
@@ -41,7 +42,8 @@ function readback() {
   if (state) state.textContent = JSON.stringify({ id, score, selection: editor?.selection, editing, version, saving,
     locale: getLocale(), display: prefs.display, selectionMs, error: errorText, notationWorker: workerEvidence,
     playbackWorker: playerWorker.lastReply, playback: transport.state, audio: transport.diagnostics,
-    renderedBars: document.querySelectorAll('.bar-slot svg').length });
+    renderedBars: document.querySelectorAll('.bar-slot svg').length,
+    rows: [...document.querySelectorAll('.score-row')].map(row => [...row.querySelectorAll<HTMLElement>('.bar-slot')].map(slot => slot.dataset.bar)) });
 }
 function showError(error: unknown) {
   if (error instanceof StaleTaskError || (error as Error)?.message === 'playback.cancelled') return;
@@ -125,15 +127,21 @@ async function relayout(changed?: string[]) {
   const ownVersion = version, serial = ++layoutSerial;
   const sheet = document.querySelector<HTMLDivElement>('#sheet'); if (!sheet) return;
   try {
-    const reply = await worker.request({ kind: 'layout-bars', bars: score.bars.filter(b => !changed || changed.includes(b.id)),
-      width: Math.min(326 * prefs.display.scale, sheet.clientWidth - 48), settings: prefs.display, editing });
+    const currentBars = [...sheet.querySelectorAll<HTMLElement>('.bar-slot')].map(e => e.dataset.bar).join('|');
+    const sameBars = currentBars === score.bars.map(b => b.id).join('|');
+    const style = getComputedStyle(sheet);
+    const reply = await worker.request({ kind: 'layout-rows', bars: score.bars,
+      width: sheet.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight),
+      settings: prefs.display, editing, changed: sameBars ? changed : undefined });
     if (ownVersion !== version || serial !== layoutSerial || !score) return;
     workerEvidence = { worker: reply.worker, elapsedMs: reply.elapsedMs, version: reply.version };
-    for (const layout of reply.result as BarLayout[]) layouts.set(layout.barId, layout);
-    const current = [...sheet.querySelectorAll<HTMLElement>('.bar-slot')].map(e => e.dataset.bar).join('|');
-    if (current !== score.bars.map(b => b.id).join('|')) {
+    const rows = reply.result as ScoreRowLayout[];
+    for (const row of rows) for (const layout of row.layouts) layouts.set(layout.barId, layout);
+    const rowSignature = JSON.stringify(rows.map(row => row.barIds));
+    if (sheet.dataset.rows !== rowSignature) {
       observer?.disconnect();
-      sheet.innerHTML = score.bars.map(bar => '<div class="bar-slot" data-bar="' + esc(bar.id) + '" style="height:' + (layouts.get(bar.id)?.height ?? 185) + 'px"></div>').join('');
+      sheet.dataset.rows = rowSignature;
+      sheet.innerHTML = rows.map(row => '<div class="score-row">' + row.barIds.map(key => '<div class="bar-slot" data-bar="' + esc(key) + '"></div>').join('') + '</div>').join('');
       observer = new IntersectionObserver(entries => {
         for (const item of entries) {
           const slot = item.target as HTMLElement;
@@ -143,9 +151,15 @@ async function relayout(changed?: string[]) {
         readback();
       }, { root: sheet, rootMargin: '350px' });
       sheet.querySelectorAll('.bar-slot').forEach(slot => observer!.observe(slot));
-    } else for (const slot of sheet.querySelectorAll<HTMLElement>('.bar-slot')) {
-      slot.style.height = (layouts.get(slot.dataset.bar!)?.height ?? 185) + 'px';
+    }
+    for (const slot of sheet.querySelectorAll<HTMLElement>('.bar-slot')) {
+      const layout = layouts.get(slot.dataset.bar!);
+      slot.style.height = (layout?.height ?? 185) + 'px';
+      slot.style.width = (layout?.width ?? 326) + 'px';
       if (slot.dataset.visible) draw(slot.dataset.bar!);
+    }
+    for (const row of sheet.querySelectorAll<HTMLElement>('.score-row')) {
+      row.style.width = [...row.querySelectorAll<HTMLElement>('.bar-slot')].reduce((sum, slot) => sum + Number.parseFloat(slot.style.width), 0) + 'px';
     }
     readback();
   } catch (error) { if (ownVersion === version) showError(error); }
@@ -155,7 +169,7 @@ function draw(key: string) {
   if (!score || !editor) return;
   const el = slot(key), layout = layouts.get(key), index = score.bars.findIndex(b => b.id === key);
   if (!el || !layout || index < 0) return;
-  el.innerHTML = renderBar(score.bars[index], layout, score.tuning, prefs.display, index, editing,
+  el.innerHTML = renderBar(score.bars[index], layout, score.tuning, layout.settings ?? prefs.display, index, editing,
     editor.selection.barId === key ? editor.selection : undefined);
   el.classList.toggle('playing', transport.state.playing && transport.state.barId === key);
   el.querySelectorAll<SVGElement>('[data-playing-beat]').forEach(beat => beat.classList.toggle('active', transport.state.playing && beat.dataset.playingBeat === transport.state.beatId));
@@ -284,6 +298,7 @@ function settings() {
     if(input.dataset.label){const[side,key]=input.dataset.label.split('.') as ['left'|'right','string'|'pitch'];(d[side] as unknown as Record<string,boolean>)[key]=input.checked;}
     if(input.id==='weight')d.lineWeight=input.value as 'uniform'|'graded';
     if(input.id==='rhythm')d.showRhythm=input.checked;
+    if(input.id==='beats-per-row')d.beatsPerRow=Number(input.value);
     if(input.id==='scale'){d.scale=Number(input.value);dialog.querySelector('#scale-value')!.textContent=d.scale.toFixed(1)+'×';}
     if(input.id==='spacing'){d.stringGap=Number(input.value);dialog.querySelector('#spacing-value')!.textContent=String(d.stringGap);}
     try{savePreferences(prefs);}catch(error){showError(error);}

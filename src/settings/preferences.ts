@@ -11,7 +11,7 @@ export function readPreferences(): Preferences {
     defaults.locale = saved.locale;
     const d = saved.display;
     if (d && typeof d.left?.tab === 'boolean' && typeof d.left?.string === 'boolean' && typeof d.left?.pitch === 'boolean' && typeof d.right?.string === 'boolean' && typeof d.right?.pitch === 'boolean'
-      && ['uniform', 'graded'].includes(d.lineWeight) && Number.isFinite(d.scale) && d.scale >= .7 && d.scale <= 1.6 && Number.isFinite(d.stringGap) && d.stringGap >= 14 && d.stringGap <= 26 && d.noteSize === 22) defaults.display = d;
+      && ['uniform', 'graded'].includes(d.lineWeight) && Number.isFinite(d.scale) && d.scale >= .7 && d.scale <= 1.6 && Number.isFinite(d.stringGap) && d.stringGap >= 14 && d.stringGap <= 26 && d.noteSize === 22) defaults.display = { ...d, showRhythm: typeof d.showRhythm === 'boolean' ? d.showRhythm : false };
   } catch { /* Use readable defaults when preferences are unavailable. */ }
   return defaults;
 }

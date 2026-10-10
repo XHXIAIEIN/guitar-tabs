@@ -24,7 +24,7 @@ const close=async()=>{if(await page.locator('dialog[open]').count())await page.l
 const upload=async(name,text)=>{await page.locator('#import-file').setInputFiles({name,mimeType:'text/plain',buffer:Buffer.from(text)});await ready();};
 try{
   await page.goto(process.env.PREVIEW_URL||'http://127.0.0.1:5193');await song('twinkle-star').waitFor();const twinkleId=await song('twinkle-star').getAttribute('data-song');
-  assert.equal((await state()).locale,'en');assert.equal(await page.locator('h1').textContent(),'Guitar songbook');
+  assert.equal((await state()).locale,'en');assert.equal(await page.locator('h1').textContent(),'Scores');
   if(!production){
     assert.ok((await page.locator('.group-title').allTextContents()).includes('__browser-fixture/Group'));
     await page.locator('[data-song="__browser-fixture/Group/Bundle/notes"]').tap();await ready();assert.equal(await page.locator('h1').textContent(),'Bundle title');

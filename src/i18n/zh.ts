@@ -56,5 +56,6 @@ export const zh: Record<keyof typeof en, string> = {
   install: '可从浏览器菜单添加到手机桌面。', beatGrid: '拍点细分',
   exportUnsaved: '导出当前曲谱', backupHelp: '恢复备份会替换已保存的曲库。',
   quarter: '四分', eighth: '八分', sixteenth: '十六分', whole: '全音符', half: '二分',
-  myScores: '我的曲谱', sourcePreview: '原谱预览'
+  myScores: '我的曲谱', sourcePreview: '原谱预览', showRhythm: '显示节奏符号',
+  libraryGreeting: '选择一首曲谱，开始练习。', playbackPosition: '播放位置', scoreActions: '曲谱操作'
 };

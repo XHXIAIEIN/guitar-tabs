@@ -55,5 +55,6 @@ export const en = {
   install: 'Add to your home screen from the browser menu.', beatGrid: 'Beat grid',
   exportUnsaved: 'Export current score', backupHelp: 'Restoring a backup replaces your saved library.',
   quarter: 'Quarter', eighth: 'Eighth', sixteenth: 'Sixteenth', whole: 'Whole', half: 'Half',
-  myScores: 'My scores', sourcePreview: 'Source preview'
+  myScores: 'My scores', sourcePreview: 'Source preview', showRhythm: 'Rhythm symbols',
+  libraryGreeting: 'Choose a score to start practicing.', playbackPosition: 'Playback position', scoreActions: 'Score'
 } as const;

@@ -8,7 +8,8 @@ import { PlaybackTransport, type Timeline, type PlaybackState } from '../playbac
 import { type TabScore, type Duration, barTicks, STANDARD_TUNING } from '../score/model';
 import { readPreferences, savePreferences } from '../settings/preferences';
 import { t, setLocale, getLocale } from '../i18n';
-import { button, errorPanel, libraryPage, scorePage } from '../ui/templates';
+import { icon } from '../ui/icons';
+import { button, dialogHeader, clockTime, errorPanel, libraryPage, scorePage, editorTools, settingsPanel } from '../ui/templates';
 import { escapeHtml as esc, renderBar } from '../notation/svg';
 import { locate, type BarLayout } from '../notation/layout';
 
@@ -29,6 +30,7 @@ let layoutSerial = 0, gridTicks = 960, digitEntry = '', digitTime = 0;
 let timeline: Timeline | undefined, timelineKey = '', playSerial = 0;
 let errorText = '', selectionMs = 0, workerEvidence: unknown;
 let pendingFile: File | undefined;
+let practice = { speed: 1, loop: false, startBar: 1, endBar: 1, expanded: false };
 const transport = new PlaybackTransport({ onUpdate: playbackUpdate });
 function title(key: string, text: string) {
   const source = builtins.find(item => item.id === key);
@@ -52,14 +54,14 @@ function showError(error: unknown) {
 function clearError() { errorText = ''; const panel = document.querySelector<HTMLElement>('#error'); if (panel) panel.hidden = true; }
 function stop() { playSerial++; playerWorker.cancel(); transport.stop(); }
 function saveStatus() {
-  const el = document.querySelector('#save-status');
-  if (el) { el.textContent = saving ? '·' : '✓'; el.setAttribute('aria-label', t(saving ? 'saving' : 'saved')); }
+  const el = document.querySelector<HTMLElement>('#save-status');
+  if (el) { el.dataset.state = saving ? 'saving' : 'saved'; el.innerHTML = icon(saving ? 'saving' : 'saved'); el.setAttribute('aria-label', t(saving ? 'saving' : 'saved')); }
 }
 function save(): boolean {
   if (!score || !id || !saving) return true;
   clearTimeout(saveTimer);
   try { repo.save(id, score); saving = false; saveStatus(); }
-  catch (error) { document.querySelector('#save-status')?.setAttribute('aria-label', t('saveFailed')); showError(error); return false; }
+  catch (error) { const status=document.querySelector<HTMLElement>('#save-status'); if(status){status.dataset.state='failed';status.innerHTML=icon('alert');status.setAttribute('aria-label', t('saveFailed'));} showError(error); return false; }
   readback();
   return true;
 }
@@ -88,20 +90,35 @@ async function open(key: string, supplied?: TabScore) {
     if (ownVersion !== version) return;
     score = stored ?? reply?.result as TabScore;
     workerEvidence = reply && { worker: reply.worker, version: reply.version, elapsedMs: reply.elapsedMs };
-    editor = new EditorSession(score); editing = false; digitEntry = ''; timeline = undefined; timelineKey = '';
+    editor = new EditorSession(score); practice = {speed:1,loop:false,startBar:1,endBar:score.bars.length,expanded:false}; editing = false; digitEntry = ''; timeline = undefined; timelineKey = '';
     render();
   } catch (error) { if (ownVersion === version) showError(error); }
 }
 function render() {
   if (!score || !editor) return;
   observer?.disconnect(); resize?.disconnect();
-  root.innerHTML = scorePage(title(id, score.title), editing, score.tempo, score.bars.length);
+  const speed = document.querySelector<HTMLSelectElement>('#speed');
+  if (speed) practice = {
+    speed: Number(speed.value), loop: document.querySelector<HTMLInputElement>('#loop')!.checked,
+    startBar: Number(document.querySelector<HTMLInputElement>('#start-bar')!.value),
+    endBar: Number(document.querySelector<HTMLInputElement>('#end-bar')!.value),
+    expanded: !document.querySelector<HTMLElement>('#practice-panel')!.hidden
+  };
+  const group = builtins.find(item=>item.id===id)?.group || t('myScores');
+  root.innerHTML = scorePage(title(id, score.title), editing, score.tempo, score.bars.length, group, scoreDuration());
+  (document.querySelector('#speed') as HTMLSelectElement).value=String(practice.speed);
+  (document.querySelector('#loop') as HTMLInputElement).checked=practice.loop;
+  (document.querySelector('#start-bar') as HTMLInputElement).value=String(practice.startBar);
+  (document.querySelector('#end-bar') as HTMLInputElement).value=String(practice.endBar);
+  document.querySelector<HTMLElement>('#practice-panel')!.hidden=!practice.expanded;
+  document.querySelector('.transport [data-action="practice"]')!.setAttribute('aria-expanded',String(practice.expanded));
   document.querySelector('.score-meta span')!.textContent = score.bars[0].meter.join('/');
   document.documentElement.lang = getLocale(); document.title = title(id, score.title);
-  bindControls(); tools();
+  bindControls(); tools(); saveStatus();
+  if (errorText) showError(errorText);
   const sheet = document.querySelector<HTMLDivElement>('#sheet')!;
   resize = new ResizeObserver(() => { clearTimeout(layoutTimer); layoutTimer = setTimeout(() => void relayout(), 80); });
-  resize.observe(sheet); void relayout(); readback();
+  resize.observe(sheet); void relayout(); playbackUpdate(transport.state); readback();
 }
 async function relayout(changed?: string[]) {
   if (!score || !editor) return;
@@ -109,7 +126,7 @@ async function relayout(changed?: string[]) {
   const sheet = document.querySelector<HTMLDivElement>('#sheet'); if (!sheet) return;
   try {
     const reply = await worker.request({ kind: 'layout-bars', bars: score.bars.filter(b => !changed || changed.includes(b.id)),
-      width: Math.min(320 * prefs.display.scale, sheet.clientWidth - 16), settings: prefs.display });
+      width: Math.min(326 * prefs.display.scale, sheet.clientWidth - 48), settings: prefs.display, editing });
     if (ownVersion !== version || serial !== layoutSerial || !score) return;
     workerEvidence = { worker: reply.worker, elapsedMs: reply.elapsedMs, version: reply.version };
     for (const layout of reply.result as BarLayout[]) layouts.set(layout.barId, layout);
@@ -146,15 +163,7 @@ function draw(key: string) {
 function tools() {
   if (!score || !editor) return;
   const el = document.querySelector('#editor-tools'); if (!el) return;
-  const position = editor.selection, bar = score.bars.find(b => b.id === position.barId)!;
-  const beat = bar.beats.find(b => b.startTick === position.tick);
-  const fret = beat?.notes.find(n => n.string === position.string)?.fret;
-  const durations = [1,2,4,8,16] as Duration[];
-  el.innerHTML = '<div class="input-top"><span>' + t('position', {bar: score.bars.indexOf(bar)+1, beat: position.tick/(3840/bar.meter[1])+1, string: position.string}) + '</span><div>' + button('undo','undo','↶',editor.canUndo?'':'disabled') + button('redo','redo','↷',editor.canRedo?'':'disabled') + '</div></div><div class="durations">' +
-    durations.map((d,i) => '<button data-duration="' + d + '" class="' + (beat?.duration===d?'active':'') + '" aria-label="' + t(['whole','half','quarter','eighth','sixteenth'][i]) + '">' + ['𝅝','𝅗𝅥','♩','♪','♬'][i] + '</button>').join('') + button('dot','dot','·') + button('tie','tie','⌒') + button('rest','rest') +
-    '</div><div class="fret-input"><input id="fret" type="number" min="0" max="36" inputmode="numeric" aria-label="' + t('fret') + '" value="' + (fret??'') + '" placeholder="—"><select id="grid" aria-label="' + t('beatGrid') + '">' +
-    [4,8,16].map(d=>'<option value="' + 3840/d + '" ' + (gridTicks===3840/d?'selected':'') + '>1/' + d + '</option>').join('') + '</select>' + button('insert','insert','+') + button('delete-note','deleteNote','⌫') +
-    '</div><div class="keypad">' + Array.from({length:10},(_,n)=>'<button data-digit="' + n + '">' + n + '</button>').join('') + '</div>';
+  el.innerHTML = editorTools(score, editor, gridTicks);
   el.querySelector('#fret')!.addEventListener('change', event => {
     const value = (event.target as HTMLInputElement).value;
     if (value !== '') change(() => editor!.setFret(Number(value)));
@@ -177,15 +186,24 @@ function digit(value: string) {
   if (Number(digitEntry)>36) digitEntry=value;
   change(()=>editor!.setFret(Number(digitEntry)));
 }
+function scoreDuration(): number {
+  if (!score) return 0;
+  const bars = practice.loop ? score.bars.slice(practice.startBar-1,practice.endBar) : score.bars;
+  return bars.reduce((seconds,bar)=>seconds+barTicks(bar)/960*60/bar.tempo,0)/practice.speed;
+}
 function playbackUpdate(state: PlaybackState) {
   const el = document.querySelector<HTMLButtonElement>('[data-action="play"]');
-  if (el) { el.textContent=state.playing?'Ⅱ':'▶'; el.setAttribute('aria-label',t(state.playing?'pause':'play')); }
+  if (el) { el.innerHTML=icon(state.playing?'pause':'play'); el.setAttribute('aria-label',t(state.playing?'pause':'play')); el.title=t(state.playing?'pause':'play'); }
   document.querySelectorAll('.bar-slot.playing').forEach(e=>e.classList.remove('playing'));
   if (state.playing && state.barId) slot(state.barId)?.classList.add('playing');
   document.querySelectorAll<SVGElement>('.playhead.active').forEach(e=>e.classList.remove('active'));
   if(state.playing&&state.barId)slot(state.barId)?.querySelectorAll<SVGElement>('[data-playing-beat]').forEach(e=>e.classList.toggle('active',e.dataset.playingBeat===state.beatId));
   const seek = document.querySelector<HTMLInputElement>('#seek');
   if (seek && timeline) seek.value=String(state.position/timeline.duration*1000);
+  if (seek) seek.style.setProperty('--progress',Number(seek.value)/10+'%');
+  const elapsed=document.querySelector('#elapsed'), total=document.querySelector('#total-time');
+  if(elapsed)elapsed.textContent=clockTime(state.position);
+  if(total)total.textContent=clockTime(timeline?.duration??scoreDuration());
   readback();
 }
 async function play(fromHere=false) {
@@ -225,9 +243,19 @@ function bindControls() {
     const file=(event.target as HTMLInputElement).files?.[0]; if(!file)return;
     try { if (!save()) return; repo.restore(await file.text()); clearError(); library(); } catch(error){showError(error);}
   });
-  document.querySelector('#speed')?.addEventListener('change',()=>{const running=transport.state.playing;stop();timeline=undefined;if(running)void play();});
+  document.querySelector('#speed')?.addEventListener('change',()=>{
+    practice.speed=Number((document.querySelector('#speed') as HTMLSelectElement).value);
+    const running=transport.state.playing;stop();timeline=undefined;playbackUpdate(transport.state);if(running)void play();
+  });
+  for(const key of ['loop','start-bar','end-bar'])document.querySelector('#'+key)?.addEventListener('change',()=>{
+    practice.loop=(document.querySelector('#loop') as HTMLInputElement).checked;
+    practice.startBar=Number((document.querySelector('#start-bar') as HTMLInputElement).value);
+    practice.endBar=Number((document.querySelector('#end-bar') as HTMLInputElement).value);
+    const running=transport.state.playing;stop();timeline=undefined;playbackUpdate(transport.state);if(running)void play();
+  });
   document.querySelector('#seek')?.addEventListener('input',event=>{
     playSerial++;playerWorker.cancel();
+    const input=event.target as HTMLInputElement; input.style.setProperty('--progress',Number(input.value)/10+'%');
     if(timeline)void transport.seek(Number((event.target as HTMLInputElement).value)/1000*timeline.duration).catch(showError);
   });
 }
@@ -244,8 +272,8 @@ async function importFile(file: File) {
 function settings() {
   const dialog=document.querySelector<HTMLDialogElement>('#settings-dialog');if(!dialog)return;
   const d=prefs.display;
-  const check=(side:'left'|'right',key:'tab'|'string'|'pitch',label:string)=>'<label><input type="checkbox" data-label="'+side+'.'+key+'" '+((d[side] as unknown as Record<string,boolean>)[key]?'checked':'')+'>'+t(label)+'</label>';
-  dialog.innerHTML='<header><h2>'+t('settings')+'</h2>'+button('close-dialog','close','×')+'</header><label class="setting-row">'+t('language')+'<select id="language"><option value="zh" '+(getLocale()==='zh'?'selected':'')+'>中文</option><option value="en" '+(getLocale()==='en'?'selected':'')+'>English</option></select></label><fieldset><legend>'+t('leftLabels')+'</legend>'+check('left','tab','TAB')+check('left','string','stringNumber')+check('left','pitch','pitch')+'</fieldset><fieldset><legend>'+t('rightLabels')+'</legend>'+check('right','string','stringNumber')+check('right','pitch','pitch')+'</fieldset><label class="setting-row">'+t('lineWeight')+'<select id="weight"><option value="uniform" '+(d.lineWeight==='uniform'?'selected':'')+'>'+t('uniform')+'</option><option value="graded" '+(d.lineWeight==='graded'?'selected':'')+'>'+t('graded')+'</option></select></label><label class="setting-row">'+t('size')+'<input id="scale" type="range" min=".7" max="1.6" step=".1" value="'+d.scale+'"></label><label class="setting-row">'+t('spacing')+'<input id="spacing" type="range" min="14" max="26" step="1" value="'+d.stringGap+'"></label><div class="settings-actions">'+(score?(builtins.find(item=>item.id===id)?.previewUrl?button('source-preview','sourcePreview'):'')+button('export','export')+button('copy-bar','copyBar')+button('add-bar','addBar')+button('delete-beat','deleteBeat'):'')+button('backup','backup')+button('import','import')+button('restore','restore')+'</div><p class="small-note">'+t('backupHelp')+'</p><p class="small-note">'+t('install')+'</p>';
+  dialog.setAttribute('aria-label',t('settings'));
+  dialog.innerHTML=settingsPanel(d,!!score,!!builtins.find(item=>item.id===id)?.previewUrl);
   dialog.oninput=event=>{
     const input=event.target as HTMLInputElement;
     if(input.id==='language'){
@@ -255,8 +283,9 @@ function settings() {
     }
     if(input.dataset.label){const[side,key]=input.dataset.label.split('.') as ['left'|'right','string'|'pitch'];(d[side] as unknown as Record<string,boolean>)[key]=input.checked;}
     if(input.id==='weight')d.lineWeight=input.value as 'uniform'|'graded';
-    if(input.id==='scale')d.scale=Number(input.value);
-    if(input.id==='spacing')d.stringGap=Number(input.value);
+    if(input.id==='rhythm')d.showRhythm=input.checked;
+    if(input.id==='scale'){d.scale=Number(input.value);dialog.querySelector('#scale-value')!.textContent=d.scale.toFixed(1)+'×';}
+    if(input.id==='spacing'){d.stringGap=Number(input.value);dialog.querySelector('#spacing-value')!.textContent=String(d.stringGap);}
     try{savePreferences(prefs);}catch(error){showError(error);}
     void relayout();readback();
   };
@@ -264,7 +293,8 @@ function settings() {
 }
 function newScore() {
   const dialog=document.querySelector<HTMLDialogElement>('#new-dialog')!;
-  dialog.innerHTML='<form><header><h2>'+t('newScore')+'</h2>'+button('close-dialog','close','×')+'</header><label>'+t('title')+'<input id="new-title" required value="'+esc(t('untitled'))+'"></label><button id="create-score">'+t('newScore')+'</button></form>';
+  dialog.setAttribute('aria-label',t('newScore'));
+  dialog.innerHTML='<form>'+dialogHeader('newScore')+'<label>'+t('title')+'<input id="new-title" required value="'+esc(t('untitled'))+'"></label><button id="create-score" class="primary-action">'+t('newScore')+'</button></form>';
   dialog.querySelector('form')!.addEventListener('submit',event=>{
     event.preventDefault();const name=(dialog.querySelector('#new-title') as HTMLInputElement).value.trim();if(!name)return;
     const created:TabScore={schemaVersion:1,title:name,tempo:60,tuning:[...STANDARD_TUNING],bars:[{id:crypto.randomUUID(),meter:[4,4],tempo:60,key:0,minor:false,beats:[{id:crypto.randomUUID(),startTick:0,duration:1,dots:0,notes:[]}]}]};
@@ -296,7 +326,7 @@ root.addEventListener('click',event=>{
     case 'new':newScore();break;
     case 'play':if(transport.state.playing){playSerial++;playerWorker.cancel();transport.pause();}else void play();break;
     case 'stop':stop();break;
-    case 'practice':{const el=document.querySelector<HTMLElement>('#practice-panel')!;el.hidden=!el.hidden;break;}
+    case 'practice':{const el=document.querySelector<HTMLElement>('#practice-panel')!;el.hidden=!el.hidden;practice.expanded=!el.hidden;document.querySelector('.transport [data-action="practice"]')?.setAttribute('aria-expanded',String(practice.expanded));break;}
     case 'from-here':stop();void play(true);break;
     case 'dismiss':clearError();break;
     case 'retry':worker.retry();playerWorker.retry();if(pendingFile)void importFile(pendingFile);else if(score){save();void relayout();}else if(id)void open(id);break;
@@ -306,7 +336,8 @@ root.addEventListener('click',event=>{
       const dialog = document.querySelector<HTMLDialogElement>('#settings-dialog');
       if (source?.previewUrl && dialog) {
         if (dialog.open) dialog.close();
-        dialog.innerHTML = '<header><h2>' + t('sourcePreview') + '</h2>' + button('close-dialog','close','×') + '</header><img class="source-preview" src="' + esc(source.previewUrl) + '" alt="' + esc(source.title) + '">';
+        dialog.setAttribute('aria-label',t('sourcePreview'));
+        dialog.innerHTML = dialogHeader('sourcePreview') + '<img class="source-preview" src="' + esc(source.previewUrl) + '" alt="' + esc(source.title) + '">';
         dialog.showModal();
       }
       break;

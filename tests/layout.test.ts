@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseAlphaTex } from '../src/formats/alphatex.ts';
 import { layoutBar, locate } from '../src/notation/layout.ts';
-import { CANDIDATES } from '../src/settings/display.ts';
+import { CANDIDATES, DEFAULT_DISPLAY } from '../src/settings/display.ts';
 import { renderBar } from '../src/notation/svg.ts';
 test('细分时间等比定位，两位品保留间距，同拍和弦共用坐标', () => {
   const score = parseAlphaTex(String.raw`\title "定位" \ts (4 4) (12.1 10.2).8 3.3.8 0.4.4 0.5.2`);
@@ -26,4 +26,29 @@ test('调弦标签、左右组合与按弦线宽使用同一设置', () => {
   assert.ok(svg.includes('>T</text>'));
   assert.equal(locate(layout, 1, -100).string, 1);
   assert.equal(locate(layout, 9999, 9999).string, 6);
+});
+
+test('阅读模式保留首尾数字边距，节奏开关只改变谱面高度', () => {
+  const score = parseAlphaTex('0.3.4 0.3.4 3.2.2');
+  const bar = score.bars[0];
+  const layout = layoutBar(bar, 326, DEFAULT_DISPLAY);
+  assert.ok(layout.musicStart - layout.lineStart >= DEFAULT_DISPLAY.noteSize);
+  assert.ok(layout.lineEnd - layout.columns.at(-1)!.x <= DEFAULT_DISPLAY.noteSize);
+  const withRhythm = { ...DEFAULT_DISPLAY, showRhythm: true };
+  const rhythmLayout = layoutBar(bar, 326, withRhythm);
+  assert.deepEqual(layout.columns, rhythmLayout.columns);
+  assert.ok(rhythmLayout.height > layout.height);
+  assert.equal(renderBar(bar, layout, score.tuning, DEFAULT_DISPLAY, 0).includes('rhythm-head'), false);
+  assert.equal(renderBar(bar, rhythmLayout, score.tuning, withRhythm, 0).includes('rhythm-head'), true);
+});
+
+test('编辑模式可点选二分音符内部的十六分拍点', () => {
+  const score = parseAlphaTex('0.3.4 0.3.4 3.2.2');
+  const bar = score.bars[0];
+  const layout = layoutBar(bar, 326, DEFAULT_DISPLAY, true);
+  const lastTick = 3600;
+  const x = layout.musicStart + lastTick / layout.tickSpan * layout.musicWidth;
+  assert.deepEqual(locate(layout, x, layout.top + 2 * layout.gap, 240), {
+    barId: bar.id, tick: lastTick, string: 3
+  });
 });

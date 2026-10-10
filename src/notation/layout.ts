@@ -8,6 +8,9 @@ export interface BarLayout {
   lineEnd: number;
   top: number;
   gap: number;
+  musicStart: number;
+  musicWidth: number;
+  totalTicks: number;
   columns: { tick: number; x: number; beatId?: string }[];
 }
 export function layoutBar(bar: ScoreBar, availableWidth: number, settings: DisplaySettings): BarLayout {
@@ -20,15 +23,16 @@ export function layoutBar(bar: ScoreBar, availableWidth: number, settings: Displ
   const padding = size * .8;
   const ticks = [...new Set([0, ...bar.beats.map(b => b.startTick), barTicks(bar)])].sort((a, b) => a - b);
   const minDelta = Math.min(...ticks.slice(1).map((t, i) => t - ticks[i]));
-  const minWidth = (size * 1.7) * barTicks(bar) / minDelta;
+  const minWidth = (size * 1.65) * barTicks(bar) / minDelta;
   const musicWidth = Math.max(availableWidth - lineStart - right - 2 * padding, minWidth);
   const lineEnd = lineStart + padding * 2 + musicWidth;
-  return { barId: bar.id, width: lineEnd + right, height: 42 + gap * 5 + 44 * settings.scale,
-    lineStart, lineEnd, top: 34, gap,
+  return { barId: bar.id, width: lineEnd + right, height: 60 + gap * 5 + 35 * settings.scale,
+    lineStart, lineEnd, top: 60, gap, musicStart: lineStart + padding, musicWidth, totalTicks: barTicks(bar),
     columns: ticks.slice(0, -1).map(tick => ({ tick, x: lineStart + padding + tick / barTicks(bar) * musicWidth,
       beatId: bar.beats.find(beat => beat.startTick === tick)?.id })) };
 }
-export function locate(layout: BarLayout, x: number, y: number): { barId: string; tick: number; string: number } {
+export function locate(layout: BarLayout, x: number, y: number, snapTicks?: number): { barId: string; tick: number; string: number } {
   const nearest = layout.columns.reduce((a, b) => Math.abs(a.x - x) <= Math.abs(b.x - x) ? a : b);
-  return { barId: layout.barId, tick: nearest.tick, string: Math.max(1, Math.min(6, Math.round((y - layout.top) / layout.gap) + 1)) };
+  const tick = snapTicks ? Math.max(0, Math.min(layout.totalTicks - snapTicks, Math.round((x - layout.musicStart) / layout.musicWidth * layout.totalTicks / snapTicks) * snapTicks)) : nearest.tick;
+  return { barId: layout.barId, tick, string: Math.max(1, Math.min(6, Math.round((y - layout.top) / layout.gap) + 1)) };
 }

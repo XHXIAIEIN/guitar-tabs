@@ -1,7 +1,11 @@
-const sources = import.meta.glob('../../scores/*.atex', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-export const builtins = Object.entries(sources).map(([path, text]) => ({
-  id: path.split('/').at(-1)!.replace('.atex', ''), text,
-  title: /\\title\s+"([^"]+)"/.exec(text)?.[1] ?? '未命名曲谱',
-  source: '已核对谱面', tutorialChecked: true
-}));
-export const sample = builtins.find(score => score.id === 'twinkle-star')!;
+import { buildCatalog } from './catalog';
+import { zh } from '../i18n/zh';
+const sources = import.meta.glob('../../scores/**/*.atex', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const previews = import.meta.glob('../../scores/**/*.svg', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
+const relative = (path: string) => path.replace('../../scores/', '');
+export const builtins = buildCatalog(Object.entries(sources).map(([path, text]) => ({ path: relative(path), text })), Object.keys(previews).map(relative))
+  .map(entry => {
+    const key = ('song.' + entry.id.split('/').at(-1)) as keyof typeof zh;
+    return { ...entry, translationKey: zh[key] === entry.title ? key : undefined,
+      previewUrl: entry.previewPath ? previews['../../scores/' + entry.previewPath] : undefined };
+  });

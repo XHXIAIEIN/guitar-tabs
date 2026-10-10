@@ -10,7 +10,7 @@ test('细分时间等比定位，两位品保留间距，同拍和弦共用坐�
   const layout = layoutBar(bar, 354, CANDIDATES.b);
   const [a, b, c] = layout.columns;
   assert.ok(Math.abs((b.x - a.x) - (c.x - b.x)) < 0.000001);
-  assert.ok(b.x - a.x >= CANDIDATES.b.noteSize * 1.7 - 0.001);
+  assert.ok(b.x - a.x >= CANDIDATES.b.noteSize * 1.65 - 0.001);
   assert.deepEqual(locate(layout, b.x + 1, layout.top + 2 * layout.gap), { barId: bar.id, tick: 480, string: 3 });
   const svg = renderBar(bar, layout, score.tuning, CANDIDATES.b, 0);
   assert.equal(svg.match(new RegExp(`x="${a.x}"`, 'g'))!.length >= 2, true);

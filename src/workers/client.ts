@@ -1,5 +1,6 @@
 import type { ReplyEnvelope, RequestEnvelope, ScoreTask } from './protocol';
-export class StaleTaskError extends Error { constructor() { super('曲谱已变化，旧结果已取消。'); this.name = 'StaleTaskError'; } }
+import { getLocale, t } from '../i18n';
+export class StaleTaskError extends Error { constructor() { super(t('worker.stale')); this.name = 'StaleTaskError'; } }
 interface Pending { version: number; timer: ReturnType<typeof setTimeout>; resolve: (reply: ReplyEnvelope) => void; reject: (error: Error) => void }
 export class ScoreWorkerClient {
   private worker: Worker;
@@ -10,8 +11,8 @@ export class ScoreWorkerClient {
   private createWorker(): Worker {
     const worker = new Worker(new URL('./score.worker.ts', import.meta.url), { type: 'module', name: 'score' });
     worker.onmessage = ({ data }: MessageEvent<ReplyEnvelope>) => this.receive(data);
-    worker.onerror = event => { console.error('Score worker:', event.message); event.preventDefault(); this.fail(new Error('曲谱计算失败，请重试。')); };
-    worker.onmessageerror = () => this.fail(new Error('曲谱结果无法读取，请重试。'));
+    worker.onerror = event => { console.error('Score worker:', event.message); event.preventDefault(); this.fail(new Error(t('worker.failed'))); };
+    worker.onmessageerror = () => this.fail(new Error(t('worker.message')));
     return worker;
   }
   setVersion(version: number): void {
@@ -25,10 +26,10 @@ export class ScoreWorkerClient {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new Error('曲谱计算超时，请重试。'));
+        reject(new Error(t('worker.timeout')));
       }, 15000);
       this.pending.set(id, { version, timer, resolve, reject });
-      try { this.worker.postMessage({ id, version, task } satisfies RequestEnvelope); }
+      try { this.worker.postMessage({ id, version, task, locale: getLocale() } satisfies RequestEnvelope); }
       catch (error) { clearTimeout(timer); this.pending.delete(id); reject(error); }
     });
   }
@@ -45,6 +46,6 @@ export class ScoreWorkerClient {
     for (const { timer, reject } of this.pending.values()) { clearTimeout(timer); reject(error); }
     this.pending.clear();
   }
-  retry(): void { this.fail(new Error('计算已重新开始。')); this.worker.terminate(); this.worker = this.createWorker(); }
-  dispose(): void { this.fail(new Error('曲谱已关闭。')); this.worker.terminate(); }
+  retry(): void { this.fail(new Error(t('worker.retry'))); this.worker.terminate(); this.worker = this.createWorker(); }
+  dispose(): void { this.fail(new Error(t('worker.closed'))); this.worker.terminate(); }
 }

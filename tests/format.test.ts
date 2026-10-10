@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import { parseAlphaTex, exportAlphaTex } from '../src/formats/alphatex.ts';
 import { musicalContent } from '../src/score/model.ts';
 
@@ -31,7 +32,9 @@ test('断开的延音报错，中文曲名与特殊字符保留', () => {
   assert.equal(parseAlphaTex(exportAlphaTex(score)).title, score.title);
 });
 test('小星星完整旋律保留核对谱中的弦号和音高', async () => {
-  const score = parseAlphaTex(await readFile('scores/twinkle-star.atex', 'utf8'));
+  const path = (await readdir('scores', { recursive: true })).find(path => path.endsWith('twinkle-star.atex'));
+  assert.ok(path, '缺少默认曲谱');
+  const score = parseAlphaTex(await readFile(join('scores', path), 'utf8'));
   const pitches = score.bars.flatMap(bar => bar.beats.flatMap(beat => beat.notes.map(note => score.tuning[note.string - 1] + note.fret)));
   const A = [55,55,62,62,64,64,62,60,60,59,59,57,57,55];
   const B = [62,62,60,60,59,59,57];

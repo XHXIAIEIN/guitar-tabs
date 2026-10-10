@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { Settings, importer, exporter, model } from '@coderline/alphatab';
 import { beatTicks, type TabScore, type Duration } from '../score/model';
 import { ScoreError, validateScore } from '../score/validate';
@@ -9,7 +10,7 @@ function readAlpha(text: string): model.Score {
   const score = reader.readScore();
   const errors = [reader.lexerDiagnostics, reader.parserDiagnostics, reader.semanticDiagnostics]
     .flatMap(bag => bag.items).filter(item => item.severity === 2)
-    .map(item => `第 ${item.start?.line ?? '?'} 行：${item.message}`);
+    .map(item => `Line ${item.start?.line ?? '?'}: ${item.message}`);
   if (errors.length) throw new ScoreError(errors);
   const expectedTies = (reader.scoreNode?.bars ?? []).flatMap(bar => bar.beats.flatMap(beat => {
     const notes = (beat.notes?.notes ?? []).filter(note =>
@@ -18,30 +19,31 @@ function readAlpha(text: string): model.Score {
     return Array.from({ length: beat.beatMultiplierValue?.value ?? 1 }, () => notes).flat();
   }));
   const actualTies = score.tracks.flatMap(track => track.staves.flatMap(staff => staff.bars.flatMap(bar => bar.voices.flatMap(voice => voice.beats.flatMap(beat => beat.notes.filter(note => note.isTieDestination))))));
-  if (expectedTies.length !== actualTies.length || expectedTies.some((note, i) => 'value' in note.noteValue && note.noteValue.value !== actualTies[i]?.fret)) throw new ScoreError(['延音需要前面的同弦同品起音。']);
+  if (expectedTies.length !== actualTies.length || expectedTies.some((note, i) => 'value' in note.noteValue && note.noteValue.value !== actualTies[i]?.fret)) throw new ScoreError([t('format.tie')]);
   return score;
 }
 
 function assertSupported(score: model.Score): void {
   const issues: string[] = [];
-  if (score.tracks.length !== 1 || score.tracks[0].staves.length !== 1) issues.push('当前支持单轨六弦谱，请先拆分轨道。');
+  if (score.tracks.length !== 1 || score.tracks[0].staves.length !== 1) issues.push(t('format.tracks'));
   const staff = score.tracks[0]?.staves[0];
-  if (!staff || staff.tuning.length !== 6 || staff.isPercussion) issues.push('请选择含弦号和品位的六弦谱。');
-  if (staff?.capo || staff?.transpositionPitch) issues.push('变调夹或播放移调尚未支持。');
-  if (score.artist || score.album || score.subTitle || score.words || score.music || score.copyright || score.instructions || score.notices || score.tab) issues.push('附加作者或曲谱说明尚未保存，请先移除这些元数据。');
+  if (!staff || staff.tuning.length !== 6 || staff.isPercussion) issues.push(t('format.tuning'));
+  if (staff?.capo || staff?.transpositionPitch) issues.push(t('format.capo'));
+  if (score.artist || score.album || score.subTitle || score.words || score.music || score.copyright || score.instructions || score.notices || score.tab) issues.push(t('format.metadata'));
   for (const [i, bar] of (staff?.bars ?? []).entries()) {
-    const where = `第 ${i + 1} 小节`;
+    const params = { bar: i + 1 };
     const master = bar.masterBar;
-    if (master.isRepeatStart || master.repeatCount || master.alternateEndings || master.isFreeTime || master.tripletFeel || master.section || master.syncPoints?.length) issues.push(`${where}含反复、自由拍、段落或同步标记。`);
-    if (master.tempoAutomations.length > 1 || master.tempoAutomations.some(a => a.ratioPosition !== 0)) issues.push(`${where}含拍内变速。`);
-    if (bar.voices.length !== 1) issues.push(`${where}含多声部。`);
-    if (bar.simileMark || bar.sustainPedals.length) issues.push(`${where}含重复小节记号或踏板。`);
+    if (master.isRepeatStart || master.repeatCount || master.alternateEndings || master.isFreeTime || master.tripletFeel || master.section || master.syncPoints?.length) issues.push(t('format.barEffects', params));
+    if (master.tempoAutomations.length > 1 || master.tempoAutomations.some(a => a.ratioPosition !== 0)) issues.push(t('format.tempo', params));
+    if (bar.voices.length !== 1) issues.push(t('format.voices', params));
+    if (bar.simileMark || bar.sustainPedals.length) issues.push(t('format.simile', params));
     for (const beat of bar.voices[0]?.beats ?? []) {
-      if (beat.hasTuplet || beat.graceType || beat.hasWhammyBar || beat.fade || beat.isLegatoOrigin || beat.tap || beat.slap || beat.pop || beat.brushType || beat.pickStroke || beat.vibrato || beat.chordId || beat.text || beat.lyrics?.length || beat.fermata || beat.hasRasgueado || beat.isEmpty || beat.slashed || beat.deadSlapped || beat.tremoloPicking || beat.crescendo || beat.golpe || beat.wahPedal || beat.barreFret >= 0 || beat.dynamics !== model.DynamicValue.F || beat.ottava !== model.Ottavia.Regular || beat.overrideDisplayDuration) issues.push(`${where}含尚未支持的拍组技法、文本或空拍。`);
+      const changesDuration = beat.overrideDisplayDuration && beat.overrideDisplayDuration !== beatTicks({ duration: beat.duration as Duration, dots: beat.dots });
+      if (beat.hasTuplet || beat.graceType || beat.hasWhammyBar || beat.fade || beat.isLegatoOrigin || beat.tap || beat.slap || beat.pop || beat.brushType || beat.pickStroke || beat.vibrato || beat.chordId || beat.text || beat.lyrics?.length || beat.fermata || beat.hasRasgueado || beat.isEmpty || beat.slashed || beat.deadSlapped || beat.tremoloPicking || beat.crescendo || beat.golpe || beat.wahPedal || beat.barreFret >= 0 || beat.dynamics !== model.DynamicValue.F || beat.ottava !== model.Ottavia.Regular || changesDuration) issues.push(t('format.beatEffects', params));
       for (const note of beat.notes) {
-        if (!note.isStringed) issues.push(`${where}缺少弦号和品位。`);
-        if (note.hasBend || note.isDead || note.isGhost || note.isPalmMute || note.isLetRing || note.isStaccato || note.isHammerPullOrigin || note.slideInType || note.slideOutType || note.harmonicType || note.vibrato || note.isTrill || note.accentuated || note.isFingering || note.ornament || note.isLeftHandTapped || note.isSlurDestination || !note.isVisible || note.durationPercent !== 1 || note.dynamics !== model.DynamicValue.F) issues.push(`${where}含尚未支持的音符技法。`);
-        if (note.isTieDestination && !note.tieOrigin) issues.push(`${where}延音没有起音。`);
+        if (!note.isStringed) issues.push(t('format.position', params));
+        if (note.hasBend || note.isDead || note.isGhost || note.isPalmMute || note.isLetRing || note.isStaccato || note.isHammerPullOrigin || note.slideInType || note.slideOutType || note.harmonicType || note.vibrato || note.isTrill || note.accentuated || note.isFingering || note.ornament || note.isLeftHandTapped || note.isSlurDestination || !note.isVisible || note.durationPercent !== 1 || note.dynamics !== model.DynamicValue.F) issues.push(t('format.noteEffects', params));
+        if (note.isTieDestination && !note.tieOrigin) issues.push(t('format.tie', params));
       }
     }
   }
@@ -52,7 +54,7 @@ export function fromAlphaScore(source: model.Score): TabScore {
   assertSupported(source);
   let tempo = source.tempo;
   const score: TabScore = {
-    schemaVersion: 1, title: source.title || '未命名曲谱', tempo,
+    schemaVersion: 1, title: source.title || t('untitled'), tempo,
     tuning: [...source.tracks[0].staves[0].tuning],
     bars: source.tracks[0].staves[0].bars.map((bar, i) => {
       const master = bar.masterBar;

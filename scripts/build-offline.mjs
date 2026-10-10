@@ -1,0 +1,14 @@
+import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { join } from 'node:path';
+const paths = ['index.html', 'manifest.webmanifest', 'icon.svg', ...(await readdir('dist/assets')).map(name => 'assets/' + name)];
+const digest = createHash('sha256');
+for (const path of paths) digest.update(await readFile(join('dist', path)));
+const cache = 'guitar-tabs-' + digest.digest('hex').slice(0, 12);
+const script = `const CACHE=${JSON.stringify(cache)};const FILES=${JSON.stringify(paths.map(path => '/' + path))};
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)));});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('guitar-tabs-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;event.respondWith(caches.open(CACHE).then(async cache=>{const cached=await cache.match(event.request,{ignoreVary:true});if(cached)return cached;try{return await fetch(event.request);}catch(error){if(event.request.mode==='navigate')return await cache.match('/index.html',{ignoreVary:true});throw error;}}));});
+`;
+await writeFile('dist/sw.js', script);
+console.log(`Offline cache: ${paths.length} files`);

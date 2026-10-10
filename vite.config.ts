@@ -4,7 +4,9 @@ import { dirname, join } from 'node:path';
 const require = createRequire(import.meta.url);
 // The core entry keeps the application's Worker message protocol in control.
 const alphaCore = join(dirname(require.resolve('@coderline/alphatab')), 'alphaTab.core.mjs');
+const basePath = (process.env.VITE_BASE_PATH ?? '').replace(/^\/+|\/+$/g, '');
 export default defineConfig({
+  base: basePath ? '/' + basePath + '/' : '/',
   resolve: { alias: [{ find: /^@coderline\/alphatab$/, replacement: alphaCore }] },
   worker: { format: 'es' }
 });

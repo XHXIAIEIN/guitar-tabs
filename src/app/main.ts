@@ -378,4 +378,4 @@ window.addEventListener('keydown',event=>{
 });
 window.addEventListener('pagehide',()=>{save();stop();});
 library();
-if(import.meta.env.PROD&&'serviceWorker'in navigator)void navigator.serviceWorker.register('/sw.js').catch(()=>{});
+if(import.meta.env.PROD&&'serviceWorker'in navigator)void navigator.serviceWorker.register(import.meta.env.BASE_URL+'sw.js',{scope:import.meta.env.BASE_URL}).catch(()=>{});

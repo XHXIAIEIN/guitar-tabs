@@ -2,6 +2,8 @@
 
 [English](#english) · [中文](#中文)
 
+[Open the app · 在线使用](https://xhxiaiein.github.io/guitar-tabs/)
+
 ## English
 
 Guitar Songbook lets you read, edit, and practise six-string tablature on your phone or desktop. It uses a white paper layout and supports English and Chinese. The first visit follows the browser language, with English as the fallback. Your language choice is saved.
@@ -81,7 +83,7 @@ Import accepts alphaTex, plain MusicXML, and supported Guitar Pro files. Externa
 | `npm run build` | Check TypeScript and build the site with its offline cache |
 | `npm run test:browser` | Exercise real input in muted desktop Chrome against a running server |
 
-Browser checks require Chrome. Set `PREVIEW_URL` to the server URL; the script default is `http://127.0.0.1:5193`. See [verification methods and limits](docs/validation.md) for production and offline checks.
+Browser checks require Chrome. Set `PREVIEW_URL` to the server URL; the script default is `http://127.0.0.1:5193`. See [verification methods and limits](docs/validation.md) for production and offline checks. Pushes to `main` deploy the site through GitHub Actions; see [deployment settings](docs/deployment.md).
 
 ## 中文
 
@@ -162,4 +164,4 @@ SVG 优先与同名 alphaTex 配对。同目录只有一个 `.atex` 和一个 `.
 | `npm run build` | 检查 TypeScript，构建网站和离线缓存 |
 | `npm run test:browser` | 对运行中的服务器使用静音桌面 Chrome 验证实际输入 |
 
-浏览器检查需要安装 Chrome。通过 `PREVIEW_URL` 指定服务器地址，脚本默认使用 `http://127.0.0.1:5193`。发布版和离线检查见[验证方法与边界](docs/validation.md)。
+浏览器检查需要安装 Chrome。通过 `PREVIEW_URL` 指定服务器地址，脚本默认使用 `http://127.0.0.1:5193`。发布版和离线检查见[验证方法与边界](docs/validation.md)。推送 `main` 后由 GitHub Actions 部署网站，配置见[部署说明](docs/deployment.md)。

@@ -13,6 +13,7 @@ export interface BarLayout {
   totalTicks: number;
   tickSpan: number;
   settings?: DisplaySettings;
+  firstInRow?: boolean;
   columns: { tick: number; x: number; beatId?: string }[];
 }
 export function layoutBar(bar: ScoreBar, availableWidth: number, settings: DisplaySettings, editing = false): BarLayout {

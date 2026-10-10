@@ -37,3 +37,26 @@ test('editing one measure recomputes its row while preserving other row layouts'
   assert.equal(rows[0].layouts.length, 0);
   assert.deepEqual(rows[1].layouts.map(layout => layout.barId), rows[1].barIds);
 });
+
+test('beat columns align across measures and rows while staff lines join at barlines', () => {
+  const score = parseAlphaTex('0.3.4 0.3.4 3.2.4 3.2.4 | 0.1.4 0.1.4 3.2.2 | 1.2.4 1.2.4 0.2.2');
+  const [first, final] = layoutRows(score.bars, 342, DEFAULT_DISPLAY);
+  const [a,b] = first.layouts;
+  const step = a.columns[1].x - a.columns[0].x;
+  assert.ok(Math.abs(step - (b.columns[1].x - b.columns[0].x)) < .001);
+  assert.ok(Math.abs(a.width + b.columns[0].x - a.columns[3].x - step) < .001);
+  assert.equal(a.lineEnd, a.width + b.lineStart);
+  assert.equal(a.top, b.top);
+  assert.equal(a.gap, b.gap);
+  assert.equal(first.width, final.width);
+  assert.equal(a.columns[0].x, final.layouts[0].columns[0].x);
+  assert.equal(a.lineEnd, final.layouts[0].lineEnd);
+  assert.ok(Math.abs(final.layouts[0].columns[1].x - final.layouts[0].columns[0].x - step) < .001);
+  const editing = layoutRows(score.bars, 342, DEFAULT_DISPLAY, true)[0].layouts;
+  assert.deepEqual(editing.map(layout=>layout.columns), first.layouts.map(layout=>layout.columns));
+  const fine = layoutRows(score.bars, 342, DEFAULT_DISPLAY, true, undefined, 240)[0].layouts[0];
+  const lastTick = 3600;
+  const x = fine.musicStart + lastTick / fine.tickSpan * fine.musicWidth;
+  assert.ok(x < fine.lineEnd);
+  assert.equal(locate(fine, x, fine.top, 240).tick, lastTick);
+});

@@ -132,7 +132,7 @@ async function relayout(changed?: string[]) {
     const style = getComputedStyle(sheet);
     const reply = await worker.request({ kind: 'layout-rows', bars: score.bars,
       width: sheet.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight),
-      settings: prefs.display, editing, changed: sameBars ? changed : undefined });
+      settings: prefs.display, editing, changed: sameBars ? changed : undefined, snapTicks: gridTicks });
     if (ownVersion !== version || serial !== layoutSerial || !score) return;
     workerEvidence = { worker: reply.worker, elapsedMs: reply.elapsedMs, version: reply.version };
     const rows = reply.result as ScoreRowLayout[];
@@ -158,8 +158,8 @@ async function relayout(changed?: string[]) {
       slot.style.width = (layout?.width ?? 326) + 'px';
       if (slot.dataset.visible) draw(slot.dataset.bar!);
     }
-    for (const row of sheet.querySelectorAll<HTMLElement>('.score-row')) {
-      row.style.width = [...row.querySelectorAll<HTMLElement>('.bar-slot')].reduce((sum, slot) => sum + Number.parseFloat(slot.style.width), 0) + 'px';
+    for (const [index,row] of [...sheet.querySelectorAll<HTMLElement>('.score-row')].entries()) {
+      row.style.width = rows[index].width + 'px';
     }
     readback();
   } catch (error) { if (ownVersion === version) showError(error); }
@@ -182,7 +182,7 @@ function tools() {
     const value = (event.target as HTMLInputElement).value;
     if (value !== '') change(() => editor!.setFret(Number(value)));
   });
-  el.querySelector('#grid')!.addEventListener('change', event => gridTicks = Number((event.target as HTMLSelectElement).value));
+  el.querySelector('#grid')!.addEventListener('change', event => { gridTicks = Number((event.target as HTMLSelectElement).value); void relayout(); });
 }
 function change(command: () => void) {
   if (!score || !editor) return;

@@ -8,7 +8,7 @@ export function renderBar(bar: ScoreBar, layout: BarLayout, tuning: number[], se
   const { lineStart, lineEnd, top, gap } = layout;
   const size = settings.noteSize * settings.scale;
   const text = (x: number, y: number, value: string, cls: string) => `<text x="${x}" y="${y}" class="${cls}" dominant-baseline="central" text-anchor="middle">${escapeHtml(value)}</text>`;
-  parts.push(text(lineStart + 2, 12, String(index + 1).padStart(2, '0'), 'bar-number'));
+  parts.push(text(lineStart + 7 * settings.scale, 12, String(index + 1).padStart(2, '0'), 'bar-number'));
   for (let string = 1; string <= 6; string++) {
     const y = top + (string - 1) * gap;
     const weight = settings.lineWeight === 'graded' ? .65 + (string - 1) * .15 : .8;
@@ -21,7 +21,7 @@ export function renderBar(bar: ScoreBar, layout: BarLayout, tuning: number[], se
     if (settings.right.string) { parts.push(text(right, y, String(string), 'string-label')); right += 20 * settings.scale; }
     if (settings.right.pitch) parts.push(text(right, y, pitchName(tuning[string - 1]), 'string-label'));
   }
-  for (const x of [lineStart, lineEnd]) parts.push(`<line x1="${x}" x2="${x}" y1="${top}" y2="${top + gap * 5}"/>`);
+  for (const x of layout.firstInRow === false ? [lineEnd] : [lineStart, lineEnd]) parts.push(`<line x1="${x}" x2="${x}" y1="${top}" y2="${top + gap * 5}"/>`);
   if (editing) for (const col of layout.columns) parts.push(`<line x1="${col.x}" x2="${col.x}" y1="${top - 10}" y2="${top + gap * 5 + 10}" class="beat-guide"/>`);
   if (selected && editing) {
     const x = layout.musicStart + selected.tick / layout.tickSpan * layout.musicWidth;

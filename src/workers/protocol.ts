@@ -7,7 +7,7 @@ export type ScoreTask =
   | { kind: 'export'; score: TabScore }
   | { kind: 'import'; data: Uint8Array; name: string }
   | { kind: 'layout-bars'; bars: ScoreBar[]; width: number; settings: DisplaySettings; editing?: boolean }
-  | { kind: 'layout-rows'; bars: ScoreBar[]; width: number; settings: DisplaySettings; editing?: boolean; changed?: string[] }
+  | { kind: 'layout-rows'; bars: ScoreBar[]; width: number; settings: DisplaySettings; editing?: boolean; changed?: string[]; snapTicks?: number }
   | { kind: 'layout'; score: TabScore; width: number; settings: DisplaySettings; bars?: string[] };
 export interface RequestEnvelope { id: number; version: number; task: ScoreTask; locale?: 'en' | 'zh' }
 export interface ReplyEnvelope {

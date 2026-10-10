@@ -27,4 +27,4 @@ SVG 的节奏符号位于弦线上方。实心符头表示四分或八分音符�
 
 alphaTex 使用 `品位.弦号.时值`。例如 `3.2.4` 表示第 2 弦第 3 品的四分音符。时值 `1`、`2`、`4`、`8` 分别表示全、二分、四分、八分音符。源文件按完整小节书写，以 `|` 分隔；应用独立控制每行的显示拍数。
 
-[App guide · 使用说明](../../README.md) · [Format limits · 格式范围](../../docs/format.md)
+[English guide](../../README.md) · [中文使用说明](../../README.zh-CN.md) · [Format limits · 格式范围](../../docs/format.md)

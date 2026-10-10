@@ -4,10 +4,10 @@
 
 | 曲名 | 可编辑曲谱 | 谱面 |
 | --- | --- | --- |
-| 欢乐颂 | [alphaTex](ode-to-joy.atex) | [六线谱](ode-to-joy.svg) |
-| 小蜜蜂 | [alphaTex](little-bee.atex) | [六线谱](little-bee.svg) |
-| 小星星 | [alphaTex](twinkle-star.atex) | [六线谱](twinkle-star.svg) |
-| 两只老虎 | [alphaTex](two-tigers.atex) | [六线谱](two-tigers.svg) |
+| 欢乐颂 | [alphaTex](ode-to-joy/ode-to-joy.atex) | [六线谱](ode-to-joy/ode-to-joy.svg) |
+| 小蜜蜂 | [alphaTex](little-bee/little-bee.atex) | [六线谱](little-bee/little-bee.svg) |
+| 小星星 | [alphaTex](twinkle-star/twinkle-star.atex) | [六线谱](twinkle-star/twinkle-star.svg) |
+| 两只老虎 | [alphaTex](two-tigers/two-tigers.atex) | [六线谱](two-tigers/two-tigers.svg) |
 
 拍号为 4/4，标准调弦为 E4、B3、G3、D3、A2、E2。节奏符号位于六线谱上方；实心符头表示四分或八分音符，空心带符干表示二分音符，空心无符干表示全音符。
 

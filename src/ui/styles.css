@@ -211,8 +211,17 @@
   .rhythm-dot { font-size: 20px; fill: var(--ink); }
   .rest { font-size: 24px; fill: var(--ink); }
   .tie { font-size: 15px; fill: var(--ink); }
-  .playhead { fill: transparent; stroke: none; pointer-events: none; }
-  .playhead.active { fill: #ededed; }
+  .playhead { pointer-events: none; }
+  .beat-band { fill: transparent; }
+  .beat-marker { fill: none; stroke: transparent; stroke-width: 2; stroke-linecap: round; }
+  .playhead.active .beat-band { fill: #f3f3f3; }
+  .playhead.paused .beat-band { fill: #f8f8f8; }
+  .playhead.active .beat-marker { stroke: var(--ink); }
+  .playhead.paused .beat-marker { stroke: #999; }
+  .playback-beat.active .note-mask { fill: var(--ink); }
+  .playback-beat.active .fret { fill: var(--paper); }
+  .playback-beat.paused .note-mask { fill: #e7e7e7; }
+  .playback-beat.active .rest { font-weight: 600; }
 }
 @layer responsive {
   @media (min-width:700px) {

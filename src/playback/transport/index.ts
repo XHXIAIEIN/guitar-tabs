@@ -4,6 +4,7 @@ import type { Timeline } from '../timeline';
 export interface PlaybackState {
   position: number;
   playing: boolean;
+  status: 'stopped' | 'playing' | 'paused' | 'ended';
   beatId?: string;
   barId?: string;
   queuedVoices: number;
@@ -18,6 +19,7 @@ export class PlaybackTransport {
   private ownsContext: boolean;
   private timeline?: Timeline;
   private playing = false;
+  private status: PlaybackState['status'] = 'stopped';
   private loop = false;
   private offset = 0;
   private anchor = 0;
@@ -50,7 +52,7 @@ export class PlaybackTransport {
     }
     const beat = beats[low - 1];
     const current = beat && position < beat.time + beat.duration ? beat : undefined;
-    return { position, playing: this.playing, barId: current?.barId, beatId: current?.beatId, queuedVoices: this.voices.size };
+    return { position, playing: this.playing, status: this.status, barId: current?.barId, beatId: current?.beatId, queuedVoices: this.voices.size };
   }
   get diagnostics(): { generation: number; queuedVoices: number; scheduledVoices: number } {
     return { generation: this.generation, queuedVoices: this.voices.size, scheduledVoices: this.scheduledVoices };
@@ -69,10 +71,14 @@ export class PlaybackTransport {
       this.context ??= new AudioContext();
       if (this.context.state !== 'running') await this.context.resume();
     }
-    catch { throw new Error('playback.audioUnavailable'); }
+    catch {
+      if (generation !== this.generation || this.disposed) return;
+      this.status = 'paused'; this.emit(); throw new Error('playback.audioUnavailable');
+    }
     if (generation !== this.generation || this.disposed) return;
     this.anchor = this.context.currentTime + 0.025;
     this.playing = true;
+    this.status = 'playing';
     this.eventIndex = 0;
     this.cycle = 0;
     this.scheduledVoices = 0;
@@ -83,11 +89,13 @@ export class PlaybackTransport {
   pause(): void {
     this.offset = this.position;
     this.cancelAudio();
+    this.status = this.timeline ? 'paused' : 'stopped';
     this.emit();
   }
   stop(): void {
     this.cancelAudio();
     this.offset = 0;
+    this.status = 'stopped';
     this.emit();
   }
   async seek(seconds: number): Promise<void> {
@@ -97,17 +105,19 @@ export class PlaybackTransport {
     this.cancelAudio();
     this.offset = Math.max(0, Math.min(seconds, timeline?.duration ?? 0));
     if (playing && timeline) await this.play(timeline, this.offset, this.loop);
-    else this.emit();
+    else { this.status = timeline ? 'paused' : 'stopped'; this.emit(); }
   }
   async replaceTimeline(timeline: Timeline): Promise<void> {
     if (this.disposed) throw new Error('playback.disposed');
     this.validateTimeline(timeline);
     const position = this.position * timeline.duration / (this.timeline?.duration ?? timeline.duration);
+    const status = this.status;
     if (this.playing) await this.play(timeline, position, this.loop);
     else {
       this.cancelAudio();
       this.timeline = timeline;
       this.offset = position;
+      this.status = status;
       this.emit();
     }
   }
@@ -122,6 +132,7 @@ export class PlaybackTransport {
     if (!this.loop && elapsed >= this.timeline.duration) {
       this.offset = this.timeline.duration;
       this.cancelAudio();
+      this.status = 'ended';
       this.emit();
       return;
     }
@@ -157,6 +168,7 @@ export class PlaybackTransport {
   private cancelAudio(): void {
     this.generation++;
     this.playing = false;
+    this.status = 'stopped';
     if (this.timer !== undefined) clearInterval(this.timer);
     this.timer = undefined;
     for (const voice of this.voices) voice.cancel();

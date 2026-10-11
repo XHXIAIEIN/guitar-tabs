@@ -9,6 +9,7 @@ import { type TabScore, type Duration, barTicks, STANDARD_TUNING } from '../scor
 import { readPreferences, savePreferences } from '../settings/preferences';
 import { t, setLocale, getLocale } from '../i18n';
 import { icon } from '../ui/icons';
+import { PlaybackView } from '../ui/playback-view';
 import { button, dialogHeader, clockTime, errorPanel, libraryPage, scorePage, editorTools, settingsPanel } from '../ui/templates';
 import { escapeHtml as esc, renderBar } from '../notation/svg';
 import { locate, type BarLayout } from '../notation/layout';
@@ -26,6 +27,7 @@ let saveTimer: ReturnType<typeof setTimeout> | undefined;
 let layoutTimer: ReturnType<typeof setTimeout> | undefined;
 let observer: IntersectionObserver | undefined;
 let resize: ResizeObserver | undefined;
+let playbackView: PlaybackView | undefined;
 const layouts = new Map<string, BarLayout>();
 let layoutSerial = 0, gridTicks = 960, digitEntry = '', digitTime = 0;
 let timeline: Timeline | undefined, timelineKey = '', playSerial = 0, startingPlayback = false;
@@ -70,7 +72,7 @@ function save(): boolean {
 function scheduleSave() { saving = true; saveStatus(); clearTimeout(saveTimer); saveTimer = setTimeout(save, 180); }
 function library() {
   if (!save()) return;
-  stop(); observer?.disconnect(); resize?.disconnect(); layouts.clear(); editor = undefined; score = undefined; id = '';
+  stop(); observer?.disconnect(); resize?.disconnect(); playbackView?.dispose(); playbackView = undefined; layouts.clear(); editor = undefined; score = undefined; id = '';
   const entries = builtins.map(item => ({ id: item.id, title: title(item.id, item.title), group: item.group }));
   try { for (const entry of repo.list()) {
     const item = { id: entry.id, title: title(entry.id, entry.score.title), group: builtins.find(item => item.id === entry.id)?.group ?? t('myScores') };
@@ -98,7 +100,7 @@ async function open(key: string, supplied?: TabScore) {
 }
 function render() {
   if (!score || !editor) return;
-  observer?.disconnect(); resize?.disconnect();
+  observer?.disconnect(); resize?.disconnect(); playbackView?.dispose();
   const speed = document.querySelector<HTMLSelectElement>('#speed');
   if (speed) practice = {
     speed: Number(speed.value), loop: document.querySelector<HTMLInputElement>('#loop')!.checked,
@@ -119,6 +121,7 @@ function render() {
   bindControls(); tools(); saveStatus();
   if (errorText) showError(errorText);
   const sheet = document.querySelector<HTMLDivElement>('#sheet')!;
+  playbackView = new PlaybackView(sheet);
   resize = new ResizeObserver(() => { clearTimeout(layoutTimer); layoutTimer = setTimeout(() => void relayout(), 80); });
   resize.observe(sheet); void relayout(); playbackUpdate(transport.state); readback();
 }
@@ -161,6 +164,7 @@ async function relayout(changed?: string[]) {
     for (const [index,row] of [...sheet.querySelectorAll<HTMLElement>('.score-row')].entries()) {
       row.style.width = rows[index].width + 'px';
     }
+    if (transport.state.barId) playbackView?.refresh(transport.state.barId);
     readback();
   } catch (error) { if (ownVersion === version) showError(error); }
 }
@@ -171,8 +175,7 @@ function draw(key: string) {
   if (!el || !layout || index < 0) return;
   el.innerHTML = renderBar(score.bars[index], layout, score.tuning, layout.settings ?? prefs.display, index, editing,
     editor.selection.barId === key ? editor.selection : undefined);
-  el.classList.toggle('playing', transport.state.playing && transport.state.barId === key);
-  el.querySelectorAll<SVGElement>('[data-playing-beat]').forEach(beat => beat.classList.toggle('active', transport.state.playing && beat.dataset.playingBeat === transport.state.beatId));
+  playbackView?.refresh(key);
 }
 function tools() {
   if (!score || !editor) return;
@@ -218,13 +221,13 @@ function scoreDuration(): number {
 }
 function playbackUpdate(state: PlaybackState) {
   const el = document.querySelector<HTMLButtonElement>('[data-action="play"]');
-  if (el) { el.innerHTML=icon(state.playing?'pause':'play'); el.setAttribute('aria-label',t(state.playing?'pause':'play')); el.title=t(state.playing?'pause':'play'); }
-  document.querySelectorAll('.bar-slot.playing').forEach(e=>e.classList.remove('playing'));
-  if (state.playing && state.barId) slot(state.barId)?.classList.add('playing');
-  document.querySelectorAll<SVGElement>('.playhead.active').forEach(e=>e.classList.remove('active'));
-  if(state.playing&&state.barId)slot(state.barId)?.querySelectorAll<SVGElement>('[data-playing-beat]').forEach(e=>e.classList.toggle('active',e.dataset.playingBeat===state.beatId));
+  if (el && el.dataset.playback !== state.status) {
+    el.dataset.playback = state.status; el.innerHTML=icon(state.playing?'pause':'play');
+    el.setAttribute('aria-label',t(state.playing?'pause':'play')); el.title=t(state.playing?'pause':'play');
+  }
+  playbackView?.update(state);
   const seek = document.querySelector<HTMLInputElement>('#seek');
-  if (seek && timeline) seek.value=String(state.position/timeline.duration*1000);
+  if (seek) seek.value=String(timeline ? state.position/timeline.duration*1000 : 0);
   if (seek) seek.style.setProperty('--progress',Number(seek.value)/10+'%');
   const elapsed=document.querySelector('#elapsed'), total=document.querySelector('#total-time');
   if(elapsed)elapsed.textContent=clockTime(state.position);
@@ -236,7 +239,7 @@ function retimePlayback() {
   if (timeline || startingPlayback) void preparePlayback(startingPlayback ? { fromHere: false } : undefined);
   else playbackUpdate(transport.state);
 }
-async function preparePlayback(start?: { fromHere: boolean }) {
+async function preparePlayback(start?: { fromHere: boolean }, seekFraction?: number) {
   if (!score || !editor) return;
   startingPlayback = !!start;
   const serial=++playSerial, ownVersion=version;
@@ -248,19 +251,21 @@ async function preparePlayback(start?: { fromHere: boolean }) {
     if (!timeline || timelineKey!==key) {
       const fresh=await playerWorker.build(score,version,speed,range);
       if (serial!==playSerial || ownVersion!==version) return;
-      const previous = timeline;
       timeline=fresh; timelineKey=key;
-      if (previous) await transport.replaceTimeline(fresh);
+      await transport.replaceTimeline(fresh);
       if (serial!==playSerial || ownVersion!==version) return;
     }
-    if (start) {
+    if (seekFraction !== undefined) await transport.seek(seekFraction * timeline.duration);
+    else if (start) {
       const position=editor.selection;
       const beatId=score.bars.find(b=>b.id===position.barId)?.beats.find(b=>b.startTick===position.tick)?.id;
       const seconds=start.fromHere ? timeline.beats.find(b=>b.beatId===beatId)?.time??0 : transport.position;
       await transport.play(timeline,seconds>=timeline.duration?0:seconds,loop);
     }
+    if (serial!==playSerial || ownVersion!==version) return;
     playbackUpdate(transport.state);
-  } catch(error) { if (serial===playSerial) showError(error); }
+    if (start || seekFraction !== undefined) playbackView?.reveal();
+  } catch(error) { if (serial===playSerial) { playbackUpdate(transport.state); showError(error); } }
   finally { if (serial===playSerial) startingPlayback = false; }
 }
 function download(name: string, text: string) {
@@ -304,9 +309,9 @@ function bindControls() {
     const running=transport.state.playing;stop();timeline=undefined;playbackUpdate(transport.state);if(running)void play();
   });
   document.querySelector('#seek')?.addEventListener('input',event=>{
-    startingPlayback=false;playSerial++;playerWorker.cancel();
+    startingPlayback=false;playerWorker.cancel();
     const input=event.target as HTMLInputElement; input.style.setProperty('--progress',Number(input.value)/10+'%');
-    if(timeline)void transport.seek(Number((event.target as HTMLInputElement).value)/1000*timeline.duration).catch(showError);
+    void preparePlayback(undefined, Number(input.value)/1000);
   });
 }
 async function importFile(file: File) {

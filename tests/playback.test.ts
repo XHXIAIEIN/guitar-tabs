@@ -96,6 +96,64 @@ class FakeContext {
 }
 const tick = () => new Promise(resolve => setTimeout(resolve, 35));
 
+test('playback status distinguishes a paused first beat from stop and completion', async () => {
+  const context = new FakeContext();
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const timeline = createTimeline(score());
+  await transport.replaceTimeline(timeline);
+  assert.equal(transport.state.status, 'stopped');
+  await transport.seek(0);
+  assert.equal(transport.state.status, 'paused');
+  assert.equal(transport.state.beatId, 'a1');
+  assert.equal(transport.state.queuedVoices, 0);
+  await transport.replaceTimeline(createTimeline(score(), 2));
+  assert.equal(transport.state.status, 'paused');
+  assert.equal(transport.state.beatId, 'a1');
+  transport.stop();
+  assert.equal(transport.state.status, 'stopped');
+  await transport.play(timeline);
+  assert.equal(transport.state.status, 'playing');
+  context.currentTime += timeline.duration + .03;
+  await tick();
+  assert.equal(transport.state.status, 'ended');
+  assert.equal(transport.state.position, timeline.duration);
+  assert.equal(transport.state.queuedVoices, 0);
+  transport.stop();
+  assert.equal(transport.state.status, 'stopped');
+  await transport.dispose();
+});
+
+test('audio resume failure exposes a paused position and releases the previous voices', async () => {
+  const context = new FakeContext();
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const timeline = createTimeline(score());
+  await transport.play(timeline);
+  context.state = 'suspended';
+  context.resume = async () => { throw new Error('unavailable'); };
+  await assert.rejects(transport.play(timeline, 2), /playback.audioUnavailable/);
+  assert.equal(transport.state.playing, false);
+  assert.equal(transport.state.status, 'paused');
+  assert.equal(transport.state.beatId, 'a3');
+  assert.equal(transport.state.queuedVoices, 0);
+  await transport.dispose();
+});
+
+test('stopping during an audio resume failure keeps the stopped state', async () => {
+  const context = new FakeContext();
+  context.state = 'suspended';
+  let reject!: (error: Error) => void;
+  context.resume = () => new Promise<void>((_, fail) => { reject = fail; });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const pending = transport.play(createTimeline(score()), 2);
+  transport.stop();
+  reject(new Error('unavailable'));
+  await pending;
+  assert.equal(transport.state.status, 'stopped');
+  assert.equal(transport.position, 0);
+  assert.equal(context.nodes.length, 0);
+  await transport.dispose();
+});
+
 test('live retiming preserves the current beat while playing, paused, and stopped', async () => {
   const context = new FakeContext();
   const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });

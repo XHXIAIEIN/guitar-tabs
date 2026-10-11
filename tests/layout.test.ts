@@ -52,3 +52,19 @@ test('编辑模式可点选二分音符内部的十六分拍点', () => {
     barId: bar.id, tick: lastTick, string: 3
   });
 });
+
+test('playback bands sit behind staff lines and chord notes share one highlight group', () => {
+  const score = parseAlphaTex('(12.1 10.2).4 r.4 0.3.2');
+  const bar = score.bars[0];
+  for (const showRhythm of [false, true]) {
+    const settings = { ...DEFAULT_DISPLAY, showRhythm };
+    const svg = renderBar(bar, layoutBar(bar, 354, settings), score.tuning, settings, 0);
+    const firstLine = svg.indexOf('<line');
+    assert.ok(svg.lastIndexOf('class="beat-band"') < firstLine);
+    const notes = svg.match(/<g data-playing-beat="[^"]+" class="playback-beat">([\s\S]*?)<\/g>/g)!;
+    assert.equal(notes.length, 3);
+    assert.equal((notes[0].match(/class="fret"/g) ?? []).length, 2);
+    assert.ok(notes[1].includes('class="rest"'));
+    assert.equal((svg.match(/<g /g) ?? []).length, (svg.match(/<\/g>/g) ?? []).length);
+  }
+});

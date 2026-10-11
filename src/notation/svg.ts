@@ -8,6 +8,10 @@ export function renderBar(bar: ScoreBar, layout: BarLayout, tuning: number[], se
   const { lineStart, lineEnd, top, gap } = layout;
   const size = settings.noteSize * settings.scale;
   const text = (x: number, y: number, value: string, cls: string) => `<text x="${x}" y="${y}" class="${cls}" dominant-baseline="central" text-anchor="middle">${escapeHtml(value)}</text>`;
+  for (const beat of bar.beats) {
+    const x = layout.musicStart + beat.startTick / layout.tickSpan * layout.musicWidth;
+    parts.push(`<g data-playing-beat="${escapeHtml(beat.id)}" class="playhead" aria-hidden="true"><rect x="${x - size * .7}" y="${top - 5 * settings.scale}" width="${size * 1.4}" height="${gap * 5 + 10 * settings.scale}" rx="${4 * settings.scale}" class="beat-band"/><path d="M${x - 3 * settings.scale} ${top - 9 * settings.scale}h${6 * settings.scale}" class="beat-marker"/></g>`);
+  }
   parts.push(text(lineStart + 7 * settings.scale, 12, String(index + 1).padStart(2, '0'), 'bar-number'));
   for (let string = 1; string <= 6; string++) {
     const y = top + (string - 1) * gap;
@@ -30,7 +34,7 @@ export function renderBar(bar: ScoreBar, layout: BarLayout, tuning: number[], se
   }
   for (const beat of bar.beats) {
     const x = layout.musicStart + beat.startTick / layout.tickSpan * layout.musicWidth;
-    parts.push(`<rect data-playing-beat="${escapeHtml(beat.id)}" x="${x - size * .65}" y="${top - size * .55}" width="${size * 1.3}" height="${gap * 5 + size * 1.1}" rx="3" class="playhead"/>`);
+    parts.push(`<g data-playing-beat="${escapeHtml(beat.id)}" class="playback-beat">`);
     for (const note of beat.notes) {
       const y = top + (note.string - 1) * gap;
       const mask = (String(note.fret).length * .62 + .35) * size;
@@ -41,6 +45,7 @@ export function renderBar(bar: ScoreBar, layout: BarLayout, tuning: number[], se
     }
     if (!settings.showRhythm) {
       if (!beat.notes.length) parts.push(text(x, top + gap * 2.5, ({ 1: '𝄻', 2: '𝄼', 4: '𝄽', 8: '𝄾', 16: '𝄿', 32: '𝅀', 64: '𝅁' })[beat.duration], 'rest'));
+      parts.push('</g>');
       continue;
     }
     const rhythmY = top - 24 * settings.scale;
@@ -65,6 +70,7 @@ export function renderBar(bar: ScoreBar, layout: BarLayout, tuning: number[], se
       }
     }
     for (let d = 0; d < beat.dots; d++) parts.push(text(x + 9 + d * 5, rhythmY - 1, '·', 'rhythm-dot'));
+    parts.push('</g>');
   }
   return `<svg class="tab-bar" role="img" aria-label="${escapeHtml(t('position', { bar: index + 1, beat: 1, string: 1 }))}" viewBox="0 0 ${layout.width} ${layout.height}" width="${layout.width}" height="${layout.height}">${parts.join('')}</svg>`;
 }

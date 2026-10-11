@@ -57,7 +57,9 @@
   input[type=range]::-moz-range-progress { height: 3px; border-radius: 5px; background: #666; }
   input[type=checkbox] { appearance: none; width: 15px; height: 15px; padding: 0; border-color: #c8c8c8; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
   input[type=checkbox]:checked { background: var(--ink); border-color: var(--ink); }
-  input[type=checkbox]:checked:after { content: ""; display: block; width: 7px; height: 4px; border: solid white; border-width: 0 0 1.5px 1.5px; transform: translate(3px,3px) rotate(-45deg); }
+  .checkbox-control { position: relative; display: inline-flex; }
+  .checkbox-control .ui-icon { position: absolute; inset: 1px; width: 13px; height: 13px; color: white; visibility: hidden; }
+  .checkbox-control input:checked + .ui-icon { visibility: visible; }
   input[role=switch] { position: relative; width: 32px; height: 19px; border: 1px solid #dedede; border-radius: 20px; background: #e8e8e8; transition: background 180ms; }
   input[role=switch]:after, input[role=switch]:checked:after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border: 0; border-radius: 50%; background: white; box-shadow: 0 1px 2px #0002; transform: none; transition: translate 180ms var(--ease); }
   input[role=switch]:checked:after { translate: 13px; }
@@ -73,7 +75,7 @@
   .library-header { display: flex; align-items: center; justify-content: space-between; }
   .library-header button { width: 44px; border-radius: 50%; }
   .brand { display: flex; align-items: center; gap: 10px; color: #5a5a5a; font-size: 12px; }
-  .brand .ui-icon { width: 23px; height: 23px; stroke-width: 1; }
+  .brand .ui-icon { width: 23px; height: 23px; }
   .library-intro { padding: 45px 4px 25px; }
   .library-intro h1 { font-size: clamp(38px,6vw,48px); line-height: 1.2; font-weight: 650; letter-spacing: -1.6px; }
   .library-intro p { margin-top: 15px; font-size: 12px; color: var(--muted); }
@@ -88,7 +90,7 @@
   .song-title { font-size: 17px; font-weight: 450; overflow-wrap: anywhere; }
   .song .ui-icon { width: 17px; height: 17px; margin-left: auto; color: #909090; transition: transform 180ms var(--ease); }
   .empty-state { display: grid; justify-items: center; gap: 18px; margin: 60px 0; color: var(--muted); font-size: 13px; text-align: center; line-height: 1.8; }
-  .empty-state .ui-icon { width: 36px; height: 36px; color: #aaa; stroke-width: 1; }
+  .empty-state .ui-icon { width: 36px; height: 36px; color: #aaa; }
   .score-page { display: flex; flex-direction: column; height: 100dvh; max-width: 1180px; margin: 0 auto; }
   .score-header { padding: 15px 24px 0; flex-shrink: 0; }
   .topbar { display: flex; align-items: center; gap: 7px; height: 46px; }
@@ -96,7 +98,7 @@
   .score-group { flex: 1; min-width: 0; margin-left: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 11px; }
   #save-status { display: grid; place-items: center; color: #888; margin-right: 2px; }
   #save-status .ui-icon { width: 14px; height: 14px; }
-  #save-status[data-state=saving] { animation: breathe 900ms ease-in-out infinite alternate; }
+  #save-status[data-state=saving] .ui-icon { animation: spin 1.2s linear infinite; }
   #save-status[data-state=failed] { color: #895642; }
   #score-title { font-size: 27px; line-height: 1.35; font-weight: 650; letter-spacing: -.7px; padding-left: 8px; margin: 14px 0 11px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .score-meta { display: flex; align-items: center; gap: 19px; color: var(--muted); font: 11px "Consolas",monospace; padding: 0 8px 8px; }
@@ -126,7 +128,7 @@
   .practice-range { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 9px 0 12px; }
   .practice-range label { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
   .practice-range input { width: 48px; text-align: center; font: 13px "Consolas",monospace; padding: 6px; }
-  .practice-range>span { color: #aaa; }
+  .practice-range>.ui-icon { width: 16px; height: 16px; color: #aaa; }
   .practice-options { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .practice-options button { min-height: 34px; padding: 6px 8px; font-size: 11px; }
   .switch-label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; min-height: 32px; }
@@ -155,6 +157,7 @@
   .editing .primary-play { height: 36px; width: 36px; }
   #error { flex-shrink: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; background: #fcf5f1; border: 1px solid #f0e1d7; border-radius: 12px; padding: 12px 14px; margin: 8px 24px; color: #795543; font-size: 12px; line-height: 1.6; }
   #error>span { flex: 1; min-width: 200px; white-space: pre-wrap; }
+  #error>.ui-icon { width: 18px; height: 18px; margin-top: 1px; }
   .error-actions { display: flex; gap: 2px; align-items: center; }
   .error-actions button { min-height: 32px; padding: 4px 7px; font-size: 11px; }
   .error-actions .ui-icon { height: 15px; width: 15px; }
@@ -185,7 +188,7 @@
   #create-score { width: 100%; border-radius: 12px; margin: 5px 0; font-size: 13px; }
   .source-preview { display: block; width: 100%; height: auto; margin-top: 15px; }
   @keyframes panel-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes breathe { to { opacity: .4; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
   @media (hover:hover) {
     .song:hover .ui-icon { transform: translate(2px,-2px); }
     .transport-controls .primary-play:hover { background: #3d3d3d; }

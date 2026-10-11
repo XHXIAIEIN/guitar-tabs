@@ -9,7 +9,7 @@ export const textButton = (action: string, label: string, extra = ''): string =>
 export const dialogHeader = (label: string): string =>
   `<header><h2>${t(label)}</h2>${button('close-dialog', 'close')}</header>`;
 export function errorPanel(): string {
-  return `<div id="error" role="alert" hidden><span></span><div class="error-actions">${textButton('retry','retry')}${textButton('export','exportUnsaved')}${button('dismiss','close')}</div></div>`;
+  return `<div id="error" role="alert" hidden>${icon('alert')}<span></span><div class="error-actions">${textButton('retry','retry')}${textButton('export','exportUnsaved')}${button('dismiss','close')}</div></div>`;
 }
 export function globalInputs(): string {
   return `<input type="file" id="import-file" accept=".atex,.xml,.musicxml,.gp,.gp3,.gp4,.gp5,.gpx,.gp7" hidden><input type="file" id="restore-file" accept=".json" hidden><dialog id="settings-dialog"></dialog><dialog id="new-dialog"></dialog><script type="application/json" id="verification-state"></script>`;

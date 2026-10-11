@@ -5,6 +5,6 @@
     "test": "tsx --test tests/*.test.ts", "check:scores": "tsx scripts/check-scores.ts",
     "test:browser": "node scripts/verify-browser.mjs", "preview": "vite preview --host 127.0.0.1"
   },
-  "dependencies": { "@coderline/alphatab": "1.8.3" },
+  "dependencies": { "@coderline/alphatab": "1.8.3", "lucide": "1.55.0" },
   "devDependencies": { "typescript": "~5.9.3", "vite": "^7.1.0", "tsx": "^4.20.0", "@playwright/test": "^1.56.0" }
 }

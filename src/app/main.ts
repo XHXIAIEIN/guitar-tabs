@@ -85,7 +85,7 @@ function library() {
 async function open(key: string, supplied?: TabScore) {
   if (!save()) return;
   stop(); clearError(); const ownVersion = ++version; worker.setVersion(version); id = key;
-  root.innerHTML = '<main class="library-page"><header class="topbar">' + button('back','back','‹') + '<h1>' + t('loading') + '</h1></header>' + errorPanel() + '<script type="application/json" id="verification-state"></script></main>';
+  root.innerHTML = '<main class="library-page"><header class="topbar">' + button('back','back') + '<h1>' + t('loading') + '</h1></header>' + errorPanel() + '<script type="application/json" id="verification-state"></script></main>';
   try {
     const stored = supplied ?? repo.load(key);
     const reply = stored ? undefined : await worker.request({ kind: 'parse', text: builtins.find(item => item.id === key)?.text ?? '' });

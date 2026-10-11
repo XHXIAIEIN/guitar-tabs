@@ -58,6 +58,7 @@
   input[type=checkbox] { appearance: none; width: 15px; height: 15px; padding: 0; border-color: #c8c8c8; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
   input[type=checkbox]:checked { background: var(--ink); border-color: var(--ink); }
   .checkbox-control { position: relative; display: inline-flex; }
+  .checkbox-control input { margin: 0; }
   .checkbox-control .ui-icon { position: absolute; inset: 1px; width: 13px; height: 13px; color: white; visibility: hidden; }
   .checkbox-control input:checked + .ui-icon { visibility: visible; }
   input[role=switch] { position: relative; width: 32px; height: 19px; border: 1px solid #dedede; border-radius: 20px; background: #e8e8e8; transition: background 180ms; }

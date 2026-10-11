@@ -8,6 +8,43 @@ import { validateScore } from '../src/score/validate.ts';
 
 const fixture = (): TabScore => parseAlphaTex(String.raw`\title "练习" \tempo 90 \ts (4 4) 0.1.4 2.1.4 2.1.4 3.1.4`);
 const code = (expected: string) => (error: unknown) => Boolean(error && typeof error === 'object' && 'code' in error && error.code === expected);
+
+test('tempo edits preserve bar tempo ratios, selection, history, and saved exports', () => {
+  const original = parseAlphaTex(String.raw`\title "Tempo fixture" \tempo 60 \ts (4 4) 0.1.1 | \tempo 120 2.1.1`);
+  const session = new EditorSession(original);
+  session.select({ barId: original.bars[1].id, tick: 960, string: 2 });
+  const selection = session.selection;
+  session.setTempo(90);
+  assert.equal(session.score.tempo, 90);
+  assert.deepEqual(session.score.bars.map(bar => bar.tempo), [90, 180]);
+  assert.deepEqual(session.score.bars.map(bar => bar.beats), original.bars.map(bar => bar.beats));
+  assert.deepEqual(session.selection, selection);
+  assert.deepEqual(musicalContent(parseAlphaTex(exportAlphaTex(session.score))), musicalContent(session.score));
+  const repo = new ScoreRepository(new MemoryStorage());
+  repo.save('tempo-fixture', session.score);
+  assert.equal(repo.load('tempo-fixture')!.tempo, 90);
+  session.undo();
+  assert.deepEqual(session.score, original);
+  session.redo();
+  assert.deepEqual(session.score.bars.map(bar => bar.tempo), [90, 180]);
+});
+
+test('invalid tempo edits are atomic, including proportional bar limits', () => {
+  const original = parseAlphaTex(String.raw`\title "Tempo bounds" \tempo 60 \ts (4 4) 0.1.1 | \tempo 120 2.1.1`);
+  const session = new EditorSession(original);
+  for (const tempo of [19, 301, NaN, Infinity, 200]) {
+    assert.throws(() => session.setTempo(tempo), code('score.tempo'));
+    assert.deepEqual(session.score, original);
+    assert.equal(session.canUndo, false);
+  }
+  session.setTempo(60);
+  assert.equal(session.canUndo, false);
+  const uniform = new EditorSession(fixture());
+  uniform.setTempo(20);
+  uniform.setTempo(300);
+  assert.equal(uniform.score.tempo, 300);
+});
+
 class MemoryStorage implements Storage {
   private items = new Map<string, string>();
   failKey?: string;

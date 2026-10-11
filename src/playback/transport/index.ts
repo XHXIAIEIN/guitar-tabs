@@ -57,10 +57,7 @@ export class PlaybackTransport {
   }
   async play(timeline: Timeline, fromSeconds = 0, loop = false): Promise<void> {
     if (this.disposed) throw new Error('playback.disposed');
-    if (!Number.isFinite(timeline.duration) || timeline.duration <= 0 ||
-      timeline.events.some(event => !Number.isFinite(event.time) || !Number.isFinite(event.duration) || !Number.isFinite(event.midi) || event.time < 0 || event.duration <= 0 || event.time + event.duration > timeline.duration + 1e-8)) {
-      throw new Error('playback.invalidTimeline');
-    }
+    this.validateTimeline(timeline);
     if (!Number.isFinite(fromSeconds)) throw new Error('playback.invalidPosition');
     this.cancelAudio();
     this.timeline = timeline;
@@ -101,6 +98,18 @@ export class PlaybackTransport {
     this.offset = Math.max(0, Math.min(seconds, timeline?.duration ?? 0));
     if (playing && timeline) await this.play(timeline, this.offset, this.loop);
     else this.emit();
+  }
+  async replaceTimeline(timeline: Timeline): Promise<void> {
+    if (this.disposed) throw new Error('playback.disposed');
+    this.validateTimeline(timeline);
+    const position = this.position * timeline.duration / (this.timeline?.duration ?? timeline.duration);
+    if (this.playing) await this.play(timeline, position, this.loop);
+    else {
+      this.cancelAudio();
+      this.timeline = timeline;
+      this.offset = position;
+      this.emit();
+    }
   }
   async dispose(): Promise<void> {
     this.stop();
@@ -152,6 +161,12 @@ export class PlaybackTransport {
     this.timer = undefined;
     for (const voice of this.voices) voice.cancel();
     this.voices.clear();
+  }
+  private validateTimeline(timeline: Timeline): void {
+    if (!Number.isFinite(timeline.duration) || timeline.duration <= 0 ||
+      timeline.events.some(event => !Number.isFinite(event.time) || !Number.isFinite(event.duration) || !Number.isFinite(event.midi) || event.time < 0 || event.duration <= 0 || event.time + event.duration > timeline.duration + 1e-8)) {
+      throw new Error('playback.invalidTimeline');
+    }
   }
   private emit(): void { this.options.onUpdate?.(this.state); }
 }

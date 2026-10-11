@@ -28,7 +28,7 @@ let observer: IntersectionObserver | undefined;
 let resize: ResizeObserver | undefined;
 const layouts = new Map<string, BarLayout>();
 let layoutSerial = 0, gridTicks = 960, digitEntry = '', digitTime = 0;
-let timeline: Timeline | undefined, timelineKey = '', playSerial = 0;
+let timeline: Timeline | undefined, timelineKey = '', playSerial = 0, startingPlayback = false;
 let errorText = '', selectionMs = 0, workerEvidence: unknown;
 let pendingFile: File | undefined;
 let practice = { speed: 1, loop: false, startBar: 1, endBar: 1, expanded: false };
@@ -54,7 +54,7 @@ function showError(error: unknown) {
   readback();
 }
 function clearError() { errorText = ''; const panel = document.querySelector<HTMLElement>('#error'); if (panel) panel.hidden = true; }
-function stop() { playSerial++; playerWorker.cancel(); transport.stop(); }
+function stop() { startingPlayback = false; playSerial++; playerWorker.cancel(); transport.stop(); }
 function saveStatus() {
   const el = document.querySelector<HTMLElement>('#save-status');
   if (el) { el.dataset.state = saving ? 'saving' : 'saved'; el.innerHTML = icon(saving ? 'saving' : 'saved'); el.setAttribute('aria-label', t(saving ? 'saving' : 'saved')); }
@@ -191,8 +191,19 @@ function change(command: () => void) {
     command(); stop(); clearError(); score = editor.score; version++; worker.setVersion(version); timeline = undefined; timelineKey = '';
     const changed = score.bars.filter(b=>JSON.stringify(b)!==JSON.stringify(before.bars.find(old=>old.id===b.id))).map(b=>b.id);
     tools(); draw(editor.selection.barId); scheduleSave();
+    const tempoInput = document.querySelector<HTMLInputElement>('#tempo')!;
+    tempoInput.value = String(score.tempo); tempoInput.setCustomValidity('');
+    playbackUpdate(transport.state);
     clearTimeout(layoutTimer); layoutTimer = setTimeout(()=>void relayout(changed),45); readback();
   } catch(error) { showError(error); }
+}
+function changeTempo(tempo: number) {
+  if (!score || !editor) return;
+  if (tempo === score.tempo) { clearError(); readback(); return; }
+  editor.setTempo(tempo);
+  score = editor.score; version++; worker.setVersion(version); clearError();
+  tools(); scheduleSave(); retimePlayback();
+  clearTimeout(layoutTimer); layoutTimer = setTimeout(() => void relayout(), 45); readback();
 }
 function digit(value: string) {
   const now = performance.now();
@@ -220,8 +231,14 @@ function playbackUpdate(state: PlaybackState) {
   if(total)total.textContent=clockTime(timeline?.duration??scoreDuration());
   readback();
 }
-async function play(fromHere=false) {
+function play(fromHere=false) { return preparePlayback({ fromHere }); }
+function retimePlayback() {
+  if (timeline || startingPlayback) void preparePlayback(startingPlayback ? { fromHere: false } : undefined);
+  else playbackUpdate(transport.state);
+}
+async function preparePlayback(start?: { fromHere: boolean }) {
   if (!score || !editor) return;
+  startingPlayback = !!start;
   const serial=++playSerial, ownVersion=version;
   const speed=Number(document.querySelector<HTMLSelectElement>('#speed')?.value??1);
   const loop=document.querySelector<HTMLInputElement>('#loop')?.checked??false;
@@ -231,13 +248,20 @@ async function play(fromHere=false) {
     if (!timeline || timelineKey!==key) {
       const fresh=await playerWorker.build(score,version,speed,range);
       if (serial!==playSerial || ownVersion!==version) return;
+      const previous = timeline;
       timeline=fresh; timelineKey=key;
+      if (previous) await transport.replaceTimeline(fresh);
+      if (serial!==playSerial || ownVersion!==version) return;
     }
-    const position=editor.selection;
-    const beatId=score.bars.find(b=>b.id===position.barId)?.beats.find(b=>b.startTick===position.tick)?.id;
-    const start=fromHere ? timeline.beats.find(b=>b.beatId===beatId)?.time??0 : transport.position;
-    await transport.play(timeline,start>=timeline.duration?0:start,loop); readback();
+    if (start) {
+      const position=editor.selection;
+      const beatId=score.bars.find(b=>b.id===position.barId)?.beats.find(b=>b.startTick===position.tick)?.id;
+      const seconds=start.fromHere ? timeline.beats.find(b=>b.beatId===beatId)?.time??0 : transport.position;
+      await transport.play(timeline,seconds>=timeline.duration?0:seconds,loop);
+    }
+    playbackUpdate(transport.state);
   } catch(error) { if (serial===playSerial) showError(error); }
+  finally { if (serial===playSerial) startingPlayback = false; }
 }
 function download(name: string, text: string) {
   const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
@@ -250,6 +274,18 @@ async function exportScore() {
   catch(error) { showError(error); }
 }
 function bindControls() {
+  const tempoInput = document.querySelector<HTMLInputElement>('#tempo');
+  tempoInput?.addEventListener('input', () => {
+    tempoInput.setCustomValidity('');
+    if (tempoInput.value === '' || !tempoInput.validity.valid) return;
+    try { changeTempo(Number(tempoInput.value)); }
+    catch (error) { tempoInput.setCustomValidity(t((error as Error).message)); }
+  });
+  tempoInput?.addEventListener('blur', () => {
+    if (tempoInput.value === '' || !tempoInput.validity.valid) {
+      tempoInput.value = String(score!.tempo); tempoInput.setCustomValidity(''); showError(new Error('score.tempo'));
+    }
+  });
   document.querySelector('#import-file')?.addEventListener('change',event=>{
     const file=(event.target as HTMLInputElement).files?.[0]; if(file) void importFile(file);
   });
@@ -259,7 +295,7 @@ function bindControls() {
   });
   document.querySelector('#speed')?.addEventListener('change',()=>{
     practice.speed=Number((document.querySelector('#speed') as HTMLSelectElement).value);
-    const running=transport.state.playing;stop();timeline=undefined;playbackUpdate(transport.state);if(running)void play();
+    retimePlayback();
   });
   for(const key of ['loop','start-bar','end-bar'])document.querySelector('#'+key)?.addEventListener('change',()=>{
     practice.loop=(document.querySelector('#loop') as HTMLInputElement).checked;
@@ -268,7 +304,7 @@ function bindControls() {
     const running=transport.state.playing;stop();timeline=undefined;playbackUpdate(transport.state);if(running)void play();
   });
   document.querySelector('#seek')?.addEventListener('input',event=>{
-    playSerial++;playerWorker.cancel();
+    startingPlayback=false;playSerial++;playerWorker.cancel();
     const input=event.target as HTMLInputElement; input.style.setProperty('--progress',Number(input.value)/10+'%');
     if(timeline)void transport.seek(Number((event.target as HTMLInputElement).value)/1000*timeline.duration).catch(showError);
   });
@@ -339,7 +375,7 @@ root.addEventListener('click',event=>{
     case 'settings':settings();break;
     case 'close-dialog':document.querySelector<HTMLDialogElement>('dialog[open]')?.close();break;
     case 'new':newScore();break;
-    case 'play':if(transport.state.playing){playSerial++;playerWorker.cancel();transport.pause();}else void play();break;
+    case 'play':if(transport.state.playing){startingPlayback=false;playSerial++;playerWorker.cancel();transport.pause();}else void play();break;
     case 'stop':stop();break;
     case 'practice':{const el=document.querySelector<HTMLElement>('#practice-panel')!;el.hidden=!el.hidden;practice.expanded=!el.hidden;document.querySelector('.transport [data-action="practice"]')?.setAttribute('aria-expanded',String(practice.expanded));break;}
     case 'from-here':stop();void play(true);break;

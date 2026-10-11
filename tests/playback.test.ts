@@ -95,6 +95,55 @@ class FakeContext {
   createGain() { return { gain: { setValueAtTime() {}, linearRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
 }
 const tick = () => new Promise(resolve => setTimeout(resolve, 35));
+
+test('live retiming preserves the current beat while playing, paused, and stopped', async () => {
+  const context = new FakeContext();
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const original = createTimeline(score());
+  const fast = createTimeline(score(), 2);
+  await transport.play(original, 2.5);
+  context.currentTime += 0.525;
+  const beat = transport.state.beatId;
+  const previousVoices = [...context.nodes];
+  await transport.replaceTimeline(fast);
+  assert.equal(transport.state.playing, true);
+  assert.equal(transport.state.beatId, beat);
+  assert.ok(Math.abs(transport.position - 1.5) < 1e-8);
+  assert.ok(previousVoices.every(node => node.stopped && node.disconnected));
+  assert.equal(transport.state.queuedVoices, 1);
+  transport.pause();
+  await transport.replaceTimeline(original);
+  assert.equal(transport.state.playing, false);
+  assert.equal(transport.state.beatId, beat);
+  assert.ok(Math.abs(transport.position - 3) < 1e-8);
+  assert.equal(transport.state.queuedVoices, 0);
+  await assert.rejects(transport.replaceTimeline({ ...fast, duration: 0 }), /playback.invalidTimeline/);
+  assert.ok(Math.abs(transport.position - 3) < 1e-8);
+  await transport.play(original, transport.position);
+  assert.equal(transport.state.beatId, beat);
+  transport.stop();
+  await transport.replaceTimeline(fast);
+  assert.equal(transport.position, 0);
+  assert.equal(transport.state.playing, false);
+  await transport.dispose();
+});
+
+test('live retiming keeps the selected loop range and wraps at the new duration', async () => {
+  const context = new FakeContext();
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const range = { startBar: 1, endBar: 1 };
+  await transport.play(createTimeline(score(), 1, range), 0.6, true);
+  await transport.replaceTimeline(createTimeline(score(), 2, range));
+  assert.equal(transport.state.barId, 'b');
+  assert.ok(Math.abs(transport.position - 0.3) < 1e-8);
+  context.currentTime += 0.825;
+  await tick();
+  assert.equal(transport.state.playing, true);
+  assert.ok(Math.abs(transport.position - 0.35) < 1e-8);
+  assert.equal(transport.state.barId, 'b');
+  await transport.dispose();
+});
+
 test('暂停、定位、停止和切换曲谱取消全部已排队节点', async () => {
   const context = new FakeContext();
   const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });

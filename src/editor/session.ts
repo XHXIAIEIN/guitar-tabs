@@ -59,6 +59,18 @@ export class EditorSession {
     this.current.selection = { ...position };
   }
 
+  setTempo(tempo: number): void {
+    if (!Number.isFinite(tempo) || tempo < 20 || tempo > 300) throw new EditorError('score.tempo');
+    this.edit(draft => {
+      const initial = draft.score.tempo;
+      for (const bar of draft.score.bars) {
+        bar.tempo = bar.tempo === initial ? tempo : Number((bar.tempo * tempo / initial).toFixed(6));
+        if (bar.tempo < 20 || bar.tempo > 300) throw new EditorError('score.tempo');
+      }
+      draft.score.tempo = tempo;
+    });
+  }
+
   setFret(fret: number): void {
     if (!Number.isInteger(fret) || fret < 0 || fret > 36) throw new EditorError('editor.invalidFret');
     this.edit(draft => {

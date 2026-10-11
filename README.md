@@ -7,7 +7,7 @@ Read, edit, and practise six-string guitar tablature on your phone or desktop.
 **[Open the songbook](https://xhxiaiein.github.io/guitar-tabs/)**
 
 - Edit frets and rhythms with touch or keyboard input, with undo and redo.
-- Practise with playback, speed adjustment, and bar-range looping.
+- Change BPM during playback while keeping your place, and loop a bar range for practice.
 - Adjust score size, string spacing, and beats per row. The default is 8 beats.
 - Use English or Chinese. The first visit follows your browser language, with English as the fallback.
 

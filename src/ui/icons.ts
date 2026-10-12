@@ -1,6 +1,6 @@
 import {
   ArrowRight, ArrowUpRight, BookOpenText, Check, ChevronLeft, CircleCheck,
-  Delete, Eye, LoaderCircle, Pause, Pencil, Play, Plus, Redo2, Repeat2,
+  Delete, Eye, LoaderCircle, LocateFixed, Pause, Pencil, Play, Plus, Redo2, Repeat2,
   SlidersHorizontal, Square, TriangleAlert, Undo2, X, createElement,
   type IconNode
 } from 'lucide';
@@ -10,7 +10,7 @@ const icons: Record<string, IconNode> = {
   saved: CircleCheck, saving: LoaderCircle, play: Play, pause: Pause,
   stop: Square, practice: Repeat2, close: X, arrow: ArrowUpRight,
   score: BookOpenText, undo: Undo2, redo: Redo2, insert: Plus,
-  deleteNote: Delete, alert: TriangleAlert, range: ArrowRight, check: Check
+  deleteNote: Delete, alert: TriangleAlert, range: ArrowRight, check: Check, focusPlayback: LocateFixed
 };
 const markup = new Map<string, string>();
 

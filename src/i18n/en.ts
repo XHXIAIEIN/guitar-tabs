@@ -55,7 +55,7 @@ export const en = {
   'playback.sampleUnavailable': 'Could not load the guitar sound. Check your connection and tap Play to retry.',
   'playback.loading': 'Loading guitar… Tap to cancel.',
   practice: 'Practice', reference: 'Classical guitar', help: 'Tap a string to select a beat. Use the number keys to enter a fret.',
-  install: 'Add to your home screen from the browser menu.', beatGrid: 'Beat grid',
+  install: 'Add to your home screen from the browser menu.', beatGrid: 'Beat grid', focusPlayback: 'Return to playback position',
   exportUnsaved: 'Export current score', backupHelp: 'Restoring a backup replaces your saved library.',
   quarter: 'Quarter', eighth: 'Eighth', sixteenth: 'Sixteenth', whole: 'Whole', half: 'Half',
   myScores: 'My scores', sourcePreview: 'Source preview', showRhythm: 'Rhythm symbols',

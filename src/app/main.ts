@@ -43,7 +43,8 @@ function readback() {
   const state = document.querySelector('#verification-state');
   if (state) state.textContent = JSON.stringify({ id, score, selection: editor?.selection, editing, version, saving,
     locale: getLocale(), display: prefs.display, selectionMs, error: errorText, notationWorker: workerEvidence,
-    playbackWorker: playerWorker.lastReply, playback: transport.state, preparing: startingPlayback, audio: transport.diagnostics,
+    playbackWorker: playerWorker.lastReply, playback: transport.state, following: playbackView?.following,
+    preparing: startingPlayback, audio: transport.diagnostics,
     renderedBars: document.querySelectorAll('.bar-slot svg').length,
     rows: [...document.querySelectorAll('.score-row')].map(row => [...row.querySelectorAll<HTMLElement>('.bar-slot')].map(slot => slot.dataset.bar)) });
 }
@@ -102,6 +103,7 @@ async function open(key: string, supplied?: TabScore) {
 }
 function render() {
   if (!score || !editor) return;
+  const following = playbackView?.following ?? true;
   observer?.disconnect(); resize?.disconnect(); playbackView?.dispose();
   const speed = document.querySelector<HTMLSelectElement>('#speed');
   if (speed) practice = {
@@ -123,7 +125,7 @@ function render() {
   bindControls(); tools(); saveStatus();
   if (errorText) showError(errorText);
   const sheet = document.querySelector<HTMLDivElement>('#sheet')!;
-  playbackView = new PlaybackView(sheet);
+  playbackView = new PlaybackView(sheet, { following, onFollowingChange: () => { syncPlaybackFocus(); readback(); } });
   resize = new ResizeObserver(() => { clearTimeout(layoutTimer); layoutTimer = setTimeout(() => void relayout(), 80); });
   resize.observe(sheet); void relayout(); playbackUpdate(transport.state); readback();
 }
@@ -221,6 +223,11 @@ function scoreDuration(): number {
   const bars = practice.loop ? score.bars.slice(practice.startBar-1,practice.endBar) : score.bars;
   return bars.reduce((seconds,bar)=>seconds+barTicks(bar)/960*60/bar.tempo,0)/practice.speed;
 }
+function syncPlaybackFocus() {
+  const button = document.querySelector<HTMLButtonElement>('[data-action="focus-playback"]');
+  const state = transport.state;
+  if (button) button.hidden = !playbackView || playbackView.following || !state.barId || !['playing','paused'].includes(state.status);
+}
 function playbackUpdate(state: PlaybackState) {
   const el = document.querySelector<HTMLButtonElement>('[data-action="play"]');
   const loading = !state.playing && (startingPlayback || state.status === 'loading');
@@ -232,6 +239,7 @@ function playbackUpdate(state: PlaybackState) {
     el.setAttribute('aria-busy',String(loading));
   }
   playbackView?.update(state);
+  syncPlaybackFocus();
   const seek = document.querySelector<HTMLInputElement>('#seek');
   if (seek) seek.value=String(timeline ? state.position/timeline.duration*1000 : 0);
   if (seek) seek.style.setProperty('--progress',Number(seek.value)/10+'%');
@@ -394,6 +402,7 @@ root.addEventListener('click',event=>{
     case 'new':newScore();break;
     case 'play':if(transport.state.playing || startingPlayback){pausePlayback();}else {clearError();void play();}break;
     case 'stop':stop();break;
+    case 'focus-playback':playbackView?.reveal();syncPlaybackFocus();readback();break;
     case 'practice':{const el=document.querySelector<HTMLElement>('#practice-panel')!;el.hidden=!el.hidden;practice.expanded=!el.hidden;document.querySelector('.transport [data-action="practice"]')?.setAttribute('aria-expanded',String(practice.expanded));break;}
     case 'from-here':stop();void play(true);break;
     case 'dismiss':clearError();break;

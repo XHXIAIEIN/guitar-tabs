@@ -56,7 +56,7 @@ export const zh: Record<keyof typeof en, string> = {
   'playback.sampleUnavailable': '吉他音色载入失败。请检查网络，再点播放重试。',
   'playback.loading': '正在载入吉他音色…点按可取消。',
   practice: '练习', reference: '古典吉他', help: '点选弦和拍点，用数字键输入品位。',
-  install: '可从浏览器菜单添加到手机桌面。', beatGrid: '拍点细分',
+  install: '可从浏览器菜单添加到手机桌面。', beatGrid: '拍点细分', focusPlayback: '回到播放位置',
   exportUnsaved: '导出当前曲谱', backupHelp: '恢复备份会替换已保存的曲库。',
   quarter: '四分', eighth: '八分', sixteenth: '十六分', whole: '全音符', half: '二分',
   myScores: '我的曲谱', sourcePreview: '原谱预览', showRhythm: '显示节奏符号',

@@ -67,6 +67,11 @@ try{
   await a('settings').click();await page.locator('#language').selectOption('en');await page.locator('#scale').fill('1');await page.locator('#spacing').fill('18');await close();
   await a('play').tap();await page.waitForFunction(()=>JSON.parse(document.querySelector('#verification-state').textContent).playback.playing);await page.waitForTimeout(150);
   assert.ok((await state()).audio.queuedVoices>0);assert.equal((await state()).playbackWorker.worker,true);assert.ok(await page.locator('.playhead.active').count()>0);
+  await page.locator('#sheet').hover();await page.mouse.wheel(0,350);
+  await page.waitForFunction(()=>JSON.parse(document.querySelector('#verification-state').textContent).following===false);
+  assert.equal(await page.locator('[data-action="focus-playback"]').isVisible(),true);
+  await a('focus-playback').tap();assert.equal((await state()).following,true);
+  assert.equal((await state()).playback.playing,true);assert.equal(await page.locator('[data-action="focus-playback"]').isVisible(),false);
   await a('play').tap();assert.equal((await state()).audio.queuedVoices,0);await a('play').tap();await page.waitForFunction(()=>JSON.parse(document.querySelector('#verification-state').textContent).playback.playing);
   await a('stop').tap();assert.equal((await state()).audio.queuedVoices,0);
   await a('practice').tap();await page.locator('#end-bar').fill('1');await page.locator('#loop').check();await page.locator('#speed').selectOption('1.5');await a('from-here').tap();

@@ -99,6 +99,7 @@ export class PlaybackView {
   }
 
   private clear(): void {
+    this.current?.closest('.score-row')?.classList.remove('current-row');
     this.current?.classList.remove('playing');
     this.current?.querySelectorAll('.active, .paused').forEach(el => el.classList.remove('active', 'paused'));
   }
@@ -106,6 +107,7 @@ export class PlaybackView {
   private paint(): void {
     const state = this.state;
     if (!this.current || !state || !['playing', 'paused'].includes(state.status)) return;
+    this.current.closest('.score-row')?.classList.add('current-row');
     this.current.classList.toggle('playing', state.playing);
     this.current.querySelectorAll<SVGElement>('[data-playing-beat]').forEach(el => {
       const matches = el.dataset.playingBeat === state.beatId;
@@ -120,8 +122,12 @@ export class PlaybackView {
     if (!row) return;
     const sheetBounds = this.sheet.getBoundingClientRect(), rowBounds = row.getBoundingClientRect();
     const behavior = force || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-    if (force || row !== this.followedRow || rowBounds.top < sheetBounds.top + 12 || rowBounds.bottom > sheetBounds.bottom - 12) {
-      this.sheet.scrollTo({ top: Math.max(0, this.sheet.scrollTop + rowBounds.top - sheetBounds.top - this.sheet.clientHeight * .25), behavior });
+    const nextBounds = row.nextElementSibling?.getBoundingClientRect();
+    const previewBottom = nextBounds && nextBounds.bottom - rowBounds.top <= this.sheet.clientHeight - 24 ? nextBounds.bottom : rowBounds.bottom;
+    const rowOutside = rowBounds.top < sheetBounds.top || Math.min(rowBounds.bottom, rowBounds.top + this.sheet.clientHeight - 24) > sheetBounds.bottom;
+    if (force || rowOutside || (row !== this.followedRow && previewBottom > sheetBounds.bottom - 12)) {
+      const inset = Math.max(12, Math.min(this.sheet.clientHeight * .15, this.sheet.clientHeight - (previewBottom - rowBounds.top) - 12));
+      this.sheet.scrollTo({ top: Math.max(0, this.sheet.scrollTop + rowBounds.top - sheetBounds.top - inset), behavior });
     }
     this.followedRow = row;
     const marker = this.current.querySelector<SVGElement>('.playhead.active, .playhead.paused');

@@ -13,29 +13,60 @@ test('eight beats group complete measures and follow the meter numerator', () =>
   assert.deepEqual(groupBars(mixed.bars, 8).map(row => row.map(bar => bar.meter[0])), [[6, 2], [4]]);
 });
 
-test('two measures fit narrow rows with two-digit fret spacing and accurate selection', () => {
+test('narrow rows wrap complete measures while preserving fret size and accurate selection', () => {
   const score = parseAlphaTex('12.3.4 12.3.4 12.3.4 12.3.4 | 12.3.4 12.3.4 12.3.4 12.3.4');
   for (const width of [272, 342]) for (const editing of [false, true]) {
-    const row = layoutRows(score.bars, width, DEFAULT_DISPLAY, editing)[0];
-    assert.ok(row.layouts.reduce((sum, layout) => sum + layout.width, 0) <= width + .001);
-    for (const layout of row.layouts) {
-      const size = layout.settings!.noteSize * layout.settings!.scale;
-      assert.ok(layout.columns[1].x - layout.columns[0].x >= size * 1.59);
-      assert.deepEqual(locate(layout, layout.columns[2].x, layout.top + 2 * layout.gap, editing ? 960 : undefined), {
-        barId: layout.barId, tick: 1920, string: 3
-      });
+    const rows = layoutRows(score.bars, width, DEFAULT_DISPLAY, editing);
+    assert.deepEqual(rows.flatMap(row => row.barIds), score.bars.map(bar => bar.id));
+    for (const row of rows) {
+      assert.ok(row.layouts.reduce((sum, layout) => sum + layout.width, 0) <= width + .001);
+      for (const layout of row.layouts) {
+        assert.equal(layout.settings!.noteSize, DEFAULT_DISPLAY.noteSize);
+        const size = layout.settings!.noteSize * layout.settings!.scale;
+        assert.ok(layout.columns[1].x - layout.columns[0].x >= size * 1.59);
+        assert.deepEqual(locate(layout, layout.columns[2].x, layout.top + 2 * layout.gap, editing ? 960 : undefined), {
+          barId: layout.barId, tick: 1920, string: 3
+        });
+      }
+      assert.equal(row.layouts[0].settings!.left.string, true);
+      assert.equal(row.layouts[0].gap, DEFAULT_DISPLAY.stringGap);
     }
-    assert.equal(row.layouts[0].settings!.left.string, true);
-    assert.equal(row.layouts[1].settings!.left.string, false);
-    assert.equal(row.layouts[0].gap, DEFAULT_DISPLAY.stringGap);
   }
 });
 
-test('editing one measure recomputes its row while preserving other row layouts', () => {
+test('editing a measure recomputes the shared spacing across the score', () => {
   const score = parseAlphaTex('0.1.1 | 0.1.1 | 0.1.1 | 0.1.1');
   const rows = layoutRows(score.bars, 342, DEFAULT_DISPLAY, true, [score.bars[2].id]);
-  assert.equal(rows[0].layouts.length, 0);
+  assert.equal(rows[0].layouts.length, 2);
   assert.deepEqual(rows[1].layouts.map(layout => layout.barId), rows[1].barIds);
+});
+
+test('dense and sparse measures share one font size and one beat spacing', () => {
+  const score = parseAlphaTex('0.1.4 0.1.4 1.1.4 3.1.4 | 3.2.4 0.1.8 1.1.8 0.1.4 1.2.4 | 0.1.1');
+  for (const width of [272, 342, 800]) {
+    const rows = layoutRows(score.bars, width, DEFAULT_DISPLAY);
+    const layouts = rows.flatMap(row => row.layouts);
+    assert.equal(layouts.length, 3);
+    assert.ok(layouts.every(layout => layout.settings!.noteSize === 22));
+    const units = layouts.map(layout => layout.musicWidth / 4);
+    assert.ok(units.every(unit => Math.abs(unit - units[0]) < .001));
+    assert.ok(rows.every(row => row.layouts.reduce((sum, layout) => sum + layout.width, 0) <= width + .001));
+    if (width === 800) assert.equal(rows[0].barIds.length, 2);
+  }
+});
+
+test('large two-digit frets stay inside measure edges with both sets of labels', () => {
+  const score = parseAlphaTex('12.1.1 | 12.2.1 | 12.1.1');
+  const settings = { ...DEFAULT_DISPLAY, scale: 1.6,
+    left: { tab: true, string: true, pitch: true }, right: { string: true, pitch: true } };
+  for (const width of [272, 342, 800]) {
+    const rows = layoutRows(score.bars, width, settings);
+    for (const layout of rows.flatMap(row => row.layouts)) {
+      const halfMask = (2 * .62 + .35) * settings.noteSize * settings.scale / 2;
+      assert.ok(layout.columns[0].x - halfMask >= layout.lineStart);
+      assert.ok(layout.columns[0].x + halfMask <= layout.lineEnd);
+    }
+  }
 });
 
 test('beat columns align across measures and rows while staff lines join at barlines', () => {

@@ -9,7 +9,7 @@ Read, edit, and practise six-string guitar tablature on your phone or desktop.
 - Edit frets and rhythms with touch or keyboard input, with undo and redo.
 - Hear nylon-string guitar recordings during playback.
 - Change BPM during playback while keeping your place, and loop a bar range for practice.
-- Adjust score size, string spacing, and beats per row. The default is 8 beats.
+- Adjust score size, string spacing, and beats per row. The default target is 8 beats; narrow screens wrap whole measures at a consistent font size.
 - Use English or Chinese. The first visit follows your browser language, with English as the fallback.
 
 Edits and settings stay in your browser. Export scores as alphaTex or back up your library as JSON. After an online visit completes asset caching, the production site can open offline.

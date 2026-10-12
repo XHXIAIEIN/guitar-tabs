@@ -4,6 +4,17 @@ import { parseAlphaTex } from '../src/formats/alphatex.ts';
 import { layoutBar, locate } from '../src/notation/layout.ts';
 import { CANDIDATES, DEFAULT_DISPLAY } from '../src/settings/display.ts';
 import { renderBar } from '../src/notation/svg.ts';
+
+test('compact rows reserve space for a tie below the lowest string', () => {
+  const score = parseAlphaTex('0.6.1');
+  const bar = score.bars[0];
+  bar.beats[0].notes[0].tie = true;
+  for (const scale of [.7, 1, 1.6]) {
+    const settings = { ...DEFAULT_DISPLAY, scale };
+    const layout = layoutBar(bar, 342, settings);
+    assert.ok(layout.height - layout.top - layout.gap * 5 >= settings.noteSize * scale * .6 + 10);
+  }
+});
 test('细分时间等比定位，两位品保留间距，同拍和弦共用坐标', () => {
   const score = parseAlphaTex(String.raw`\title "定位" \ts (4 4) (12.1 10.2).8 3.3.8 0.4.4 0.5.2`);
   const bar = score.bars[0];

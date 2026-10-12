@@ -32,8 +32,10 @@ export function layoutBar(bar: ScoreBar, availableWidth: number, settings: Displ
   const minWidth = (size * 1.65) * tickSpan / minDelta;
   const musicWidth = Math.max(availableWidth - lineStart - right - leftPadding - rightPadding, minWidth);
   const lineEnd = lineStart + leftPadding + rightPadding + musicWidth;
-  const top = settings.showRhythm ? 60 : 30;
-  return { barId: bar.id, width: lineEnd + right, height: top + gap * 5 + 26 * settings.scale,
+  const top = (settings.showRhythm ? 64 : 26) * settings.scale;
+  const bottom = bar.beats.some(beat => beat.notes.some(note => note.string === 6 && note.tie))
+    ? Math.max(16 * settings.scale, size * .6 + 12) : 16 * settings.scale;
+  return { barId: bar.id, width: lineEnd + right, height: top + gap * 5 + bottom,
     lineStart, lineEnd, top, gap, musicStart: lineStart + leftPadding, musicWidth, totalTicks: barTicks(bar), tickSpan,
     columns: ticks.slice(0, -1).map(tick => ({ tick, x: lineStart + leftPadding + tick / tickSpan * musicWidth,
       beatId: bar.beats.find(beat => beat.startTick === tick)?.id })) };

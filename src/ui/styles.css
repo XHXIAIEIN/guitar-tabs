@@ -99,7 +99,7 @@
   .score-group { flex: 1; min-width: 0; margin-left: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 11px; }
   #save-status { display: grid; place-items: center; color: #888; margin-right: 2px; }
   #save-status .ui-icon { width: 14px; height: 14px; }
-  #save-status[data-state=saving] .ui-icon { animation: spin 1.2s linear infinite; }
+  #save-status[data-state=saving] .ui-icon, .primary-play[aria-busy=true] .ui-icon { animation: spin 1.2s linear infinite; }
   #save-status[data-state=failed] { color: #895642; }
   #score-title { font-size: 27px; line-height: 1.35; font-weight: 650; letter-spacing: -.7px; padding-left: 8px; margin: 14px 0 11px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .score-meta { display: flex; align-items: center; gap: 19px; color: var(--muted); font: 11px "Consolas",monospace; padding: 0 8px 8px; }

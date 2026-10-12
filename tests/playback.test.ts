@@ -4,6 +4,8 @@ import { createTimeline, PlaybackTransport } from '../src/playback/index.ts';
 import { PlaybackWorkerClient } from '../src/workers/playback-client.ts';
 import type { TabScore, ScoreBar } from '../src/score/model.ts';
 import type { PlaybackReply, PlaybackRequest } from '../src/playback/timeline/protocol.ts';
+import { GuitarSampler } from '../src/playback/audio/guitar.ts';
+import { resumeAudio, playbackSession, createPlaybackContext } from '../src/playback/audio/context.ts';
 
 function score(): TabScore {
   const bars: ScoreBar[] = [
@@ -76,29 +78,38 @@ test('Worker 取消旧请求，拒绝错误版本，并允许失败后重试', a
   await assert.rejects(client.build(score(), 5), /playback.disposed/);
 });
 
-class FakeContext {
+class FakeContext extends EventTarget {
   currentTime = 10;
   state = 'running';
   destination = {};
+  warmups = 0;
   nodes: { start: number; end: number; stopped: boolean; disconnected: boolean; onended?: (() => void) | null }[] = [];
   async resume() { this.state = 'running'; }
   async close() { this.state = 'closed'; }
-  createOscillator() {
-    const node = { start: 0, end: 0, stopped: false, disconnected: false };
-    this.nodes.push(node);
-    return { onended: null, type: '', frequency: { setValueAtTime() {} }, connect() {},
-      disconnect() { node.disconnected = true; },
-      start(time: number) { node.start = time; },
-      stop(time?: number) { if (time === undefined) node.stopped = true; else node.end = time; },
+  createBuffer(_channels: number, length: number, rate: number) { return { duration: length / rate }; }
+  createBufferSource() {
+    const record = { start: 0, end: 0, stopped: false, disconnected: false };
+    const context = this;
+    const node = { buffer: { duration: 60 }, onended: null as (() => void) | null,
+      playbackRate: { setValueAtTime() {} }, connect() {},
+      disconnect() { record.disconnected = true; },
+      start(time = 0) {
+        record.start = time;
+        if (node.buffer.duration < .001) { context.warmups++; queueMicrotask(() => node.onended?.()); }
+        else context.nodes.push(record);
+      },
+      stop(time?: number) { if (time === undefined) record.stopped = true; else record.end = time; },
     };
+    return node;
   }
   createGain() { return { gain: { setValueAtTime() {}, linearRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
 }
+function testGuitar() { return new GuitarSampler(async () => ({ duration: 60 }) as AudioBuffer); }
 const tick = () => new Promise(resolve => setTimeout(resolve, 35));
 
 test('playback status distinguishes a paused first beat from stop and completion', async () => {
   const context = new FakeContext();
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const timeline = createTimeline(score());
   await transport.replaceTimeline(timeline);
   assert.equal(transport.state.status, 'stopped');
@@ -125,7 +136,7 @@ test('playback status distinguishes a paused first beat from stop and completion
 
 test('audio resume failure exposes a paused position and releases the previous voices', async () => {
   const context = new FakeContext();
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const timeline = createTimeline(score());
   await transport.play(timeline);
   context.state = 'suspended';
@@ -143,7 +154,7 @@ test('stopping during an audio resume failure keeps the stopped state', async ()
   context.state = 'suspended';
   let reject!: (error: Error) => void;
   context.resume = () => new Promise<void>((_, fail) => { reject = fail; });
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const pending = transport.play(createTimeline(score()), 2);
   transport.stop();
   reject(new Error('unavailable'));
@@ -156,7 +167,7 @@ test('stopping during an audio resume failure keeps the stopped state', async ()
 
 test('live retiming preserves the current beat while playing, paused, and stopped', async () => {
   const context = new FakeContext();
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const original = createTimeline(score());
   const fast = createTimeline(score(), 2);
   await transport.play(original, 2.5);
@@ -188,7 +199,7 @@ test('live retiming preserves the current beat while playing, paused, and stoppe
 
 test('live retiming keeps the selected loop range and wraps at the new duration', async () => {
   const context = new FakeContext();
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const range = { startBar: 1, endBar: 1 };
   await transport.play(createTimeline(score(), 1, range), 0.6, true);
   await transport.replaceTimeline(createTimeline(score(), 2, range));
@@ -204,7 +215,7 @@ test('live retiming keeps the selected loop range and wraps at the new duration'
 
 test('暂停、定位、停止和切换曲谱取消全部已排队节点', async () => {
   const context = new FakeContext();
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const timeline = createTimeline(score());
   await transport.play(timeline);
   assert.equal(transport.state.queuedVoices, 2);
@@ -233,7 +244,7 @@ test('暂停、定位、停止和切换曲谱取消全部已排队节点', async
 test('高亮跟随音频时钟，循环在选定小节边界返回并连续调度', async () => {
   const context = new FakeContext();
   const updates: string[] = [];
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true,
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true,
     onUpdate(state) { updates.push(state.beatId ?? ''); } });
   const timeline = createTimeline(score(), 1, { startBar: 1, endBar: 1 });
   await transport.play(timeline, 1.4, true);
@@ -266,7 +277,7 @@ test('在异步音频恢复期间停止，不会重新排队发声', async () =>
   context.state = 'suspended';
   let resume!: () => void;
   context.resume = () => new Promise<void>(resolve => { resume = resolve; });
-  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, muted: true });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
   const playing = transport.play(createTimeline(score()));
   transport.stop();
   resume();
@@ -274,4 +285,135 @@ test('在异步音频恢复期间停止，不会重新排队发声', async () =>
   assert.equal(transport.state.playing, false);
   assert.equal(context.nodes.length, 0);
   await transport.dispose();
+});
+
+test('audio unlock invokes resume and a silent source before asynchronous score work', async () => {
+  const context = new FakeContext();
+  context.state = 'suspended';
+  let finish!: () => void;
+  let resumes = 0;
+  context.resume = () => { resumes++; return new Promise<void>(resolve => { finish = () => { context.state = 'running'; resolve(); }; }); };
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
+  const unlocked = transport.unlockAudio();
+  assert.equal(resumes, 1);
+  assert.equal(context.warmups, 1);
+  assert.equal(context.nodes.length, 0);
+  finish(); await unlocked;
+  await transport.play(createTimeline(score()));
+  assert.equal(resumes, 1);
+  assert.equal(transport.state.playing, true);
+  await transport.dispose();
+});
+
+test('system interruption pauses the clock and voices until an explicit resume', async () => {
+  const context = new FakeContext();
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument: testGuitar(), muted: true });
+  await transport.play(createTimeline(score()));
+  context.currentTime += .525;
+  const position = transport.position;
+  context.state = 'interrupted'; context.dispatchEvent(new Event('statechange'));
+  assert.equal(transport.state.status, 'paused');
+  assert.equal(transport.state.queuedVoices, 0);
+  assert.equal(transport.position, position);
+  context.state = 'running'; context.dispatchEvent(new Event('statechange'));
+  assert.equal(transport.state.playing, false);
+  await transport.play(createTimeline(score()), position);
+  assert.equal(transport.position, position);
+  assert.equal(transport.state.playing, true);
+  await transport.dispose();
+});
+
+test('stopping while samples load does not start stale playback', async () => {
+  const context = new FakeContext();
+  let loaded!: () => void;
+  const loading = new Promise<void>(resolve => { loaded = resolve; });
+  const instrument = testGuitar();
+  const prepare = instrument.prepare.bind(instrument);
+  instrument.prepare = async audio => { await loading; await prepare(audio); };
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument, muted: true });
+  const playing = transport.play(createTimeline(score()));
+  assert.equal(transport.state.status, 'loading');
+  await Promise.resolve();
+  transport.stop(); loaded(); await playing;
+  assert.equal(transport.state.status, 'stopped');
+  assert.equal(context.nodes.length, 0);
+  await transport.play(createTimeline(score()));
+  assert.equal(transport.state.playing, true);
+  await transport.dispose();
+});
+
+test('sample failure exposes a retryable error and never reports audible playback', async () => {
+  const context = new FakeContext();
+  let failed = true;
+  const instrument = new GuitarSampler(async () => {
+    if (failed) throw new Error('network');
+    return { duration: 60 } as AudioBuffer;
+  });
+  const transport = new PlaybackTransport({ context: context as unknown as AudioContext, instrument, muted: true });
+  await assert.rejects(transport.play(createTimeline(score())), /playback.sampleUnavailable/);
+  assert.equal(transport.state.status, 'paused');
+  assert.equal(context.nodes.length, 0);
+  failed = false;
+  await transport.play(createTimeline(score()));
+  assert.equal(transport.state.playing, true);
+  await transport.dispose();
+});
+
+test('resume must reach running and a pending Safari resume has a timeout', async () => {
+  const context = new FakeContext();
+  context.state = 'interrupted';
+  context.resume = async () => {};
+  await assert.rejects(resumeAudio(context as unknown as AudioContext), /playback.audioUnavailable/);
+  context.resume = () => new Promise(() => {});
+  await assert.rejects(resumeAudio(context as unknown as AudioContext, 5), /playback.audioUnavailable/);
+});
+
+test('the optional playback session is restored and unavailable implementations are tolerated', () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  const session = { type: 'auto' };
+  try {
+    Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { audioSession: session } });
+    const release = playbackSession();
+    assert.equal(session.type, 'playback');
+    release?.(); assert.equal(session.type, 'auto');
+    Object.defineProperty(globalThis, 'navigator', { configurable: true, value: {} });
+    assert.equal(playbackSession(), undefined);
+    Object.defineProperty(globalThis, 'navigator', { configurable: true,
+      value: { audioSession: { get type() { return 'auto'; }, set type(_value) { throw new Error('unsupported'); } } } });
+    assert.equal(playbackSession(), undefined);
+  } finally {
+    if (original) Object.defineProperty(globalThis, 'navigator', original);
+    else Reflect.deleteProperty(globalThis, 'navigator');
+  }
+});
+
+test('audio context creation supports the Safari prefix and recreates an externally closed owned context', async () => {
+  const native = Object.getOwnPropertyDescriptor(globalThis, 'AudioContext');
+  const legacy = Object.getOwnPropertyDescriptor(globalThis, 'webkitAudioContext');
+  const contexts: FakeContext[] = [];
+  class Context extends FakeContext { constructor() { super(); contexts.push(this); } }
+  try {
+    Object.defineProperty(globalThis, 'AudioContext', { configurable: true, value: undefined });
+    Object.defineProperty(globalThis, 'webkitAudioContext', { configurable: true, value: Context });
+    assert.ok(createPlaybackContext() instanceof Context);
+    Object.defineProperty(globalThis, 'AudioContext', { configurable: true, value: Context });
+    const transport = new PlaybackTransport({ instrument: testGuitar(), muted: true });
+    await transport.play(createTimeline(score()));
+    const first = contexts.at(-1)!;
+    await first.close(); first.dispatchEvent(new Event('statechange'));
+    assert.equal(transport.state.status, 'paused');
+    await transport.play(createTimeline(score()), transport.position);
+    assert.notEqual(contexts.at(-1), first);
+    assert.equal(transport.state.playing, true);
+    await transport.dispose();
+    assert.equal(contexts.at(-1)!.state, 'closed');
+    Object.defineProperty(globalThis, 'webkitAudioContext', { configurable: true, value: undefined });
+    Object.defineProperty(globalThis, 'AudioContext', { configurable: true, value: undefined });
+    assert.throws(createPlaybackContext, /playback.audioUnavailable/);
+  } finally {
+    for (const [key, descriptor] of [['AudioContext', native], ['webkitAudioContext', legacy]] as const) {
+      if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+      else Reflect.deleteProperty(globalThis, key);
+    }
+  }
 });

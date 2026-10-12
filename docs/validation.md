@@ -14,7 +14,7 @@ npm run build
 
 | 入口 | 检查范围 |
 | --- | --- |
-| `npm test` | 格式往返与拒绝边界、编辑历史、保存恢复、目录配对、多语言、整行布局、播放时间表和取消 |
+| `npm test` | 格式往返与拒绝边界、编辑历史、保存恢复、目录配对、多语言、整行布局、播放时间表、采样格式、音频启动、中断和取消 |
 | `npm run check:scores` | 递归读取 `.atex`，检查完整小节时值和导出重读的音乐内容 |
 | `npm run build` | TypeScript 检查、Vite 构建、离线缓存生成 |
 
@@ -71,4 +71,17 @@ Remove-Item Env:PREVIEW_URL
 
 浏览器脚本将逐次检查结果写入 `.tmp/browser/`。人工浏览器验收的截图和坐标记录保存在本机 `.tmp/redesign/`。评估改动时，应核对报告对应的提交及覆盖范围，分别确认整行排版、完整浏览器流程和生产离线行为。
 
-真机触摸、音色试听和系统桌面安装未验证。桌面模拟与音频状态回读不能替代这些检查。外部文件支持范围见[格式说明](format.md)。
+## iOS Safari 音频验收
+
+实现依据：[WebKit 的点击授权限制](https://bugs.webkit.org/show_bug.cgi?id=149367)、[音频中断状态测试](https://github.com/WebKit/WebKit/blob/main/LayoutTests/webaudio/audiocontext-state-interrupted.html)和 [Audio Session 的播放类型](https://w3c.github.io/audio-session/#audiosession-types)。采样使用 PCM WAV，音频启动在点击处理器内调用 `resume()`，然后等待曲谱和采样载入。
+
+| 真机场景 | 预期结果 |
+| --- | --- |
+| 首次打开页面，点击播放 | 吉他发声，进度跟随音频；载入期间可以取消 |
+| 开启或关闭静音开关 | 支持 Audio Session API 的 Safari 使用播放类型；其他版本需关闭静音并检查媒体音量 |
+| 切换应用、锁屏或接听来电 | 保留拍位并暂停，返回后点击播放继续 |
+| 使用扬声器、耳机或蓝牙输出 | 声音从选定输出设备播放；被系统中断后可再次启动 |
+| 等待缓存完成后断网刷新 | 曲谱打开，吉他采样可以解码和播放 |
+| 音源加载失败，再点击重试 | 显示错误，重试后发声，旧请求不会迟到播放 |
+
+iOS Safari 真机、物理静音开关、蓝牙路由和系统桌面安装未验证。桌面静音信号检测、用户授权观测及模拟中断分别提供有限证据。它们不能替代真机听音检查。外部文件支持范围见[格式说明](format.md)。

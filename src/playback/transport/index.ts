@@ -1,10 +1,11 @@
-import { scheduleReference, type Voice } from '../audio/reference';
+import { GuitarSampler, type Instrument, type Voice } from '../audio/guitar';
+import { createPlaybackContext, playbackSession, resumeAudio } from '../audio/context';
 import type { Timeline } from '../timeline';
 
 export interface PlaybackState {
   position: number;
   playing: boolean;
-  status: 'stopped' | 'playing' | 'paused' | 'ended';
+  status: 'stopped' | 'loading' | 'playing' | 'paused' | 'ended';
   beatId?: string;
   barId?: string;
   queuedVoices: number;
@@ -13,6 +14,7 @@ export interface TransportOptions {
   context?: AudioContext;
   onUpdate?: (state: PlaybackState) => void;
   muted?: boolean;
+  instrument?: Instrument;
 }
 export class PlaybackTransport {
   private context?: AudioContext;
@@ -30,10 +32,18 @@ export class PlaybackTransport {
   private voices = new Set<Voice>();
   private timer?: ReturnType<typeof setInterval>;
   private disposed = false;
+  private instrument: Instrument;
+  private activation?: Promise<void>;
+  private releaseSession?: () => void;
+  private contextStateChange = () => {
+    if (this.playing && this.context?.state !== 'running') this.pause();
+  };
 
   constructor(private options: TransportOptions = {}) {
     this.context = options.context;
     this.ownsContext = !options.context;
+    this.instrument = options.instrument ?? new GuitarSampler();
+    this.context?.addEventListener('statechange', this.contextStateChange);
   }
   get position(): number {
     const duration = this.timeline?.duration ?? 0;
@@ -54,8 +64,22 @@ export class PlaybackTransport {
     const current = beat && position < beat.time + beat.duration ? beat : undefined;
     return { position, playing: this.playing, status: this.status, barId: current?.barId, beatId: current?.beatId, queuedVoices: this.voices.size };
   }
-  get diagnostics(): { generation: number; queuedVoices: number; scheduledVoices: number } {
-    return { generation: this.generation, queuedVoices: this.voices.size, scheduledVoices: this.scheduledVoices };
+  get diagnostics() {
+    return { generation: this.generation, queuedVoices: this.voices.size, scheduledVoices: this.scheduledVoices,
+      audioState: this.context?.state ?? 'uninitialized', instrument: 'classical-guitar' };
+  }
+  unlockAudio(): Promise<void> {
+    if (this.disposed) return Promise.reject(new Error('playback.disposed'));
+    try {
+      this.releaseSession ??= playbackSession();
+      if (!this.context || (this.ownsContext && this.context.state === 'closed')) {
+        this.context?.removeEventListener('statechange', this.contextStateChange);
+        this.context = createPlaybackContext();
+        this.context.addEventListener('statechange', this.contextStateChange);
+      }
+      this.activation ??= resumeAudio(this.context).finally(() => { this.activation = undefined; });
+      return this.activation;
+    } catch { return Promise.reject(new Error('playback.audioUnavailable')); }
   }
   async play(timeline: Timeline, fromSeconds = 0, loop = false): Promise<void> {
     if (this.disposed) throw new Error('playback.disposed');
@@ -67,16 +91,21 @@ export class PlaybackTransport {
     this.offset = Math.max(0, Math.min(fromSeconds, timeline.duration));
     if (loop && this.offset === timeline.duration) this.offset = 0;
     const generation = this.generation;
+    this.status = 'loading'; this.emit();
     try {
-      this.context ??= new AudioContext();
-      if (this.context.state !== 'running') await this.context.resume();
-    }
-    catch {
+      await this.unlockAudio();
       if (generation !== this.generation || this.disposed) return;
-      this.status = 'paused'; this.emit(); throw new Error('playback.audioUnavailable');
+      await this.instrument.prepare(this.context!);
+      if (this.context!.state !== 'running') throw new Error('playback.audioUnavailable');
+    }
+    catch (error) {
+      if (generation !== this.generation || this.disposed) return;
+      this.resetSession();
+      this.status = 'paused'; this.emit();
+      throw new Error((error as Error)?.message === 'playback.sampleUnavailable' ? 'playback.sampleUnavailable' : 'playback.audioUnavailable');
     }
     if (generation !== this.generation || this.disposed) return;
-    this.anchor = this.context.currentTime + 0.025;
+    this.anchor = this.context!.currentTime + 0.025;
     this.playing = true;
     this.status = 'playing';
     this.eventIndex = 0;
@@ -90,12 +119,14 @@ export class PlaybackTransport {
     this.offset = this.position;
     this.cancelAudio();
     this.status = this.timeline ? 'paused' : 'stopped';
+    this.resetSession();
     this.emit();
   }
   stop(): void {
     this.cancelAudio();
     this.offset = 0;
     this.status = 'stopped';
+    this.resetSession();
     this.emit();
   }
   async seek(seconds: number): Promise<void> {
@@ -124,6 +155,7 @@ export class PlaybackTransport {
   async dispose(): Promise<void> {
     this.stop();
     this.disposed = true;
+    this.context?.removeEventListener('statechange', this.contextStateChange);
     if (this.ownsContext && this.context && this.context.state !== 'closed') await this.context.close();
   }
   private tick(): void {
@@ -133,6 +165,7 @@ export class PlaybackTransport {
       this.offset = this.timeline.duration;
       this.cancelAudio();
       this.status = 'ended';
+      this.resetSession();
       this.emit();
       return;
     }
@@ -154,11 +187,12 @@ export class PlaybackTransport {
         const time = event.time + this.cycle * this.timeline.duration;
         if (time > horizon) break;
         const end = this.anchor + time + event.duration - this.offset;
-        const start = Math.max(this.anchor + time - this.offset, this.context.currentTime + 0.003);
+        const onset = this.anchor + time - this.offset;
+        const start = Math.max(onset, this.context.currentTime + 0.003);
         if (end > start) {
-          const voice = scheduleReference(this.context, event.midi, start, end - start, this.options.muted ?? false, voice => this.voices.delete(voice));
-          this.voices.add(voice);
-          this.scheduledVoices++;
+          const voice = this.instrument.schedule(this.context, event.midi, start, end - start,
+            this.options.muted ?? false, voice => this.voices.delete(voice), start - onset);
+          if (voice) { this.voices.add(voice); this.scheduledVoices++; }
         }
         this.eventIndex++;
       }
@@ -180,5 +214,6 @@ export class PlaybackTransport {
       throw new Error('playback.invalidTimeline');
     }
   }
+  private resetSession(): void { this.releaseSession?.(); this.releaseSession = undefined; }
   private emit(): void { this.options.onUpdate?.(this.state); }
 }

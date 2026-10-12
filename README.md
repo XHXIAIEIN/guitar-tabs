@@ -7,11 +7,14 @@ Read, edit, and practise six-string guitar tablature on your phone or desktop.
 **[Open the songbook](https://xhxiaiein.github.io/guitar-tabs/)**
 
 - Edit frets and rhythms with touch or keyboard input, with undo and redo.
+- Hear nylon-string guitar recordings during playback.
 - Change BPM during playback while keeping your place, and loop a bar range for practice.
 - Adjust score size, string spacing, and beats per row. The default is 8 beats.
 - Use English or Chinese. The first visit follows your browser language, with English as the fallback.
 
 Edits and settings stay in your browser. Export scores as alphaTex or back up your library as JSON. After an online visit completes asset caching, the production site can open offline.
+
+On mobile, tap Play to start audio. Switching apps or an audio interruption pauses playback. Return to the page and tap Play to continue.
 
 ## Run locally
 

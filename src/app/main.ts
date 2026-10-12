@@ -31,7 +31,7 @@ let playbackView: PlaybackView | undefined;
 const layouts = new Map<string, BarLayout>();
 let layoutSerial = 0, gridTicks = 960, digitEntry = '', digitTime = 0;
 let timeline: Timeline | undefined, timelineKey = '', playSerial = 0, startingPlayback = false;
-let errorText = '', selectionMs = 0, workerEvidence: unknown;
+let errorText = '', errorKey = '', selectionMs = 0, workerEvidence: unknown;
 let pendingFile: File | undefined;
 let practice = { speed: 1, loop: false, startBar: 1, endBar: 1, expanded: false };
 const transport = new PlaybackTransport({ onUpdate: playbackUpdate });
@@ -43,20 +43,22 @@ function readback() {
   const state = document.querySelector('#verification-state');
   if (state) state.textContent = JSON.stringify({ id, score, selection: editor?.selection, editing, version, saving,
     locale: getLocale(), display: prefs.display, selectionMs, error: errorText, notationWorker: workerEvidence,
-    playbackWorker: playerWorker.lastReply, playback: transport.state, audio: transport.diagnostics,
+    playbackWorker: playerWorker.lastReply, playback: transport.state, preparing: startingPlayback, audio: transport.diagnostics,
     renderedBars: document.querySelectorAll('.bar-slot svg').length,
     rows: [...document.querySelectorAll('.score-row')].map(row => [...row.querySelectorAll<HTMLElement>('.bar-slot')].map(slot => slot.dataset.bar)) });
 }
 function showError(error: unknown) {
   if (error instanceof StaleTaskError || (error as Error)?.message === 'playback.cancelled') return;
   const e = error as { message?: string; params?: Record<string, number | string> };
-  errorText = t(e.message ?? String(error), e.params);
+  errorKey = e.message ?? String(error);
+  errorText = t(errorKey, e.params);
   const panel = document.querySelector<HTMLElement>('#error');
   if (panel) { panel.hidden = false; panel.querySelector('span')!.textContent = errorText; }
   readback();
 }
-function clearError() { errorText = ''; const panel = document.querySelector<HTMLElement>('#error'); if (panel) panel.hidden = true; }
+function clearError() { errorText = ''; errorKey = ''; const panel = document.querySelector<HTMLElement>('#error'); if (panel) panel.hidden = true; }
 function stop() { startingPlayback = false; playSerial++; playerWorker.cancel(); transport.stop(); }
+function pausePlayback() { startingPlayback = false; playSerial++; playerWorker.cancel(); transport.pause(); }
 function saveStatus() {
   const el = document.querySelector<HTMLElement>('#save-status');
   if (el) { el.dataset.state = saving ? 'saving' : 'saved'; el.innerHTML = icon(saving ? 'saving' : 'saved'); el.setAttribute('aria-label', t(saving ? 'saving' : 'saved')); }
@@ -221,9 +223,13 @@ function scoreDuration(): number {
 }
 function playbackUpdate(state: PlaybackState) {
   const el = document.querySelector<HTMLButtonElement>('[data-action="play"]');
-  if (el && el.dataset.playback !== state.status) {
-    el.dataset.playback = state.status; el.innerHTML=icon(state.playing?'pause':'play');
-    el.setAttribute('aria-label',t(state.playing?'pause':'play')); el.title=t(state.playing?'pause':'play');
+  const loading = !state.playing && (startingPlayback || state.status === 'loading');
+  const status = loading ? 'loading' : state.status;
+  if (el && el.dataset.playback !== status) {
+    const label = t(loading ? 'playback.loading' : state.playing ? 'pause' : 'play');
+    el.dataset.playback = status; el.innerHTML=icon(loading?'saving':state.playing?'pause':'play');
+    el.setAttribute('aria-label',label); el.title=label;
+    el.setAttribute('aria-busy',String(loading));
   }
   playbackView?.update(state);
   const seek = document.querySelector<HTMLInputElement>('#seek');
@@ -248,6 +254,9 @@ async function preparePlayback(start?: { fromHere: boolean }, seekFraction?: num
   const range=loop?{startBar:Number(document.querySelector<HTMLInputElement>('#start-bar')!.value)-1,endBar:Number(document.querySelector<HTMLInputElement>('#end-bar')!.value)-1}:undefined;
   const key=JSON.stringify({version,speed,range});
   try {
+    // Unlock audio before the Worker or samples can consume Safari's user gesture.
+    const audio = start ? transport.unlockAudio().then(() => undefined, error => error as Error) : undefined;
+    playbackUpdate(transport.state);
     if (!timeline || timelineKey!==key) {
       const fresh=await playerWorker.build(score,version,speed,range);
       if (serial!==playSerial || ownVersion!==version) return;
@@ -257,6 +266,9 @@ async function preparePlayback(start?: { fromHere: boolean }, seekFraction?: num
     }
     if (seekFraction !== undefined) await transport.seek(seekFraction * timeline.duration);
     else if (start) {
+      const audioError = await audio;
+      if (serial!==playSerial || ownVersion!==version) return;
+      if (audioError) throw audioError;
       const position=editor.selection;
       const beatId=score.bars.find(b=>b.id===position.barId)?.beats.find(b=>b.startTick===position.tick)?.id;
       const seconds=start.fromHere ? timeline.beats.find(b=>b.beatId===beatId)?.time??0 : transport.position;
@@ -265,8 +277,8 @@ async function preparePlayback(start?: { fromHere: boolean }, seekFraction?: num
     if (serial!==playSerial || ownVersion!==version) return;
     playbackUpdate(transport.state);
     if (start || seekFraction !== undefined) playbackView?.reveal();
-  } catch(error) { if (serial===playSerial) { playbackUpdate(transport.state); showError(error); } }
-  finally { if (serial===playSerial) startingPlayback = false; }
+  } catch(error) { if (serial===playSerial) { if (start) transport.pause(); playbackUpdate(transport.state); showError(error); } }
+  finally { if (serial===playSerial) { startingPlayback = false; playbackUpdate(transport.state); } }
 }
 function download(name: string, text: string) {
   const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
@@ -380,12 +392,15 @@ root.addEventListener('click',event=>{
     case 'settings':settings();break;
     case 'close-dialog':document.querySelector<HTMLDialogElement>('dialog[open]')?.close();break;
     case 'new':newScore();break;
-    case 'play':if(transport.state.playing){startingPlayback=false;playSerial++;playerWorker.cancel();transport.pause();}else void play();break;
+    case 'play':if(transport.state.playing || startingPlayback){pausePlayback();}else {clearError();void play();}break;
     case 'stop':stop();break;
     case 'practice':{const el=document.querySelector<HTMLElement>('#practice-panel')!;el.hidden=!el.hidden;practice.expanded=!el.hidden;document.querySelector('.transport [data-action="practice"]')?.setAttribute('aria-expanded',String(practice.expanded));break;}
     case 'from-here':stop();void play(true);break;
     case 'dismiss':clearError();break;
-    case 'retry':worker.retry();playerWorker.retry();if(pendingFile)void importFile(pendingFile);else if(score){save();void relayout();}else if(id)void open(id);break;
+    case 'retry':
+      if (errorKey.startsWith('playback.')) { clearError(); playerWorker.retry(); void play(); }
+      else { worker.retry();playerWorker.retry();if(pendingFile)void importFile(pendingFile);else if(score){save();void relayout();}else if(id)void open(id); }
+      break;
     case 'export':void exportScore();break;
     case 'source-preview': {
       const source = builtins.find(item => item.id === id);
@@ -417,6 +432,9 @@ window.addEventListener('keydown',event=>{
     editor.select(position);digitEntry='';digitTime=0;draw(position.barId);tools();readback();
   }
 });
-window.addEventListener('pagehide',()=>{save();stop();});
+document.addEventListener('visibilitychange',()=>{
+  if (document.hidden && (transport.state.playing || startingPlayback)) pausePlayback();
+});
+window.addEventListener('pagehide',()=>{save();if (transport.state.playing || startingPlayback) pausePlayback();});
 library();
 if(import.meta.env.PROD&&'serviceWorker'in navigator)void navigator.serviceWorker.register(import.meta.env.BASE_URL+'sw.js',{scope:import.meta.env.BASE_URL}).catch(()=>{});

@@ -44,6 +44,7 @@ export function songView(root, id, opts = {}) {
   let cursor = prefs.loop ? prefs.loop[0] : 0;
   let current = null;
   let selecting = null; // null, 'first', or the first bar index while picking a loop
+  let following = true; // page scrolls with the playing bar
   let releaseScreen = perform ? holdScreen() : null;
   let renderedWidth = 0;
 
@@ -72,6 +73,8 @@ export function songView(root, id, opts = {}) {
   const scoreEl = h('div', { class: 'score' });
   const countEl = h('div', { class: 'count-overlay', hidden: true });
   const banner = h('div', { class: 'loop-banner', hidden: true });
+  const followBtn = h('button', { class: 'btn follow-btn', type: 'button', hidden: true, onclick: () => { setFollowing(true); follow(current ?? cursor, true); } },
+    icon('locate'), h('span', null, '回到播放位置'));
   const beatStrip = h('div', { class: 'beat-strip', 'aria-hidden': 'true' }, Array.from({ length: m.beats }, () => h('i')));
 
   const playBtn = h('button', { class: 'btn play-btn', type: 'button', 'aria-label': '播放', title: '播放 / 暂停（空格）', onclick: togglePlay }, icon('play'));
@@ -100,8 +103,12 @@ export function songView(root, id, opts = {}) {
     ),
   );
   const page$ = h('div', { class: 'song-page' + (perform ? ' perform' : '') + (perform && settings.stage !== false ? ' stage' : '') },
-    topbar, h('main', { class: 'song-body' }, info, scoreEl), banner, countEl, transport);
+    topbar, h('main', { class: 'song-body' }, info, scoreEl), banner, followBtn, countEl, transport);
   root.append(page$);
+  // Hand scrolling stops the following
+  // follow() scrolls by script, which fires neither event
+  page$.addEventListener('wheel', (e) => { if (e.deltaY) detach(); }, { passive: true });
+  page$.addEventListener('touchmove', detach, { passive: true });
 
   // ---------- info ----------
   function keyText() {
@@ -185,6 +192,7 @@ export function songView(root, id, opts = {}) {
 
   /** Scrolls so the line of bar `i` sits near the top, leaving the following lines visible. */
   function follow(i, force = false) {
+    if (!following && !force) return;
     const el = handle?.lineEl(i);
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -195,7 +203,17 @@ export function songView(root, id, opts = {}) {
     }
   }
 
+  function setFollowing(on) {
+    following = on;
+    followBtn.hidden = on;
+  }
+
+  function detach() {
+    if (playing && following && document.documentElement.scrollHeight > innerHeight) setFollowing(false);
+  }
+
   function page(dir) {
+    detach();
     const usable = innerHeight - transport.offsetHeight - topbar.offsetHeight - 48;
     scrollBy({ top: dir * usable, behavior: 'smooth' });
   }
@@ -215,6 +233,7 @@ export function songView(root, id, opts = {}) {
       updateBpm();
     });
     playing = true;
+    setFollowing(true);
     releaseScreen ??= holdScreen();
     handle.setCursor(null);
     updatePlay();
@@ -224,6 +243,7 @@ export function songView(root, id, opts = {}) {
     if (!playing) return;
     seq.stop();
     playing = false;
+    setFollowing(true);
     countEl.hidden = true;
     markBeat(-1);
     if (current !== null) setCursor(current);
@@ -529,7 +549,8 @@ export function songView(root, id, opts = {}) {
       setCursor(cursor + (k === 'ArrowRight' ? 1 : -1));
       follow(cursor);
       if (playing) start(cursor);
-    } else if (k === 'l' || k === 'L') onLoopButton();
+    } else if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(k)) detach(); // the browser scrolls the page
+    else if (k === 'l' || k === 'L') onLoopButton();
     else if (k === '+' || k === '=') setBpm(prefs.bpm + 5);
     else if (k === '-') setBpm(prefs.bpm - 5);
     else if (k === 'm' || k === 'M') setLive('metronome', !live.metronome);

@@ -2,7 +2,7 @@
 import { h, icon, segmented, toggle, stepper, holdScreen, iconButton } from '../ui/dom.js';
 import { Sequencer } from '../audio/sequencer.js';
 import { meter, beatAccent } from '../music/format.js';
-import { resumeAudio, click, pluck } from '../audio/engine.js';
+import { resumeAudio, resumeGuitar, click, pluck } from '../audio/engine.js';
 import { TUNING } from '../music/theory.js';
 
 export function toolsView(root, tab = 'metronome') {
@@ -195,7 +195,7 @@ function tuner(root) {
           onclick: async () => {
             target = st.s;
             renderStrings();
-            const c = await resumeAudio();
+            const c = await resumeGuitar();
             pluck(c.currentTime + 0.03, st.s, st.midi, 0.9);
           } },
           h('strong', null, st.name.replace(/\d/, '')), h('small', null, `${st.s} 弦`))),

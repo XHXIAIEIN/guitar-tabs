@@ -3,12 +3,12 @@ import { h, icon, openPanel } from './dom.js';
 import { chordDiagram } from '../render/chord-diagram.js';
 import { chordShapes, chordTones } from '../music/chords.js';
 import { parseChord, pretty, TUNING, keyFromPc, noteName } from '../music/theory.js';
-import { resumeAudio, strum, pluck } from '../audio/engine.js';
+import { resumeGuitar, strum, pluck } from '../audio/engine.js';
 
 export const FINGER_LEGEND = '1 食指 · 2 中指 · 3 无名指 · 4 小指 · T 拇指 · ○ 空弦 · × 不弹';
 
 export async function playShape(shape, mode, capo = 0) {
-  const c = await resumeAudio();
+  const c = await resumeGuitar();
   const t = c.currentTime + 0.05;
   if (mode === 'strum') strum(t, shape.frets, capo, 'D', true);
   else {

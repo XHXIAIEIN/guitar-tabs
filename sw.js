@@ -26,6 +26,8 @@ const SHELL = [
   'src/views/chords.js',
   'src/views/rhythm.js',
   'src/views/tools.js',
+  // the pitches in RECORDINGS of src/audio/engine.js
+  ...[40, 43, 47, 50, 53, 56, 59, 62, 65, 69, 72, 75, 78, 81, 84].map((midi) => `audio/guitar/${midi}.wav`),
 ];
 // On stage Wi-Fi a request can hang for a long time; after this the cached copy answers.
 const NETWORK_TIMEOUT = 2500;

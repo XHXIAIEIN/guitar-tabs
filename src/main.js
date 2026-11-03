@@ -9,7 +9,7 @@ import { editorView } from './views/editor.js';
 import { chordsView } from './views/chords.js';
 import { rhythmView } from './views/rhythm.js';
 import { toolsView } from './views/tools.js';
-import { setVolume } from './audio/engine.js';
+import { setVolume, loadSamples, AudioLoadError } from './audio/engine.js';
 
 const NAV = [
   ['#/', 'library', '曲谱'],
@@ -66,6 +66,14 @@ setVolume('metronome', store.state.settings.volMetronome);
 setVolume('guitar', store.state.settings.volGuitar);
 applyTheme();
 route();
+// A failed preload is not reported here: resumeGuitar() loads again when guitar sound starts.
+loadSamples().catch(() => {});
+// Play buttons call resumeGuitar() without a catch; a failed load ends up here
+addEventListener('unhandledrejection', (e) => {
+  if (!(e.reason instanceof AudioLoadError)) return;
+  e.preventDefault();
+  toast(e.reason.message);
+});
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('sw.js').catch((e) => console.warn('离线缓存注册失败', e));

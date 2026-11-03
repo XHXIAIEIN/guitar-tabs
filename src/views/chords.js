@@ -7,7 +7,7 @@ import { chordShapes, CHORD_GROUPS } from '../music/chords.js';
 import { pretty } from '../music/theory.js';
 import { Sequencer } from '../audio/sequencer.js';
 import { beatItems } from '../audio/song-source.js';
-import { resumeAudio, click, strum, audioContext } from '../audio/engine.js';
+import { resumeAudio, resumeGuitar, click, strum, audioContext } from '../audio/engine.js';
 
 const PRESETS = [
   ['C', 'G'], ['G', 'D'], ['Am', 'Em'], ['C', 'Am'], ['D', 'A'], ['E', 'A'],
@@ -95,7 +95,7 @@ function drill(root) {
   }
 
   async function start() {
-    await resumeAudio();
+    await resumeGuitar();
     if (!root.isConnected) return;
     let count = 1;
     let i = 0;

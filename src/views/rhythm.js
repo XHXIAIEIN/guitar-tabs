@@ -7,7 +7,7 @@ import { patternSong, meter, beatAccent } from '../music/format.js';
 import { chordShapes } from '../music/chords.js';
 import { pretty } from '../music/theory.js';
 import { Sequencer } from '../audio/sequencer.js';
-import { resumeAudio, click, strum, audioContext, outputLatency } from '../audio/engine.js';
+import { resumeGuitar, click, strum, audioContext, outputLatency } from '../audio/engine.js';
 
 const GRIDS = { q: { ticks: 48, label: '四分' }, e: { ticks: 24, label: '八分' }, e3: { ticks: 16, label: '三连音' }, s: { ticks: 12, label: '十六分' } };
 const PRESETS = [
@@ -165,7 +165,7 @@ export function rhythmView(root) {
   }
 
   async function start(onlyBeats = false) {
-    await resumeAudio();
+    await resumeGuitar();
     if (!root.isConnected) return;
     const mm = m();
     const st = stepTicks();

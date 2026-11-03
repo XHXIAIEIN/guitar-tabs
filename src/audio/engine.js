@@ -1,14 +1,24 @@
-// Web Audio output: metronome clicks and a Karplus–Strong plucked-string guitar.
+// Web Audio output: metronome clicks and a guitar played from recorded classical guitar samples.
 import { TUNING } from '../music/theory.js';
 
 let ctx = null;
 let metroBus;
 let guitarBus;
 const volumes = { metronome: 0.8, guitar: 0.8 };
-const plucks = new Map();
 const clickBuffers = [];
 /** Latest scheduled voice per string (index = string number), so a new note can damp the old one. */
 const voices = new Array(7).fill(null);
+
+/**
+ * Recordings in audio/guitar/ (FreePats Spanish classical guitar, CC0): [MIDI pitch, tuning error in cents].
+ * The errors were measured with the tuner's detectPitch; playback subtracts them.
+ */
+const RECORDINGS = [[40, 1], [43, 10], [47, 7], [50, 5], [53, 4], [56, 7], [59, 13], [62, 8], [65, 3], [69, 5], [72, 12], [75, 4], [78, 4], [81, 10], [84, 9]];
+/** Loaded samples: { midi, cents, buffer, start, level }, see measure() */
+let samples = null;
+let loading = null;
+
+export class AudioLoadError extends Error {}
 
 export function audioContext() {
   if (ctx) return ctx;
@@ -21,16 +31,8 @@ export function audioContext() {
   comp.connect(ctx.destination);
   metroBus = ctx.createGain();
   metroBus.connect(comp);
-  const body = ctx.createBiquadFilter();
-  body.type = 'peaking';
-  body.frequency.value = 180;
-  body.Q.value = 1.1;
-  body.gain.value = 3;
-  const tone = ctx.createBiquadFilter();
-  tone.type = 'lowpass';
-  tone.frequency.value = 5200;
   guitarBus = ctx.createGain();
-  guitarBus.connect(body).connect(tone).connect(comp);
+  guitarBus.connect(comp);
   applyVolumes();
   return ctx;
 }
@@ -40,6 +42,47 @@ export async function resumeAudio() {
   const c = audioContext();
   if (c.state !== 'running') await c.resume();
   return c;
+}
+
+/** resumeAudio plus the guitar samples. Call it in the gesture that starts guitar sound. */
+export async function resumeGuitar() {
+  const [c] = await Promise.all([resumeAudio(), loadSamples()]);
+  return c;
+}
+
+/** Fetches and decodes the guitar samples. Needs no user gesture, so the app starts it at launch. */
+export function loadSamples() {
+  loading ??= (async () => {
+    // Decoded at the files' own rate; an AudioBuffer plays in any context.
+    const decoder = new OfflineAudioContext(1, 1, 22050);
+    try {
+      samples = await Promise.all(RECORDINGS.map(async ([midi, cents]) => {
+        const res = await fetch(new URL(`../../audio/guitar/${midi}.wav`, import.meta.url));
+        if (!res.ok) throw new Error(`${midi}.wav: HTTP ${res.status}`);
+        const buffer = await decoder.decodeAudioData(await res.arrayBuffer());
+        return { midi, cents, buffer, ...measure(buffer) };
+      }));
+    } catch (e) {
+      loading = null; // the next play tries again
+      throw new AudioLoadError('吉他音色载入失败，请检查网络后再点一次播放。', { cause: e });
+    }
+  })();
+  return loading;
+}
+
+/**
+ * start: seconds of silence before the attack, skipped so that notes sound on the beat.
+ * level: gain that evens out the recordings' loudness over their first 0.3 s.
+ */
+function measure(buffer) {
+  const d = buffer.getChannelData(0);
+  const sr = buffer.sampleRate;
+  const peak = d.reduce((m, v) => Math.max(m, Math.abs(v)), 0);
+  const from = Math.max(0, d.findIndex((v) => Math.abs(v) > peak * 0.1) - Math.round(sr * 0.002));
+  const n = Math.min(d.length - from, Math.round(sr * 0.3));
+  let sum = 0;
+  for (let i = from; i < from + n; i++) sum += d[i] * d[i];
+  return { start: from / sr, level: 0.1 / Math.sqrt(sum / n) };
 }
 
 /** Seconds between scheduling a sound and hearing it. */
@@ -80,54 +123,6 @@ export function click(time, level = 1) {
   src.start(time);
 }
 
-function pluckBuffer(midi, muted) {
-  const key = muted ? -midi : midi;
-  const cached = plucks.get(key);
-  if (cached) return cached;
-  const sr = ctx.sampleRate;
-  const freq = 440 * 2 ** ((midi - 69) / 12);
-  // The two-point average in the loop adds half a sample of delay; playbackRate corrects the remaining error.
-  const N = Math.max(2, Math.floor(sr / freq - 0.5));
-  const rate = freq / (sr / (N + 0.5));
-  const t60 = muted ? 0.09 : 4 * (82 / freq) ** 0.45;
-  const loss = 10 ** (-3 / (t60 * freq));
-  const len = Math.floor(sr * (muted ? 0.2 : Math.min(3, t60 * 0.9)));
-  const buffer = ctx.createBuffer(1, len, sr);
-  const out = buffer.getChannelData(0);
-  const loop = new Float32Array(N);
-  const bright = muted ? 0.18 : 0.5;
-  let lp = 0;
-  for (let i = 0; i < N; i++) {
-    lp += bright * (Math.random() * 2 - 1 - lp);
-    loop[i] = lp;
-  }
-  // comb notch at the picking point, about 1/8 of the string length from the bridge
-  const pick = Math.max(1, Math.round(N / 8));
-  for (let i = N - 1; i >= pick; i--) loop[i] -= 0.9 * loop[i - pick];
-  const mean = loop.reduce((a, b) => a + b, 0) / N;
-  for (let i = 0; i < N; i++) loop[i] -= mean;
-  let idx = 0;
-  let peak = 0;
-  for (let n = 0; n < len; n++) {
-    const next = idx + 1 === N ? 0 : idx + 1;
-    out[n] = loop[idx];
-    loop[idx] = loss * 0.5 * (loop[idx] + loop[next]);
-    idx = next;
-    peak = Math.max(peak, Math.abs(out[n]));
-  }
-  const fade = Math.floor(sr * 0.05);
-  for (let n = 0; n < len; n++) out[n] *= (0.5 / peak) * Math.min(1, (len - n) / fade);
-  const entry = { buffer, rate };
-  plucks.set(key, entry);
-  return entry;
-}
-
-/** Renders the buffers ahead of playback so the first notes do not stall the scheduler. */
-export function prepare(midis) {
-  audioContext();
-  for (const m of midis) pluckBuffer(m, false);
-}
-
 export function damp(string, time) {
   const v = voices[string];
   if (!v) return;
@@ -140,17 +135,28 @@ export function dampAll(time = ctx?.currentTime ?? 0) {
   for (let s = 1; s <= 6; s++) damp(s, time);
 }
 
+/** Plays `midi` on `string` from the nearest recording; muted keeps only a dark, short attack. */
 export function pluck(time, string, midi, gain = 0.8, muted = false) {
   const c = audioContext();
-  const { buffer, rate } = pluckBuffer(midi, muted);
+  if (!samples) throw new Error('guitar samples are not loaded: start guitar sound with resumeGuitar()');
+  const s = samples.reduce((a, b) => (Math.abs(b.midi - midi) < Math.abs(a.midi - midi) ? b : a));
+  const rate = 2 ** ((midi - s.midi) / 12 - s.cents / 1200);
   damp(string, time);
   const src = c.createBufferSource();
-  src.buffer = buffer;
+  src.buffer = s.buffer;
   src.playbackRate.value = rate;
   const g = c.createGain();
-  g.gain.value = gain;
-  src.connect(g).connect(guitarBus);
-  src.start(time);
+  g.gain.setValueAtTime(gain * s.level, time);
+  if (muted) {
+    const dark = c.createBiquadFilter();
+    dark.type = 'lowpass';
+    dark.frequency.value = 1400;
+    g.gain.setTargetAtTime(0, time + 0.01, 0.012);
+    src.connect(dark).connect(g);
+  } else src.connect(g);
+  g.connect(guitarBus);
+  src.start(time, s.start);
+  if (muted) src.stop(time + 0.15);
   const voice = { src, gain: g, start: time };
   voices[string] = voice;
   src.onended = () => {

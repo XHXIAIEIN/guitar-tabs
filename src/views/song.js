@@ -6,11 +6,11 @@ import { state, save, setSetting, getEntry, parse, prefsFor, savePrefs } from '.
 import { renderScore } from '../render/score.js';
 import { chordDiagram } from '../render/chord-diagram.js';
 import { chordShapes, isEasyChord } from '../music/chords.js';
-import { parseKey, transposeKey, transposeChord, pretty, prettyKey, jianpuTonic, keyFromPc, mod12, midiOf } from '../music/theory.js';
+import { parseKey, transposeKey, transposeChord, pretty, prettyKey, jianpuTonic, keyFromPc, mod12 } from '../music/theory.js';
 import { patternSong, describeStrum } from '../music/format.js';
 import { Sequencer } from '../audio/sequencer.js';
 import { songSource } from '../audio/song-source.js';
-import { resumeAudio, prepare, setVolume } from '../audio/engine.js';
+import { resumeGuitar, setVolume } from '../audio/engine.js';
 
 export function notFound(root) {
   root.append(h('div', { class: 'empty-page' }, h('p', null, '找不到这首曲谱，可能已经删除了。'), h('a', { class: 'btn primary', href: '#/' }, '回到曲谱列表')));
@@ -201,17 +201,9 @@ export function songView(root, id, opts = {}) {
   }
 
   // ---------- playback ----------
-  let prepared = false;
   async function start(from) {
-    await resumeAudio();
+    await resumeGuitar();
     if (!page$.isConnected) return;
-    if (!prepared) {
-      const pitches = new Set();
-      for (const b of song.bars) for (const e of b.events) for (const n of e.notes) if (n.f >= 0) pitches.add(midiOf(n.s, n.f, prefs.capo));
-      for (const c of song.chordsUsed) chordShapes(chordName(c))[0]?.frets.forEach((fr, i) => fr >= 0 && pitches.add(midiOf(6 - i, fr, prefs.capo)));
-      prepare([...pitches]);
-      prepared = true;
-    }
     const loop = prefs.loop;
     const begin = loop && (from < loop[0] || from > loop[1]) ? loop[0] : from;
     const source = songSource(song, {
@@ -474,7 +466,6 @@ export function songView(root, id, opts = {}) {
     const apply = (patch) => {
       Object.assign(prefs, patch);
       savePrefs(id, prefs);
-      prepared = false;
       renderInfo();
       renderNow();
       render();

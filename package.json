@@ -1,0 +1,10 @@
+{
+  "name": "liuxian",
+  "private": true,
+  "type": "module",
+  "description": "六弦本：吉他谱阅读、节拍与和弦练习工具（纯前端 PWA，无构建步骤）",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "serve": "python -m http.server 5173"
+  }
+}

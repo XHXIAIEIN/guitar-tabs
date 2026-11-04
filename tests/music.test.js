@@ -164,20 +164,27 @@ test('a song opens as its simple version until another version is chosen', () =>
   setVersion('twinkle', 'simple');
 });
 
-test('简谱 is off by default, and only a save with showRevision keeps it on', async () => {
+test('简谱 is off by default, and only a save from a later showRevision keeps it on', async () => {
   const load = async (saved, tag) => {
     globalThis.localStorage = { getItem: () => (saved ? JSON.stringify(saved) : null), setItem: () => {} };
     const { state } = await import(`../src/store.js?${tag}`);
     delete globalThis.localStorage;
     return state.settings.show;
   };
-  assert.equal((await load(null, 'fresh')).jianpu, false);
-  const show = { tab: true, jianpu: true, lyrics: false, chords: true };
+  const fresh = await load(null, 'fresh');
+  assert.equal(fresh.jianpu, false);
+  assert.equal(fresh.rhythm, false);
+  const show = { tab: true, jianpu: true, rhythm: true, lyrics: false, chords: true };
   const old = await load({ settings: { show } }, 'old');
   assert.equal(old.jianpu, false);
+  assert.equal(old.rhythm, false);
   assert.equal(old.lyrics, false);
-  assert.equal(old.rhythm, true);
-  assert.equal((await load({ settings: { show, showRevision: 1 } }, 'chosen')).jianpu, true);
+  const revision1 = await load({ settings: { show, showRevision: 1 } }, 'revision1');
+  assert.equal(revision1.jianpu, true);
+  assert.equal(revision1.rhythm, false);
+  const chosen = await load({ settings: { show, showRevision: 2 } }, 'chosen');
+  assert.equal(chosen.jianpu, true);
+  assert.equal(chosen.rhythm, true);
 });
 
 test('midi of fretted notes', () => {

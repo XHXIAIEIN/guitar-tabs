@@ -7,8 +7,8 @@ const KEY = 'liuxian.v1';
 const DEFAULTS = {
   settings: {
     theme: 'auto',
-    show: { tab: true, jianpu: false, rhythm: true, lyrics: true, chords: true },
-    showRevision: 1,
+    show: { tab: true, jianpu: false, rhythm: false, lyrics: true, chords: true },
+    showRevision: 2,
     stringLabels: { left: 'number', right: 'none' },
     stringWidth: 'uniform',
     zoom: 1,
@@ -36,8 +36,11 @@ function load() {
     saved = {};
   }
   const show = { ...DEFAULTS.settings.show, ...saved.settings?.show };
-  // Every save writes all of `show`, so a save without showRevision holds 简谱 on as an old default, not as a choice
-  if (!saved.settings?.showRevision) show.jianpu = false;
+  // Every save writes all of `show`, so an older revision holds 简谱 on as an old default, not as a choice:
+  // before revision 1 the digits were on by default, before revision 2 the rhythm notes
+  const revision = saved.settings?.showRevision ?? 0;
+  if (revision < 1) show.jianpu = false;
+  if (revision < 2) show.rhythm = false;
   const stringLabels = { ...DEFAULTS.settings.stringLabels, ...saved.settings?.stringLabels };
   // A save from when each side took several kinds holds a list: its first kind stays
   for (const side of ['left', 'right']) {
@@ -46,7 +49,7 @@ function load() {
   return {
     ...structuredClone(DEFAULTS),
     ...saved,
-    settings: { ...DEFAULTS.settings, ...saved.settings, show, stringLabels },
+    settings: { ...DEFAULTS.settings, ...saved.settings, show, showRevision: DEFAULTS.settings.showRevision, stringLabels },
   };
 }
 

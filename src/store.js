@@ -9,7 +9,7 @@ const DEFAULTS = {
     theme: 'auto',
     show: { tab: true, jianpu: false, rhythm: true, lyrics: true, chords: true },
     showRevision: 1,
-    stringLabels: { left: ['number'], right: [] },
+    stringLabels: { left: 'number', right: 'none' },
     stringWidth: 'uniform',
     zoom: 1,
     countIn: 1,
@@ -38,10 +38,15 @@ function load() {
   const show = { ...DEFAULTS.settings.show, ...saved.settings?.show };
   // Every save writes all of `show`, so a save without showRevision holds 简谱 on as an old default, not as a choice
   if (!saved.settings?.showRevision) show.jianpu = false;
+  const stringLabels = { ...DEFAULTS.settings.stringLabels, ...saved.settings?.stringLabels };
+  // A save from when each side took several kinds holds a list: its first kind stays
+  for (const side of ['left', 'right']) {
+    if (Array.isArray(stringLabels[side])) stringLabels[side] = stringLabels[side][0] ?? 'none';
+  }
   return {
     ...structuredClone(DEFAULTS),
     ...saved,
-    settings: { ...DEFAULTS.settings, ...saved.settings, show },
+    settings: { ...DEFAULTS.settings, ...saved.settings, show, stringLabels },
   };
 }
 

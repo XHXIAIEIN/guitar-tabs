@@ -471,19 +471,10 @@ export function songView(root, id, opts = {}) {
           changed();
         })),
     );
-    const labelChips = (side) => h('div', { class: 'chips' },
-      [['tab', 'TAB'], ['number', '123456'], ['name', 'EBGDAe']].map(([kind, label]) => {
-        const on = settings.stringLabels[side].includes(kind);
-        const chip = h('button', { class: 'chip' + (on ? ' on' : ''), type: 'button', 'aria-pressed': String(on), onclick: () => {
-          const kinds = settings.stringLabels[side];
-          const next = kinds.includes(kind) ? kinds.filter((x) => x !== kind) : [...kinds, kind];
-          setSetting('stringLabels', { ...settings.stringLabels, [side]: next });
-          chip.classList.toggle('on', next.includes(kind));
-          chip.setAttribute('aria-pressed', String(next.includes(kind)));
-          renderNow();
-        } }, label);
-        return chip;
-      }));
+    const labelChoice = (side) => segmented([['none', '无'], ['tab', 'TAB'], ['number', '123456'], ['name', 'EBGDAe']], settings.stringLabels[side], (v) => {
+      setSetting('stringLabels', { ...settings.stringLabels, [side]: v });
+      renderNow();
+    });
     openPanel('显示', h('div', { class: 'stack' },
       showToggles([['tab', '六线谱'], ['chords', '和弦'], ['lyrics', '歌词']]),
       h('div', { class: 'stack' },
@@ -492,8 +483,8 @@ export function songView(root, id, opts = {}) {
       ),
       h('div', { class: 'stack' },
         h('div', { class: 'field-label' }, '弦线与标签'),
-        h('div', { class: 'field' }, h('label', null, '左侧'), labelChips('left')),
-        h('div', { class: 'field' }, h('label', null, '右侧'), labelChips('right')),
+        h('div', { class: 'field' }, h('label', null, '左侧'), labelChoice('left')),
+        h('div', { class: 'field' }, h('label', null, '右侧'), labelChoice('right')),
         h('div', { class: 'field' }, h('label', null, '粗细'),
           segmented([['uniform', '统一细线'], ['real', '仿真粗细']], settings.stringWidth, (v) => {
             setSetting('stringWidth', v);

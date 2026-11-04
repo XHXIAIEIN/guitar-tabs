@@ -4,9 +4,10 @@ import { jianpu, midiOf } from '../music/theory.js';
 
 const PAD_L = 12;
 const PAD_R = 8;
-// String label columns from the staff outwards, with widths before scaling
-const LABEL_COLUMNS = [['name', 12], ['number', 12], ['tab', 13]];
+// String label column widths before scaling
+const LABEL_WIDTHS = { name: 12, number: 12, tab: 13 };
 const LABEL_GAP = 3;
+const NO_LABELS = { left: 'none', right: 'none' };
 const HEAD_RX = 4;
 const STRING_NAMES = ['e', 'B', 'G', 'D', 'A', 'E'];
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -320,23 +321,16 @@ function chordText(label, name, x, y, cls, anchor = 'start') {
   return `<text class="${cls}" data-chord="${esc(name)}" x="${r1(x)}" y="${r1(y)}" text-anchor="${anchor}">${esc(label)}</text>`;
 }
 
-const gutterWidth = (kinds, s) => {
-  const w = LABEL_COLUMNS.reduce((sum, [kind, cw]) => sum + (kinds.includes(kind) ? cw : 0), 0);
-  return w ? (w + LABEL_GAP) * s : 0;
-};
+const gutterWidth = (kind, s) => (kind === 'none' ? 0 : (LABEL_WIDTHS[kind] + LABEL_GAP) * s);
 
-/** String labels beside the staff, starting at `edge` and going outwards in direction `dir` (-1 left, 1 right). */
-function stringLabelMarks(kinds, edge, dir, g, s) {
+/** String labels beside the staff, one column away from `edge` in direction `dir` (-1 left, 1 right). */
+function stringLabelMarks(kind, edge, dir, g, s) {
+  if (kind === 'none') return '';
+  const cx = edge + dir * (LABEL_GAP + LABEL_WIDTHS[kind] / 2) * s;
   let out = '';
-  let x = edge + dir * LABEL_GAP * s;
-  for (const [kind, w] of LABEL_COLUMNS) {
-    if (!kinds.includes(kind)) continue;
-    const cx = x + (dir * w * s) / 2;
-    if (kind === 'tab') [...'TAB'].forEach((c, i) => (out += text(cx, g.staff + (1.5 + i) * g.gap + 4 * s, c, 'str-tab')));
-    else {
-      for (let k = 0; k < 6; k++) out += text(cx, g.staff + k * g.gap + 3.6 * s, kind === 'number' ? k + 1 : STRING_NAMES[k], 'str-label');
-    }
-    x += dir * w * s;
+  if (kind === 'tab') [...'TAB'].forEach((c, i) => (out += text(cx, g.staff + (1.5 + i) * g.gap + 4 * s, c, 'str-tab')));
+  else {
+    for (let k = 0; k < 6; k++) out += text(cx, g.staff + k * g.gap + 3.6 * s, kind === 'number' ? k + 1 : STRING_NAMES[k], 'str-label');
   }
   return out;
 }
@@ -344,7 +338,7 @@ function stringLabelMarks(kinds, edge, dir, g, s) {
 /**
  * Renders `song` into `root` and returns a handle that moves highlights without re-rendering.
  * @param {object} o width, scale, show {tab, jianpu, rhythm, lyrics, chords}, chordLabel(name), tonic, compact, barNumbers,
- *   stringLabels {left, right} lists of 'tab' | 'number' | 'name', stringWidth 'uniform' | 'real'
+ *   stringLabels {left, right} each 'none' | 'tab' | 'number' | 'name', stringWidth 'uniform' | 'real'
  */
 export function renderScore(root, song, o) {
   const s = o.scale;
@@ -356,7 +350,7 @@ export function renderScore(root, song, o) {
     chartLyric: `400 ${16 * s}px ${fam}`,
   };
   const m = song.meter;
-  const labels = o.show.tab && song.bars.some((b) => b.events.length) ? o.stringLabels ?? { left: [], right: [] } : { left: [], right: [] };
+  const labels = o.show.tab && song.bars.some((b) => b.events.length) ? o.stringLabels ?? NO_LABELS : NO_LABELS;
   const gutterL = gutterWidth(labels.left, s);
   const avail = o.width - gutterL - gutterWidth(labels.right, s);
   const metrics = song.bars.map((b) => measureBar(b, song, o, F));

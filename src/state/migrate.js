@@ -1,6 +1,6 @@
 // Upgrades a saved state to the current schema. Each step changes only the fields that its schema changed.
 
-export const SCHEMA = 1;
+export const SCHEMA = 2;
 
 const STEPS = [
   // Schema 0 kept a showRevision setting. Every save wrote all of `show`, so an older revision holds 简谱 on as an
@@ -17,6 +17,11 @@ const STEPS = [
       const labels = settings.stringLabels;
       if (Array.isArray(labels?.[side])) labels[side] = labels[side][0] ?? 'none';
     }
+  },
+  // Every save wrote all the tool settings, so a schema 1 drill on C–G holds the old default, not a choice.
+  (data) => {
+    const drill = data.tools?.drill;
+    if (drill?.chords?.join() === 'C,G') delete drill.chords;
   },
 ];
 

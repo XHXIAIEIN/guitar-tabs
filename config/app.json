@@ -25,7 +25,7 @@
     },
     "tools": {
       "metronome": { "bpm": 80, "time": [4, 4], "subdivision": 1, "accent": true },
-      "drill": { "chords": ["C", "G"], "beatsPer": 4, "bpm": 60, "metronome": true, "strum": true },
+      "drill": { "chords": ["C", "D", "G", "Em"], "beatsPer": 4, "bpm": 60, "metronome": true, "strum": true },
       "minute": { "pair": ["C", "G"] },
       "rhythm": { "preset": "folk", "time": [4, 4], "grid": "e", "steps": "D-DU.UDU", "bpm": 70, "chord": "C", "metronome": true, "strum": true }
     }

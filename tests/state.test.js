@@ -56,7 +56,17 @@ test('saved lists replace the default lists, and the defaults stay unchanged', (
   assert.equal(s.tools.drill.bpm, config.defaults.tools.drill.bpm);
   const fresh = restoreState(null);
   fresh.tools.drill.chords.push('D');
-  assert.deepEqual(config.defaults.tools.drill.chords, ['C', 'G']);
+  assert.deepEqual(config.defaults.tools.drill.chords, ['C', 'D', 'G', 'Em']);
+});
+
+test('a drill saved on the old default C–G moves to the current default, and a later choice of C–G stays', () => {
+  const drill = (saved) => restoreState(saved).tools.drill;
+  const old = drill({ tools: { drill: { chords: ['C', 'G'], bpm: 75 } } });
+  assert.deepEqual(old.chords, config.defaults.tools.drill.chords);
+  assert.equal(old.bpm, 75);
+  assert.deepEqual(drill({ schema: 1, tools: { drill: { chords: ['C', 'G'] } } }).chords, config.defaults.tools.drill.chords);
+  assert.deepEqual(drill({ tools: { drill: { chords: ['G', 'C'] } } }).chords, ['G', 'C']);
+  assert.deepEqual(drill({ schema: SCHEMA, tools: { drill: { chords: ['C', 'G'] } } }).chords, ['C', 'G']);
 });
 
 test('the default rhythm tool settings are the preset they name', () => {

@@ -4,6 +4,7 @@ import { parseChord, parseKey, transposeChord, transposeKey, jianpu, jianpuTonic
 import { chordShapes, shapePitches, QUALITIES, CHORD_GROUPS, isEasyChord } from '../src/music/chords.js';
 import { parseSong, syllables, chordAt } from '../src/music/format.js';
 import { BUILTIN } from '../src/data/songs.js';
+import { getEntry, allEntries, setVersion } from '../src/store.js';
 
 test('chord names', () => {
   assert.deepEqual(parseChord('D/F#'), { root: 2, quality: '', bass: 6 });
@@ -87,7 +88,13 @@ const MELODIES = {
   'ode-to-joy': "3 3 4 5 5 4 3 2 1 1 2 3 3 2 2",
   'happy-birthday': "5 5 6 5 1' 7 5 5 6 5 2' 1' 5 5 5' 3' 1' 7 6 4' 4' 3' 1' 2' 1'",
   farewell: "5 3 5 1' 6 1' 5 5 1 2 3 2 1 2 5 3 5 1' 7 6 1' 5 5 2 3 4 7, 1",
+  'mary-lamb': '3 2 1 2 3 3 3 2 2 2 3 5 5 3 2 1 2 3 3 3 3 2 2 3 2 1',
 };
+
+const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
+
+// Versions of one song sit in different octaves and keys, so the check compares scale degrees.
+const degreesOnly = (digits) => digits.replace(/[',]/g, '');
 
 function melodyDigits(song) {
   const tonic = jianpuTonic(song.melody, parseKey(song.meta.key), song.meta.jianpu);
@@ -100,13 +107,47 @@ function melodyDigits(song) {
 }
 
 test('built-in songs parse cleanly and their melodies match the written 简谱', () => {
-  for (const { id, text } of BUILTIN) {
-    const s = parseSong(text);
-    assert.deepEqual(s.errors, [], `${id} errors`);
-    assert.deepEqual(s.warnings, [], `${id} warnings`);
-    for (const name of s.chordsUsed) assert.ok(chordShapes(name).length, `${id} uses ${name} without a shape`);
-    if (MELODIES[id]) assert.ok(melodyDigits(s).startsWith(MELODIES[id]), `${id}: ${melodyDigits(s)}`);
+  for (const entry of BUILTIN) {
+    for (const { id: version, text } of versionsOf(entry)) {
+      const id = `${entry.id} ${version}`;
+      const s = parseSong(text);
+      assert.deepEqual(s.errors, [], `${id} errors`);
+      assert.deepEqual(s.warnings, [], `${id} warnings`);
+      for (const name of s.chordsUsed) assert.ok(chordShapes(name).length, `${id} uses ${name} without a shape`);
+      const melody = MELODIES[entry.id];
+      if (melody) assert.ok(degreesOnly(melodyDigits(s)).startsWith(degreesOnly(melody)), `${id}: ${melodyDigits(s)}`);
+    }
   }
+});
+
+test('simple versions stay on the top strings and come first', () => {
+  for (const entry of BUILTIN.filter((e) => e.versions)) {
+    assert.equal(entry.versions[0].id, 'simple', entry.id);
+    const titles = entry.versions.map((v) => parseSong(v.text).meta.title);
+    assert.equal(new Set(titles).size, 1, `${entry.id} titles`);
+    const song = parseSong(entry.versions[0].text);
+    const steps = (s) => s.melody.slice(1).map((p, i) => p - s.melody[i]);
+    assert.deepEqual(steps(song), steps(parseSong(entry.versions[1].text)), `${entry.id} melody differs between versions`);
+    assert.deepEqual(song.chordsUsed, [], `${entry.id} chords`);
+    const notes = song.bars.flatMap((b) => b.events).flatMap((e) => e.notes);
+    for (const n of notes) {
+      assert.ok(n.s <= 2 || (n.s === 3 && n.f === 0), `${entry.id} plays string ${n.s} fret ${n.f}`);
+      assert.ok(n.f <= 8, `${entry.id} plays fret ${n.f}`);
+    }
+  }
+});
+
+test('a song opens as its simple version until another version is chosen', () => {
+  const simple = getEntry('twinkle');
+  assert.equal(simple.version.id, 'simple');
+  assert.deepEqual(parseSong(simple.text).chordsUsed, []);
+  setVersion('twinkle', 'full');
+  const full = getEntry('twinkle');
+  assert.equal(full.version.id, 'full');
+  assert.ok(parseSong(full.text).chordsUsed.length);
+  assert.notEqual(full.prefsId, simple.prefsId);
+  assert.equal(allEntries().find((e) => e.id === 'twinkle').version.id, 'full');
+  setVersion('twinkle', 'simple');
 });
 
 test('midi of fretted notes', () => {

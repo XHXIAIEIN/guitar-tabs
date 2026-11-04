@@ -86,7 +86,7 @@ export function libraryView(root) {
       h('a', { class: 'song-link', href: `#/song/${entry.id}` },
         h('strong', null, meta.title),
         h('span', { class: 'song-sub' },
-          [meta.artist, key && `${prettyKey(key)} 调`, meta.time.join('/'), `♩${meta.bpm}`, meta.level].filter(Boolean).join(' · '),
+          [meta.artist, entry.version?.name, key && `${prettyKey(key)} 调`, meta.time.join('/'), `♩${meta.bpm}`, meta.level].filter(Boolean).join(' · '),
           song.errors.length ? h('em', { class: 'bad' }, ` · ${song.errors.length} 处错误`) : null),
       ),
       h('button', { class: 'btn small ghost' + (added ? ' on' : ''), type: 'button', title: added ? '移出演出歌单' : '加入演出歌单', onclick: () => toggleSetlist(entry.id) },

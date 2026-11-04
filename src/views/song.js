@@ -2,7 +2,7 @@
 import { h, fill, icon, iconButton, segmented, toggle, stepper, openPanel, closePanel, toast, holdScreen } from '../ui/dom.js';
 import { openChordPanel } from '../ui/chord-panel.js';
 import { applyTheme } from '../ui/theme.js';
-import { state, save, setSetting, getEntry, parse, prefsFor, savePrefs } from '../store.js';
+import { state, save, setSetting, getEntry, parse, prefsFor, savePrefs, setVersion } from '../store.js';
 import { renderScore } from '../render/score.js';
 import { chordDiagram } from '../render/chord-diagram.js';
 import { chordShapes, isEasyChord } from '../music/chords.js';
@@ -27,11 +27,11 @@ export function songView(root, id, opts = {}) {
   const m = song.meter;
   const baseKey = parseKey(meta.key);
   const settings = state.settings;
-  const prefs = prefsFor(id, song);
+  const prefs = prefsFor(entry.prefsId, song);
   const canTranspose = !song.hasEvents;
   if (!canTranspose) prefs.transpose = 0;
   const hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
-  const performShow = { tab: !hasLyrics, jianpu: false, lyrics: true, chords: true };
+  const performShow = { tab: !hasLyrics || !song.chordsUsed.length, jianpu: false, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const trainer = { on: false, step: 2, max: Math.min(240, Math.round(meta.bpm * 1.25)) };
   const seq = new Sequencer();
@@ -121,6 +121,7 @@ export function songView(root, id, opts = {}) {
     const errors = song.errors.concat(song.warnings);
     fill(info,
       h('div', { class: 'chips' },
+        entry.version ? chip(entry.version.name, openPractice) : null,
         chip(keyText(), openCapo),
         chip(meta.time.join('/')),
         chip(`♩ = ${prefs.bpm}${prefs.bpm !== meta.bpm ? `（原速 ${meta.bpm}）` : ''}`, openTempo),
@@ -253,7 +254,7 @@ export function songView(root, id, opts = {}) {
       releaseScreen?.();
       releaseScreen = null;
     }
-    savePrefs(id, prefs);
+    savePrefs(entry.prefsId, prefs);
     updatePlay();
   }
 
@@ -305,7 +306,7 @@ export function songView(root, id, opts = {}) {
     prefs.bpm = Math.max(20, Math.min(320, Math.round(v)));
     if (playing) seq.setBpm(prefs.bpm);
     updateBpm();
-    savePrefs(id, prefs);
+    savePrefs(entry.prefsId, prefs);
   }
 
   function updateBpm() {
@@ -370,7 +371,7 @@ export function songView(root, id, opts = {}) {
 
   function setLoop(range) {
     prefs.loop = range;
-    savePrefs(id, prefs);
+    savePrefs(entry.prefsId, prefs);
     handle.setLoop(...(range ?? [null, null]));
     loopBtn.classList.toggle('on', !!range);
     loopBtn.querySelector('span:last-child').textContent = range ? `${range[0] + 1}–${range[1] + 1}` : '循环';
@@ -435,6 +436,14 @@ export function songView(root, id, opts = {}) {
     renderTrainer();
     const volume = (key, kind) => h('input', { type: 'range', min: 0, max: 1, step: 0.05, value: settings[key], 'aria-label': kind, oninput: (e) => { setSetting(key, +e.target.value); setVolume(kind, +e.target.value); } });
     openPanel('练习设置', h('div', { class: 'stack' },
+      entry.version
+        ? h('div', { class: 'field' }, h('label', null, '版本'),
+            segmented(entry.versions.map((v) => [v.id, v.name]), entry.version.id, (v) => {
+              setVersion(id, v);
+              // The router rebuilds the page for the chosen version
+              dispatchEvent(new HashChangeEvent('hashchange'));
+            }))
+        : null,
       h('div', { class: 'field' }, h('label', null, '预备拍'), segmented([[0, '无'], [1, '1 小节'], [2, '2 小节']], settings.countIn, (v) => setSetting('countIn', v))),
       h('div', { class: 'field' }, h('label', null, '节拍器音量'), volume('volMetronome', 'metronome')),
       h('div', { class: 'field' }, h('label', null, '示范音音量'), volume('volGuitar', 'guitar')),
@@ -485,7 +494,7 @@ export function songView(root, id, opts = {}) {
     let target = soundKey().pc;
     const apply = (patch) => {
       Object.assign(prefs, patch);
-      savePrefs(id, prefs);
+      savePrefs(entry.prefsId, prefs);
       renderInfo();
       renderNow();
       render();
@@ -576,6 +585,6 @@ export function songView(root, id, opts = {}) {
     removeEventListener('keydown', onKey);
     releaseScreen?.();
     closePanel();
-    savePrefs(id, prefs);
+    savePrefs(entry.prefsId, prefs);
   };
 }

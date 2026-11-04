@@ -19,6 +19,7 @@ const DEFAULTS = {
   },
   songs: {},
   prefs: {},
+  versions: {},
   setlist: [],
   records: {},
 };
@@ -75,18 +76,30 @@ export function parse(text) {
   return song;
 }
 
+/** A built-in song as the chosen version, or its first version. Each version keeps its own practice preferences. */
+function builtinEntry(b) {
+  if (!b.versions) return { ...b, builtin: true, prefsId: b.id };
+  const v = b.versions.find((x) => x.id === state.versions[b.id]) ?? b.versions[0];
+  return { ...b, builtin: true, text: v.text, version: v, prefsId: `${b.id}:${v.id}` };
+}
+
 export function allEntries() {
   const user = Object.entries(state.songs)
     .map(([id, s]) => ({ id, text: s.text, group: '我的曲谱', builtin: false, updated: s.updated }))
     .sort((a, b) => b.updated - a.updated);
-  return [...user, ...BUILTIN.map((b) => ({ ...b, builtin: true }))];
+  return [...user, ...BUILTIN.map(builtinEntry)];
 }
 
 export function getEntry(id) {
   const user = state.songs[id];
-  if (user) return { id, text: user.text, group: '我的曲谱', builtin: false };
+  if (user) return { id, text: user.text, group: '我的曲谱', builtin: false, prefsId: id };
   const b = BUILTIN.find((x) => x.id === id);
-  return b ? { ...b, builtin: true } : null;
+  return b ? builtinEntry(b) : null;
+}
+
+export function setVersion(id, version) {
+  state.versions[id] = version;
+  save();
 }
 
 export function newSongId() {

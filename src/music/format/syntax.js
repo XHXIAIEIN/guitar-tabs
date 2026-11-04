@@ -52,6 +52,11 @@ export function syllables(text) {
   return out;
 }
 
+/** Splits note text into strings and finger marks: "{T} 弹 {1}" → [{ finger: 'T' }, ' 弹 ', { finger: '1' }]. */
+export function noteParts(text) {
+  return text.split(/\{([T1-4])\}/).map((part, i) => (i % 2 ? { finger: part } : part)).filter((part) => part !== '');
+}
+
 export function parseTime(v) {
   const m = /^(\d{1,2})\/(2|4|8)$/.exec(v);
   return m && +m[1] > 0 ? [+m[1], +m[2]] : null;

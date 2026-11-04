@@ -142,7 +142,7 @@
     "help": [
       "",
       "<h3>开头的信息</h3>",
-      "<p><code>title:</code> 曲名 · <code>artist:</code> 作者 · <code>key:</code> 调（C、G、Eb、Am）· <code>capo:</code> 变调夹品位 · <code>bpm:</code> 速度 · <code>time:</code> 拍号（4/4、3/4、6/8）· <code>strum:</code> 弹唱的节奏型 · <code>pickup:</code> 弱起拍数 · <code>level:</code> 难度 · <code>note:</code> 练习说明。也可以写中文：标题、调、变调夹、速度、拍号、节奏型。</p>",
+      "<p><code>title:</code> 曲名 · <code>artist:</code> 作者 · <code>key:</code> 调（C、G、Eb、Am）· <code>capo:</code> 变调夹品位 · <code>bpm:</code> 速度 · <code>time:</code> 拍号（4/4、3/4、6/8）· <code>strum:</code> 弹唱的节奏型 · <code>pickup:</code> 弱起拍数 · <code>level:</code> 难度 · <code>note:</code> 练习说明，<code>{T}</code>、<code>{1}</code> 到 <code>{4}</code> 显示成手指标记。也可以写中文：标题、调、变调夹、速度、拍号、节奏型。</p>",
       "<h3>段落和三种行</h3>",
       "<p><code># 主歌</code> 开始一个新段落。<code>chord:</code> 和弦行、<code>tab:</code> 六线谱行、<code>lyric:</code> 歌词行写在一起成为一组，用 <code>|</code> 分隔小节，同一组里第几个小节就对应第几个小节。</p>",
       "<h3>和弦</h3>",
@@ -274,6 +274,7 @@
       "slash": "低音转位"
     },
     "diagramLabel": "{name} 和弦指法",
+    "finger": { "T": "拇指", "1": "食指", "2": "中指", "3": "无名指", "4": "小指" },
     "fingerLegend": "T 拇指 · 1 食指 · 2 中指 · 3 无名指 · 4 小指 · ○ 空弦 · × 不弹",
     "tip": {
       "fullBarre": "1 指平放横按第 {fret} 品的所有弦，用 1 指外侧（靠 T 指的一侧）压弦更省力，T 指放在琴颈背面中间。",

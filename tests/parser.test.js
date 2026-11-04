@@ -3,7 +3,12 @@ import assert from 'node:assert/strict';
 import './helpers/setup.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { chordAt } from '../src/music/format/pattern.js';
-import { syllables } from '../src/music/format/syntax.js';
+import { noteParts, syllables } from '../src/music/format/syntax.js';
+
+test('note text splits into strings and finger marks', () => {
+  assert.deepEqual(noteParts('{T} 弹 {1}。'), [{ finger: 'T' }, ' 弹 ', { finger: '1' }, '。']);
+  assert.deepEqual(noteParts('只有文字 {5} {t}'), ['只有文字 {5} {t}']);
+});
 
 test('syllables', () => {
   assert.deepEqual(syllables('长亭_外'), ['长', '亭', '', '外']);

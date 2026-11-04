@@ -5,9 +5,22 @@ import { chordDiagramEl } from '../../ui/chord-diagram-el.js';
 import { openChordPanel } from '../../ui/chord-panel.js';
 import { renderScore } from '../../render/score/score.js';
 import { describeStrum, patternSong } from '../../music/format/pattern.js';
+import { noteParts } from '../../music/format/syntax.js';
 import { pretty } from '../../music/pitch.js';
 
 const PROBLEMS_SHOWN = 4;
+const FINGERS = ['T', '1', '2', '3', '4'];
+
+const fingerMark = (finger, props) => h('span', { class: `finger finger-${finger}`, ...props }, finger);
+
+function noteBlock(text) {
+  const parts = noteParts(text);
+  const note = h('p', { class: 'song-note' }, parts.map((part) => (typeof part === 'string' ? part : fingerMark(part.finger, { role: 'img', 'aria-label': t(`chords.finger.${part.finger}`) }))));
+  if (parts.every((part) => typeof part === 'string')) return note;
+  return h('div', { class: 'song-note-block' },
+    h('p', { class: 'finger-legend' }, FINGERS.map((finger) => h('span', null, fingerMark(finger, { 'aria-hidden': 'true' }), ` ${t(`chords.finger.${finger}`)}`))),
+    note);
+}
 
 function strumBox(song, tonic) {
   const box = h('div', { class: 'strum-box' }, h('div', { class: 'strum-head' }, h('strong', null, t('song.strumPattern')), h('span', null, describeStrum(song.strum, song.meter))));
@@ -36,7 +49,7 @@ export function renderSongInfo(el, o) {
       chip(prefs.bpm !== meta.bpm ? t('song.tempoChipChanged', { bpm: prefs.bpm, original: meta.bpm }) : t('song.tempoChip', { bpm: prefs.bpm }), o.openTempo),
       meta.level ? chip(meta.level) : null,
     ),
-    meta.note && !perform ? h('p', { class: 'song-note' }, meta.note) : null,
+    meta.note && !perform ? noteBlock(meta.note) : null,
     song.chordsUsed.length && o.show.chords
       ? h('div', { class: 'chord-strip', role: 'list', 'aria-label': t('song.chordStrip') },
           song.chordsUsed.map((c) => {

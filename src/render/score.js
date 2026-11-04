@@ -4,6 +4,10 @@ import { jianpu, midiOf } from '../music/theory.js';
 
 const PAD_L = 12;
 const PAD_R = 8;
+// String label columns from the staff outwards, with widths before scaling
+const LABEL_COLUMNS = [['name', 12], ['number', 12], ['tab', 13]];
+const LABEL_GAP = 3;
+const STRING_NAMES = ['e', 'B', 'G', 'D', 'A', 'E'];
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const r1 = (n) => Math.round(n * 10) / 10;
 
@@ -105,8 +109,11 @@ function lineGeometry(bars, o) {
     if (o.show.tab) {
       g.gap = 11 * s;
       g.staff = y + 6 * s;
-      g.stem = g.staff + 5 * g.gap + 5 * s;
-      y = g.stem + 27 * s;
+      const staffEnd = g.staff + 5 * g.gap;
+      if (o.show.rhythm) {
+        g.stem = staffEnd + 5 * s;
+        y = g.stem + 27 * s;
+      } else y = staffEnd + 10 * s;
     }
   } else {
     g.beats = y + 1 * s;
@@ -273,8 +280,8 @@ function renderBar(bar, bx, bw, f, m, song, o, g, F, isFirstInLine, isLast) {
       if (isFirstInLine && bar.startChord && bar.chords[0]?.at !== 0) out += chordText(`(${o.chordLabel(bar.startChord)})`, bar.startChord, xs[0] - 4 * s, g.chord, 'chord dim', 'start');
     }
     if (g.staff !== undefined) {
-      for (let k = 0; k < 6; k++) out += line(bx, g.staff + k * g.gap, bx + bw, g.staff + k * g.gap, 'staff');
-      out += stemsAndBeams(bar, xs, g, s, groupOf) + tupletMarks(bar, xs, g.stem + 30 * s, s);
+      for (let k = 0; k < 6; k++) out += line(bx, g.staff + k * g.gap, bx + bw, g.staff + k * g.gap, `staff s${k + 1}`);
+      if (g.stem !== undefined) out += stemsAndBeams(bar, xs, g, s, groupOf) + tupletMarks(bar, xs, g.stem + 30 * s, s);
     }
     if (g.jianpu !== undefined) out += jianpuMarks(bar, xs, g, s, o, xAt, groupOf);
     bar.events.forEach((e, i) => {
@@ -304,9 +311,31 @@ function chordText(label, name, x, y, cls, anchor = 'start') {
   return `<text class="${cls}" data-chord="${esc(name)}" x="${r1(x)}" y="${r1(y)}" text-anchor="${anchor}">${esc(label)}</text>`;
 }
 
+const gutterWidth = (kinds, s) => {
+  const w = LABEL_COLUMNS.reduce((sum, [kind, cw]) => sum + (kinds.includes(kind) ? cw : 0), 0);
+  return w ? (w + LABEL_GAP) * s : 0;
+};
+
+/** String labels beside the staff, starting at `edge` and going outwards in direction `dir` (-1 left, 1 right). */
+function stringLabelMarks(kinds, edge, dir, g, s) {
+  let out = '';
+  let x = edge + dir * LABEL_GAP * s;
+  for (const [kind, w] of LABEL_COLUMNS) {
+    if (!kinds.includes(kind)) continue;
+    const cx = x + (dir * w * s) / 2;
+    if (kind === 'tab') [...'TAB'].forEach((c, i) => (out += text(cx, g.staff + (1.5 + i) * g.gap + 4 * s, c, 'str-tab')));
+    else {
+      for (let k = 0; k < 6; k++) out += text(cx, g.staff + k * g.gap + 3.6 * s, kind === 'number' ? k + 1 : STRING_NAMES[k], 'str-label');
+    }
+    x += dir * w * s;
+  }
+  return out;
+}
+
 /**
  * Renders `song` into `root` and returns a handle that moves highlights without re-rendering.
- * @param {object} o width, scale, show {tab, jianpu, lyrics, chords}, chordLabel(name), tonic, compact, barNumbers
+ * @param {object} o width, scale, show {tab, jianpu, rhythm, lyrics, chords}, chordLabel(name), tonic, compact, barNumbers,
+ *   stringLabels {left, right} lists of 'tab' | 'number' | 'name', stringWidth 'uniform' | 'real'
  */
 export function renderScore(root, song, o) {
   const s = o.scale;
@@ -318,7 +347,9 @@ export function renderScore(root, song, o) {
     chartLyric: `400 ${16 * s}px ${fam}`,
   };
   const m = song.meter;
-  const avail = o.width;
+  const labels = o.show.tab && song.bars.some((b) => b.events.length) ? o.stringLabels ?? { left: [], right: [] } : { left: [], right: [] };
+  const gutterL = gutterWidth(labels.left, s);
+  const avail = o.width - gutterL - gutterWidth(labels.right, s);
   const metrics = song.bars.map((b) => measureBar(b, song, o, F));
   const lines = breakLines(song, metrics, avail);
 
@@ -335,15 +366,17 @@ export function renderScore(root, song, o) {
     else if (lastOfSection && ln.sectionStart && natural < avail * 0.6) k = Math.min(k, 1.6);
     prevK = k;
     const g = lineGeometry(bars, o);
-    let x = 0;
+    let x = gutterL;
     let svg = '';
     bars.forEach((bar, i) => {
       const bw = metrics[bar.index].natural * k;
       svg += renderBar(bar, x, bw, { slots: metrics[bar.index].slots, k }, m, song, o, g, F, i === 0, bar.index === song.bars.length - 1);
       x += bw;
     });
+    if (g.staff !== undefined) svg += stringLabelMarks(labels.left, gutterL, -1, g, s) + stringLabelMarks(labels.right, x, 1, g, s);
     const name = ln.sectionStart ? song.sections[bars[0].section]?.name : '';
-    html += `<div class="sys" data-line="${li}">${name ? `<div class="sec-label">${esc(name)}</div>` : ''}<svg class="sys-svg" style="--s:${s}" width="${r1(avail)}" height="${r1(g.height)}" viewBox="0 0 ${r1(avail)} ${r1(g.height)}">${svg}</svg></div>`;
+    const cls = 'sys-svg' + (o.stringWidth === 'real' ? ' real-strings' : '');
+    html += `<div class="sys" data-line="${li}">${name ? `<div class="sec-label">${esc(name)}</div>` : ''}<svg class="${cls}" style="--s:${s}" width="${r1(o.width)}" height="${r1(g.height)}" viewBox="0 0 ${r1(o.width)} ${r1(g.height)}">${svg}</svg></div>`;
   });
   root.innerHTML = html;
 

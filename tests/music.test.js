@@ -176,6 +176,7 @@ test('简谱 is off by default, and only a save with showRevision keeps it on', 
   const old = await load({ settings: { show } }, 'old');
   assert.equal(old.jianpu, false);
   assert.equal(old.lyrics, false);
+  assert.equal(old.rhythm, true);
   assert.equal((await load({ settings: { show, showRevision: 1 } }, 'chosen')).jianpu, true);
 });
 

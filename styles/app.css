@@ -319,6 +319,14 @@ span.chip { cursor: default; }
 .selecting .bar-bg { cursor: crosshair; }
 .selecting .bar:hover .bar-bg { fill: var(--loop-soft); }
 .staff { stroke: var(--staff); stroke-width: 1; }
+.real-strings .staff.s1 { stroke-width: calc(0.6px * var(--s)); }
+.real-strings .staff.s2 { stroke-width: calc(0.8px * var(--s)); }
+.real-strings .staff.s3 { stroke-width: calc(1px * var(--s)); }
+.real-strings .staff.s4 { stroke-width: calc(1.4px * var(--s)); }
+.real-strings .staff.s5 { stroke-width: calc(1.9px * var(--s)); }
+.real-strings .staff.s6 { stroke-width: calc(2.4px * var(--s)); }
+.str-label { font-size: calc(10.5px * var(--s)); fill: var(--muted); }
+.str-tab { font-size: calc(11px * var(--s)); font-weight: 700; fill: var(--ink-2); }
 .barline { stroke: var(--ink-2); stroke-width: calc(1.1px * var(--s)); }
 .barline.faint { stroke: var(--line); }
 .barline-end { fill: var(--ink-2); }

@@ -149,7 +149,7 @@ export function rhythmView(root) {
   function renderNotation() {
     const width = Math.min(notation.clientWidth || 600, 640);
     renderScore(notation, patternSong(stepsToEvents(steps, stepTicks(), m()), time), {
-      width, scale: 1.15, show: { tab: true, jianpu: false, lyrics: false, chords: false }, chordLabel: pretty, tonic: 60, barNumbers: false,
+      width, scale: 1.15, show: { tab: true, jianpu: false, rhythm: true, lyrics: false, chords: false }, chordLabel: pretty, tonic: 60, barNumbers: false,
     });
   }
 

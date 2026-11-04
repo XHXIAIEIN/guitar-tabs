@@ -7,8 +7,10 @@ const KEY = 'liuxian.v1';
 const DEFAULTS = {
   settings: {
     theme: 'auto',
-    show: { tab: true, jianpu: false, lyrics: true, chords: true },
+    show: { tab: true, jianpu: false, rhythm: true, lyrics: true, chords: true },
     showRevision: 1,
+    stringLabels: { left: ['number'], right: [] },
+    stringWidth: 'uniform',
     zoom: 1,
     countIn: 1,
     metronome: true,

@@ -31,7 +31,7 @@ export function songView(root, id, opts = {}) {
   const canTranspose = !song.hasEvents;
   if (!canTranspose) prefs.transpose = 0;
   const hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
-  const performShow = { tab: !hasLyrics || !song.chordsUsed.length, jianpu: false, lyrics: true, chords: true };
+  const performShow = { tab: !hasLyrics || !song.chordsUsed.length, jianpu: false, rhythm: true, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const trainer = { on: false, step: 2, max: Math.min(240, Math.round(meta.bpm * 1.25)) };
   const seq = new Sequencer();
@@ -154,7 +154,7 @@ export function songView(root, id, opts = {}) {
     requestAnimationFrame(() => {
       if (!sc.isConnected) return;
       renderScore(sc, patternSong(song.strum, meta.time), {
-        width: Math.min(sc.clientWidth, 340), scale: 1, show: { tab: true, jianpu: false, lyrics: false, chords: false }, chordLabel: pretty, tonic, barNumbers: false,
+        width: Math.min(sc.clientWidth, 340), scale: 1, show: { tab: true, jianpu: false, rhythm: true, lyrics: false, chords: false }, chordLabel: pretty, tonic, barNumbers: false,
       });
     });
     return box;
@@ -165,7 +165,10 @@ export function songView(root, id, opts = {}) {
     const width = Math.floor(scoreEl.clientWidth);
     if (!width) return;
     renderedWidth = width;
-    handle = renderScore(scoreEl, song, { width, scale: zoom(), show: show(), chordLabel, tonic, compact: perform && !show().tab && !show().jianpu });
+    handle = renderScore(scoreEl, song, {
+      width, scale: zoom(), show: show(), chordLabel, tonic, compact: perform && !show().tab && !show().jianpu,
+      stringLabels: settings.stringLabels, stringWidth: settings.stringWidth,
+    });
     handle.setLoop(...(prefs.loop ?? [null, null]));
     if (!playing) handle.setCursor(cursor);
     if (current !== null) handle.setCurrent(current);
@@ -460,12 +463,40 @@ export function songView(root, id, opts = {}) {
       renderInfo();
       renderNow();
     };
+    const showToggles = (items) => h('div', { class: 'toggle-grid' },
+      ...items.map(([k, label]) =>
+        toggle(label, sh[k], (v) => {
+          sh[k] = v;
+          changed();
+        })),
+    );
+    const labelChips = (side) => h('div', { class: 'chips' },
+      [['tab', 'TAB'], ['number', '123456'], ['name', 'EBGDAe']].map(([kind, label]) => {
+        const on = settings.stringLabels[side].includes(kind);
+        const chip = h('button', { class: 'chip' + (on ? ' on' : ''), type: 'button', 'aria-pressed': String(on), onclick: () => {
+          const kinds = settings.stringLabels[side];
+          const next = kinds.includes(kind) ? kinds.filter((x) => x !== kind) : [...kinds, kind];
+          setSetting('stringLabels', { ...settings.stringLabels, [side]: next });
+          chip.classList.toggle('on', next.includes(kind));
+          chip.setAttribute('aria-pressed', String(next.includes(kind)));
+          renderNow();
+        } }, label);
+        return chip;
+      }));
     openPanel('显示', h('div', { class: 'stack' },
-      h('div', { class: 'toggle-grid' },
-        ...[['tab', '六线谱'], ['jianpu', '简谱（唱名数字）'], ['chords', '和弦'], ['lyrics', '歌词']].map(([k, label]) =>
-          toggle(label, sh[k], (v) => {
-            sh[k] = v;
-            changed();
+      showToggles([['tab', '六线谱'], ['chords', '和弦'], ['lyrics', '歌词']]),
+      h('div', { class: 'stack' },
+        h('div', { class: 'field-label' }, '简谱'),
+        showToggles([['jianpu', '数字（唱名）'], ['rhythm', '音符（节奏）']]),
+      ),
+      h('div', { class: 'stack' },
+        h('div', { class: 'field-label' }, '弦线与标签'),
+        h('div', { class: 'field' }, h('label', null, '左侧'), labelChips('left')),
+        h('div', { class: 'field' }, h('label', null, '右侧'), labelChips('right')),
+        h('div', { class: 'field' }, h('label', null, '粗细'),
+          segmented([['uniform', '统一细线'], ['real', '仿真粗细']], settings.stringWidth, (v) => {
+            setSetting('stringWidth', v);
+            renderNow();
           })),
       ),
       h('div', { class: 'field' }, h('label', null, '字号'),

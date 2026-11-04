@@ -125,6 +125,7 @@ export function editorView(root, id) {
       renderScore(preview, song, {
         width, scale: 0.95, show: state.settings.show, chordLabel: pretty,
         tonic: jianpuTonic(song.melody, parseKey(song.meta.key), song.meta.jianpu),
+        stringLabels: state.settings.stringLabels, stringWidth: state.settings.stringWidth,
       });
     }
     const list = [...song.errors.map((e) => ({ ...e, kind: '错误' })), ...song.warnings.map((e) => ({ ...e, kind: '提醒' }))].sort((a, b) => a.line - b.line);

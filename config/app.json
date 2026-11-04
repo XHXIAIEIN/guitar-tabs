@@ -69,7 +69,7 @@
     ],
     "pickable": ["C", "D", "E", "G", "A", "Am", "Dm", "Em", "A7", "B7", "C7", "D7", "E7", "G7", "Am7", "Dm7", "Em7", "Cmaj7", "Fmaj7", "Dsus2", "Dsus4", "Asus2", "Cadd9", "F", "Bm"],
     "drill": {
-      "presets": [["C", "G"], ["G", "D"], ["Am", "Em"], ["C", "Am"], ["D", "A"], ["E", "A"], ["G", "D", "Em", "C"], ["C", "Am", "Dm", "G"], ["C", "G", "Am", "F"], ["Am", "F", "C", "G"]],
+      "presets": [["C", "G"], ["G", "D"], ["Am", "Em"], ["C", "Am"], ["D", "A"], ["E", "A"], ["G", "D", "Em", "C"], ["C", "D", "G", "Em"], ["C", "Am", "Dm", "G"], ["C", "G", "Am", "F"], ["Am", "F", "C", "G"]],
       "beatsPerChord": [2, 4, 8],
       "bpm": { "min": 30, "max": 180, "step": 5 }
     },

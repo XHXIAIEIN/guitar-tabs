@@ -32,7 +32,7 @@ export function songView(root, id, opts = {}) {
   if (!canTranspose) prefs.transpose = 0;
   const hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
   const performTab = !hasLyrics || !song.chordsUsed.length;
-  const performShow = { tab: performTab, jianpu: false, rhythm: performTab, lyrics: true, chords: true };
+  const performShow = { tab: performTab, jianpu: false, rhythm: false, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const trainer = { on: false, step: 2, max: Math.min(240, Math.round(meta.bpm * 1.25)) };
   const seq = new Sequencer();

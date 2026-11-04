@@ -180,5 +180,5 @@ npm test
 
 - 添加或删除源文件后，同步 `sw.js` 的 `SHELL` 列表，否则离线时缺文件。测试会查出遗漏。
 - 换吉他录音时，同时改 `config/app.json` 的 `audio.samples.recordings` 和 `sw.js` 里的音高列表。每个录音的音分误差用 `src/audio/pitch-detect.js` 的 `detectPitch` 测，播放时减掉。
-- 内置曲谱只收公有领域的作品。
+- 内置曲谱只收公有领域的作品。还在版权期内的歌只写和弦和扫弦，不写旋律和歌词。
 - PNG 图标由 `scripts/make-icons.py` 按脚本里的坐标绘制（需要 Pillow）。改图标图形时，同时改 `assets/icons/icon.svg` 和脚本里的坐标，再运行 `python scripts/make-icons.py`。

@@ -1,4 +1,4 @@
-// Built-in public-domain songs, written in the app's own text format.
+// Built-in songs, written in the app's own text format. A song still under copyright holds only its chords and strums.
 // An entry has either `text` or `versions`; the first version is the one a song opens with.
 
 export const SONGS = [
@@ -260,5 +260,22 @@ chord: | G | G7 | C | G |
 lyric: | once was | lost, but | now am | found, Was |
 chord: | Em | D | G | G |
 lyric: | blind, but | now I | see. | |`,
+  },
+  {
+    id: 'perfect',
+    group: 'song',
+    text: `title: Perfect
+artist: Ed Sheeran · 和弦练习
+key: G
+bpm: 60
+time: 4/4
+level: 入门
+note: 练 G、Em、C、D 四个和弦的循环，和「换和弦练习」里的 C – D – G – Em 是同一个循环。每个和弦一小节，每拍向下扫一次（↓）。换和弦时提前在第 4 拍准备，宁可最后一下扫空弦，也不要让节拍停下来。
+
+# 每个和弦一小节
+chord: | G | Em | C | D |
+tab: | q D D D D | D D D D | D D D D | D D D D |
+chord: | G | Em | C | D |
+tab: | q D D D D | D D D D | D D D D | D D D D |`,
   },
 ];

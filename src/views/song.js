@@ -462,7 +462,7 @@ export function songView(root, id, opts = {}) {
     };
     openPanel('显示', h('div', { class: 'stack' },
       h('div', { class: 'toggle-grid' },
-        ...[['tab', '六线谱'], ['jianpu', '简谱'], ['chords', '和弦'], ['lyrics', '歌词']].map(([k, label]) =>
+        ...[['tab', '六线谱'], ['jianpu', '简谱（唱名数字）'], ['chords', '和弦'], ['lyrics', '歌词']].map(([k, label]) =>
           toggle(label, sh[k], (v) => {
             sh[k] = v;
             changed();

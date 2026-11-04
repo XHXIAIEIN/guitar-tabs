@@ -7,7 +7,8 @@ const KEY = 'liuxian.v1';
 const DEFAULTS = {
   settings: {
     theme: 'auto',
-    show: { tab: true, jianpu: true, lyrics: true, chords: true },
+    show: { tab: true, jianpu: false, lyrics: true, chords: true },
+    showRevision: 1,
     zoom: 1,
     countIn: 1,
     metronome: true,
@@ -32,10 +33,13 @@ function load() {
   } catch {
     saved = {};
   }
+  const show = { ...DEFAULTS.settings.show, ...saved.settings?.show };
+  // Every save writes all of `show`, so a save without showRevision holds 简谱 on as an old default, not as a choice
+  if (!saved.settings?.showRevision) show.jianpu = false;
   return {
     ...structuredClone(DEFAULTS),
     ...saved,
-    settings: { ...DEFAULTS.settings, ...saved.settings, show: { ...DEFAULTS.settings.show, ...saved.settings?.show } },
+    settings: { ...DEFAULTS.settings, ...saved.settings, show },
   };
 }
 

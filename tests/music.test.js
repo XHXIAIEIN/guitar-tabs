@@ -164,6 +164,21 @@ test('a song opens as its simple version until another version is chosen', () =>
   setVersion('twinkle', 'simple');
 });
 
+test('简谱 is off by default, and only a save with showRevision keeps it on', async () => {
+  const load = async (saved, tag) => {
+    globalThis.localStorage = { getItem: () => (saved ? JSON.stringify(saved) : null), setItem: () => {} };
+    const { state } = await import(`../src/store.js?${tag}`);
+    delete globalThis.localStorage;
+    return state.settings.show;
+  };
+  assert.equal((await load(null, 'fresh')).jianpu, false);
+  const show = { tab: true, jianpu: true, lyrics: false, chords: true };
+  const old = await load({ settings: { show } }, 'old');
+  assert.equal(old.jianpu, false);
+  assert.equal(old.lyrics, false);
+  assert.equal((await load({ settings: { show, showRevision: 1 } }, 'chosen')).jianpu, true);
+});
+
 test('midi of fretted notes', () => {
   assert.equal(midiOf(5, 3), 48);
   assert.equal(midiOf(1, 0, 3), 67);

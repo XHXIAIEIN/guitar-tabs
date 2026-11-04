@@ -6,12 +6,12 @@
 .song-note-block { display: flex; flex-direction: column; gap: 6px; }
 .finger-legend { display: flex; flex-wrap: wrap; gap: 2px 12px; color: var(--ink-2); font-size: 13px; }
 /* overflow: hidden puts the baseline of the inline-block at its bottom edge, and CJK glyphs centre about 0.43em above the text baseline. */
-.finger { display: inline-block; overflow: hidden; width: 18px; height: 18px; margin: 0 1px; border-radius: 50%; background: var(--finger-bg); color: #fff; font: 700 11px/18px var(--font); text-align: center; vertical-align: calc(0.43em - 9px); }
-.finger-T { --finger-bg: var(--finger-t); }
-.finger-1 { --finger-bg: var(--finger-1); }
-.finger-2 { --finger-bg: var(--finger-2); }
-.finger-3 { --finger-bg: var(--finger-3); color: #1e1c18; }
-.finger-4 { --finger-bg: var(--finger-4); }
+.finger { display: inline-block; overflow: hidden; width: 18px; height: 18px; margin: 0 1px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px currentColor; font: 700 11px/18px var(--font); text-align: center; vertical-align: calc(0.43em - 9px); }
+.finger-T { color: var(--finger-t); }
+.finger-1 { color: var(--finger-1); }
+.finger-2 { color: var(--finger-2); }
+.finger-3 { color: var(--finger-3); }
+.finger-4 { color: var(--finger-4); }
 .chord-strip { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: thin; }
 .chord-card { flex: none; padding: 4px 6px 2px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; color: var(--ink); }
 .chord-card:hover { border-color: var(--accent); }

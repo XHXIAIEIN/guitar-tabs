@@ -48,6 +48,8 @@ const ICONS = {
   next: '<path d="m6 5.5 9.5 6.5L6 18.5z" fill="currentColor" stroke="none"/><path d="M18.5 5v14"/>',
   up: '<path d="m6 15 6-6 6 6"/>',
   down: '<path d="m6 9 6 6 6-6"/>',
+  arrowUp: '<path d="M12 20V4"/><path d="m6 10 6-6 6 6"/>',
+  arrowDown: '<path d="M12 4v16"/><path d="m6 14 6 6 6-6"/>',
   locate: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
   trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
   download: '<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>',

@@ -24,7 +24,8 @@ const PRESETS = [
   { group: '扫弦节奏型', name: '6/8：下 下上 下 下上', time: [6, 8], grid: 'e', steps: 'DDUDDU' },
   { group: '扫弦节奏型', name: '十六分：下 下上下 上下上', time: [4, 4], grid: 's', steps: 'D-D-D.DUD.DU.UDU' },
 ];
-const GLYPH = { D: '↓', U: '↑', X: '×', '-': '—', '.': '' };
+const STEP_ICON = { D: 'arrowDown', U: 'arrowUp', X: 'close', '-': 'minus' };
+const STEP_NAME = { D: '下扫', U: '上扫', X: '切音', '-': '延长', '.': '空拍' };
 const CYCLE = ['D', 'U', 'X', '-', '.'];
 const DUR = { 12: ['s', false], 18: ['s', true], 24: ['e', false], 36: ['e', true], 48: ['q', false], 72: ['q', true], 96: ['h', false], 144: ['h', true], 192: ['w', false] };
 const TRIPLET = { 16: 'e', 32: 'q' };
@@ -58,6 +59,10 @@ function countLabel(i, stepTicks, m) {
   if (tick % m.beatTicks === 0) return String(tick / m.beatTicks + 1);
   const pos = (tick % m.beatTicks) / stepTicks;
   return stepTicks === 12 ? ['e', '+', 'a'][pos - 1] : stepTicks === 16 ? ['+', 'a'][pos - 1] : '+';
+}
+
+function stepMark(s) {
+  return h('span', { class: `step-mark s-${s === '.' ? 'rest' : s === '-' ? 'hold' : s}` }, STEP_ICON[s] ? icon(STEP_ICON[s]) : null);
 }
 
 /** Context time of a tap, aligned with what the listener hears. */
@@ -129,20 +134,22 @@ export function rhythmView(root) {
 
   function renderGrid() {
     const mm = m();
-    gridEl.style.setProperty('--steps', steps.length);
     gridEl.replaceChildren(
-      ...steps.map((s, i) =>
-        h('button', {
-          class: `step ${(i * stepTicks()) % mm.beatTicks === 0 ? 'beat' : ''} s-${s === '.' ? 'rest' : s === '-' ? 'hold' : s}`,
+      ...steps.map((s, i) => {
+        const tick = i * stepTicks();
+        const count = countLabel(i, stepTicks(), mm);
+        return h('button', {
+          class: `step ${tick % mm.beatTicks === 0 ? 'beat' : ''} ${tick % mm.groupTicks === 0 ? 'group' : ''}`,
           type: 'button',
           title: '点击切换：下扫 → 上扫 → 切音 → 延长 → 空拍',
+          'aria-label': `${count} ${STEP_NAME[s]}`,
           onclick: () => {
             steps[i] = CYCLE[(CYCLE.indexOf(s) + 1) % CYCLE.length];
             preset = null;
             renderAll();
           },
-        }, h('b', null, GLYPH[s]), h('small', null, countLabel(i, stepTicks(), mm))),
-      ),
+        }, h('small', null, count), stepMark(s));
+      }),
     );
   }
 
@@ -314,7 +321,8 @@ export function rhythmView(root) {
       h('header', { class: 'page-head' }, h('h1', null, '节奏')),
       h('section', { class: 'card stack' },
         gridEl,
-        h('p', { class: 'legend' }, '↓ 下扫 · ↑ 上扫 · × 切音（扫的同时用手掌外侧压住弦）· — 延长 · 空白 = 空拍（手照常摆动，不碰弦）。点格子可以修改。'),
+        h('div', { class: 'step-keys' }, CYCLE.map((s) => h('span', { class: 'step-key' }, stepMark(s), STEP_NAME[s]))),
+        h('p', { class: 'legend' }, '切音：扫的同时用手掌外侧压住弦。空拍：手照常摆动，不碰弦。点格子可以修改。'),
         notation,
         h('div', { class: 'row wrap gap-m' },
           h('label', { class: 'field-inline' }, '速度', stepper(bpm, { min: 30, max: 220, step: 5, label: '速度', format: (v) => `♩${v}`, onchange: (v) => { bpm = v; if (seq.running) seq.setBpm(v); } })),

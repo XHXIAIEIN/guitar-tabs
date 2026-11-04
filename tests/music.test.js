@@ -120,11 +120,25 @@ test('built-in songs parse cleanly and their melodies match the written 简谱',
   }
 });
 
-test('simple versions stay on the top strings and come first', () => {
+test('versions of one entry share a title and open as the simple version', () => {
   for (const entry of BUILTIN.filter((e) => e.versions)) {
     assert.equal(entry.versions[0].id, 'simple', entry.id);
     const titles = entry.versions.map((v) => parseSong(v.text).meta.title);
     assert.equal(new Set(titles).size, 1, `${entry.id} titles`);
+    assert.equal(parseSong(entry.versions[0].text).meta.level, '入门', `${entry.id} level`);
+  }
+});
+
+test('simple exercises use only Em and Am and are no faster than the full version', () => {
+  for (const entry of BUILTIN.filter((e) => e.group === '练习')) {
+    const [simple, full] = entry.versions.map((v) => parseSong(v.text));
+    for (const name of simple.chordsUsed) assert.ok(['Em', 'Am'].includes(name), `${entry.id} uses ${name}`);
+    assert.ok(simple.meta.bpm <= full.meta.bpm, `${entry.id} bpm`);
+  }
+});
+
+test('simple songs keep the melody and stay on the top strings', () => {
+  for (const entry of BUILTIN.filter((e) => e.versions && e.group === '歌曲')) {
     const song = parseSong(entry.versions[0].text);
     const steps = (s) => s.melody.slice(1).map((p, i) => p - s.melody[i]);
     assert.deepEqual(steps(song), steps(parseSong(entry.versions[1].text)), `${entry.id} melody differs between versions`);

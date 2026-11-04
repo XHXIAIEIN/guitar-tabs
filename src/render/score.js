@@ -1,4 +1,4 @@
-// SVG score: chord names, 简谱, strum arrows, TAB staff with rhythm stems, lyrics.
+// SVG score: chord names, 简谱, strum arrows, rhythm notes, TAB staff, lyrics.
 // Lines break at section headings and otherwise hold a whole phrase (1, 2, 4 or 8 bars).
 import { jianpu, midiOf } from '../music/theory.js';
 
@@ -7,6 +7,7 @@ const PAD_R = 8;
 // String label columns from the staff outwards, with widths before scaling
 const LABEL_COLUMNS = [['name', 12], ['number', 12], ['tab', 13]];
 const LABEL_GAP = 3;
+const HEAD_RX = 4;
 const STRING_NAMES = ['e', 'B', 'G', 'D', 'A', 'E'];
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const r1 = (n) => Math.round(n * 10) / 10;
@@ -106,14 +107,15 @@ function lineGeometry(bars, o) {
       g.strum = y + 1 * s;
       y += 17 * s;
     }
+    if (o.show.rhythm) {
+      g.stem = y + (has((e) => e.tuplet) ? 11 : 4) * s;
+      g.head = g.stem + 20 * s;
+      y = g.head + 10 * s;
+    }
     if (o.show.tab) {
       g.gap = 11 * s;
       g.staff = y + 6 * s;
-      const staffEnd = g.staff + 5 * g.gap;
-      if (o.show.rhythm) {
-        g.stem = staffEnd + 5 * s;
-        y = g.stem + 27 * s;
-      } else y = staffEnd + 10 * s;
+      y = g.staff + 5 * g.gap + 10 * s;
     }
   } else {
     g.beats = y + 1 * s;
@@ -138,15 +140,21 @@ function restGlyph(base, x, y, s) {
 
 const beam = (x1, x2, y, s) => `<rect class="beam" x="${r1(Math.min(x1, x2) - 0.7 * s)}" y="${r1(y - 2.6 * s)}" width="${r1(Math.abs(x2 - x1) + 1.4 * s)}" height="${r1(2.6 * s)}"/>`;
 
+function noteHead(e, x, y, s) {
+  const hollow = e.base === 'h' || e.base === 'w';
+  const head = `<ellipse class="head${hollow ? ' hollow' : ''}" cx="${r1(x)}" cy="${r1(y)}" rx="${r1(HEAD_RX * s)}" ry="${r1(2.9 * s)}" transform="rotate(-20 ${r1(x)} ${r1(y)})"/>`;
+  return e.dotted ? head + dot(x + 8 * s, y, 1.4 * s) : head;
+}
+
 function stemsAndBeams(bar, xs, g, s, groupOf) {
   let out = '';
   const top = g.stem;
-  const bottom = g.stem + 20 * s;
   const ev = bar.events;
+  // Stems stand on the right side of the head, and heads line up with the fret numbers below.
+  const stemX = (i) => xs[i] + (HEAD_RX - 0.3) * s;
   ev.forEach((e, i) => {
     if (e.kind === 'rest' || e.base === 'w') return;
-    out += line(xs[i], e.base === 'h' ? top + 9 * s : top, xs[i], bottom, 'stem');
-    if (e.dotted) out += dot(xs[i] + 4.5 * s, bottom - 3 * s, 1.4 * s);
+    out += line(stemX(i), g.head - 1 * s, stemX(i), top, 'stem');
   });
   const beamable = (e) => e && e.kind !== 'rest' && (e.base === 'e' || e.base === 's');
   for (let i = 0; i < ev.length; ) {
@@ -157,14 +165,14 @@ function stemsAndBeams(bar, xs, g, s, groupOf) {
     let j = i;
     while (j + 1 < ev.length && beamable(ev[j + 1]) && groupOf(ev[j + 1]) === groupOf(ev[i])) j++;
     if (j === i) {
-      const flag = (y) => `<path class="flag" d="M${r1(xs[i])} ${r1(y)} q${r1(5 * s)} ${r1(-1.5 * s)} ${r1(6.5 * s)} ${r1(-8 * s)}"/>`;
-      out += flag(bottom) + (ev[i].base === 's' ? flag(bottom - 4.5 * s) : '');
+      const flag = (y) => `<path class="flag" d="M${r1(stemX(i))} ${r1(y)} q${r1(5 * s)} ${r1(1.5 * s)} ${r1(6.5 * s)} ${r1(8 * s)}"/>`;
+      out += flag(top) + (ev[i].base === 's' ? flag(top + 4.5 * s) : '');
     } else {
-      out += beam(xs[i], xs[j], bottom, s);
+      out += beam(stemX(i), stemX(j), top + 2.6 * s, s);
       for (let k = i; k <= j; k++) {
         if (ev[k].base !== 's') continue;
-        if (k < j && ev[k + 1].base === 's') out += beam(xs[k], xs[k + 1], bottom - 4.5 * s, s);
-        else if (!(k > i && ev[k - 1].base === 's')) out += beam(xs[k], xs[k] + (k === j ? -6 : 6) * s, bottom - 4.5 * s, s);
+        if (k < j && ev[k + 1].base === 's') out += beam(stemX(k), stemX(k + 1), top + 7.1 * s, s);
+        else if (!(k > i && ev[k - 1].base === 's')) out += beam(stemX(k), stemX(k) + (k === j ? -6 : 6) * s, top + 7.1 * s, s);
       }
     }
     i = j + 1;
@@ -281,8 +289,8 @@ function renderBar(bar, bx, bw, f, m, song, o, g, F, isFirstInLine, isLast) {
     }
     if (g.staff !== undefined) {
       for (let k = 0; k < 6; k++) out += line(bx, g.staff + k * g.gap, bx + bw, g.staff + k * g.gap, `staff s${k + 1}`);
-      if (g.stem !== undefined) out += stemsAndBeams(bar, xs, g, s, groupOf) + tupletMarks(bar, xs, g.stem + 30 * s, s);
     }
+    if (g.stem !== undefined) out += stemsAndBeams(bar, xs, g, s, groupOf) + tupletMarks(bar, xs, g.stem - 2 * s, s);
     if (g.jianpu !== undefined) out += jianpuMarks(bar, xs, g, s, o, xAt, groupOf);
     bar.events.forEach((e, i) => {
       let ev = `<g class="ev" data-ev="${i}">`;
@@ -293,7 +301,8 @@ function renderBar(bar, bx, bw, f, m, song, o, g, F, isFirstInLine, isLast) {
         else if (e.kind === 'rest') ev += restGlyph(e.base, ex, mid, s);
         else if (e.dir === 'X') ev += line(ex - 4 * s, mid - 4 * s, ex + 4 * s, mid + 4 * s, 'slash x') + line(ex + 4 * s, mid - 4 * s, ex - 4 * s, mid + 4 * s, 'slash x');
         else ev += line(ex - 4 * s, mid + 7 * s, ex + 4 * s, mid - 7 * s, 'slash');
-      }
+      } else if (g.head !== undefined && e.kind === 'rest') ev += restGlyph(e.base, ex, g.head - 8 * s, s);
+      if (g.head !== undefined && e.kind !== 'rest') ev += noteHead(e, ex, g.head, s);
       if (g.strum !== undefined && e.kind === 'strum') ev += strumArrow(e.dir, ex, g.strum, s);
       if (g.lyric !== undefined && e.lyric) ev += text(ex, g.lyric, e.lyric, 'lyr');
       out += ev + '</g>';

@@ -232,6 +232,7 @@ span.chip { cursor: default; }
 .brand-name { font-size: 11px; color: var(--muted); }
 .nav-link { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 4px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 12px; }
 .nav-link .icon svg { width: 22px; height: 22px; }
+.nav-link[data-nav="#/chords"] .icon svg { width: 28px; height: 28px; margin: -3px 0; }
 .nav-link:hover { background: var(--hover); color: var(--ink); }
 .nav-link.active { color: var(--accent); background: var(--accent-soft); }
 #view { min-width: 0; }
@@ -353,6 +354,8 @@ span.chip { cursor: default; }
 .jp-dot { fill: var(--ink); }
 .jp-line, .jp-dash { stroke: var(--ink); stroke-width: calc(1.4px * var(--s)); }
 .stem { stroke: var(--ink-2); stroke-width: calc(1.2px * var(--s)); }
+.head { fill: var(--ink-2); }
+.head.hollow { fill: none; stroke: var(--ink-2); stroke-width: calc(1.3px * var(--s)); }
 .beam, .rest-block { fill: var(--ink-2); }
 .flag { stroke: var(--ink-2); stroke-width: calc(1.5px * var(--s)); fill: none; stroke-linecap: round; }
 .tuplet { font-size: calc(10px * var(--s)); font-weight: 600; fill: var(--ink-2); font-style: italic; }
@@ -364,7 +367,8 @@ span.chip { cursor: default; }
 .beat.strong { stroke: var(--muted); }
 .ev.on .fret, .ev.on .lyr, .jp-ev.on .jp, .jp-ev.on .jp-acc { fill: var(--accent); }
 .jp-ev.on .jp-dot { fill: var(--accent); }
-.ev.on .slash, .ev.on .arrow { stroke: var(--accent); }
+.ev.on .slash, .ev.on .arrow, .ev.on .head.hollow { stroke: var(--accent); }
+.ev.on .head:not(.hollow), .ev.on .dot { fill: var(--accent); }
 
 .count-overlay {
   position: fixed;
@@ -440,8 +444,8 @@ span.chip { cursor: default; }
 .transport .loop-btn.on { background: var(--loop-soft); color: var(--loop); }
 .toggle-btn:not(.on) { color: var(--muted); }
 .bpm { display: flex; align-items: center; }
-.bpm-btn { display: flex; flex-direction: row; align-items: baseline; gap: 2px; min-width: 70px; }
-.bpm-btn small { color: var(--muted); font-size: 12px; }
+.bpm-btn { display: flex; flex-direction: row; align-items: center; gap: 4px; min-width: 70px; }
+.bpm-btn .icon { color: var(--muted); }
 .bpm-btn strong { font-size: 18px; font-variant-numeric: tabular-nums; }
 .bpm-btn.changed strong { color: var(--accent); }
 .page-btns { display: flex; gap: 2px; }

@@ -31,7 +31,8 @@ export function songView(root, id, opts = {}) {
   const canTranspose = !song.hasEvents;
   if (!canTranspose) prefs.transpose = 0;
   const hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
-  const performShow = { tab: !hasLyrics || !song.chordsUsed.length, jianpu: false, rhythm: true, lyrics: true, chords: true };
+  const performTab = !hasLyrics || !song.chordsUsed.length;
+  const performShow = { tab: performTab, jianpu: false, rhythm: performTab, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const trainer = { on: false, step: 2, max: Math.min(240, Math.round(meta.bpm * 1.25)) };
   const seq = new Sequencer();
@@ -63,7 +64,7 @@ export function songView(root, id, opts = {}) {
     h('div', { class: 'top-title' }, h('strong', null, meta.title), meta.artist ? h('span', null, meta.artist) : null),
     h('div', { class: 'top-actions' },
       iconButton('eye', '显示', openDisplay, { text: true }),
-      iconButton('capo', '变调', openCapo, { text: true }),
+      iconButton('note', '变调', openCapo, { text: true }),
       perform ? null : iconButton('edit', '编辑', () => (location.hash = `#/edit/${id}`), { text: true }),
       perform ? null : iconButton('stage', '演出', () => (location.hash = `#/perform/${id}`), { text: true }),
       nextId ? iconButton('next', '下一首', () => (location.hash = `#/perform/${nextId}?list`), { text: true }) : null,
@@ -80,7 +81,7 @@ export function songView(root, id, opts = {}) {
   const playBtn = h('button', { class: 'btn play-btn', type: 'button', 'aria-label': '播放', title: '播放 / 暂停（空格）', onclick: togglePlay }, icon('play'));
   const loopBtn = iconButton('loop', '循环', onLoopButton, { text: true, cls: 'loop-btn' });
   const bpmOut = h('strong');
-  const bpmBtn = h('button', { class: 'btn bpm-btn', type: 'button', title: '调整速度', onclick: openTempo }, h('small', null, '♩='), bpmOut);
+  const bpmBtn = h('button', { class: 'btn bpm-btn', type: 'button', title: '调整速度', onclick: openTempo }, icon('speed'), bpmOut);
   const metroBtn = iconButton('metronome', '节拍器', () => setLive('metronome', !live.metronome), { cls: 'toggle-btn' });
   const guitarBtn = iconButton('guitar', '示范音', () => setLive('guitar', !live.guitar), { cls: 'toggle-btn' });
   const transport = h('footer', { class: 'transport' },

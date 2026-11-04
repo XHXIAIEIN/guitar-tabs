@@ -6,7 +6,7 @@
 .song-note-block { display: flex; flex-direction: column; gap: 6px; }
 .finger-legend { display: flex; flex-wrap: wrap; gap: 2px 12px; color: var(--ink-2); font-size: 13px; }
 /* overflow: hidden puts the baseline of the inline-block at its bottom edge, and CJK glyphs centre about 0.43em above the text baseline. */
-.finger { display: inline-block; overflow: hidden; width: 18px; height: 18px; margin: 0 1px; border-radius: 50%; background: var(--finger-bg); color: #fff; font: 700 11px/17.5px var(--font); text-align: center; vertical-align: calc(0.43em - 9px); }
+.finger { display: inline-block; overflow: hidden; width: 18px; height: 18px; margin: 0 1px; border-radius: 50%; background: var(--finger-bg); color: #fff; font: 700 11px/18px var(--font); text-align: center; vertical-align: calc(0.43em - 9px); }
 .finger-T { --finger-bg: var(--finger-t); }
 .finger-1 { --finger-bg: var(--finger-1); }
 .finger-2 { --finger-bg: var(--finger-2); }

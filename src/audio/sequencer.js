@@ -1,9 +1,8 @@
 // Lookahead scheduler: pulls bars from a source and schedules their sounds slightly ahead of time,
 // then hands each item's UI payload back on the animation frame when it becomes audible.
-import { audioContext, outputLatency, dampAll } from './engine.js';
-
-const LOOKAHEAD = 0.15;
-const INTERVAL = 25;
+import { config } from '../core/config.js';
+import { audioContext, outputLatency } from './context.js';
+import { dampAll } from './guitar.js';
 
 /**
  * A bar from a source: { ticks, beatTicks, bpm?, items: [{ tick, sound?(time), ui? }] } sorted by tick.
@@ -34,7 +33,7 @@ export class Sequencer {
     this.lastTick = 0;
     this.lastTime = this.barStart;
     this.enter(source.next());
-    this.timer = setInterval(() => this.pump(), INTERVAL);
+    this.timer = setInterval(() => this.pump(), config.audio.sequencer.intervalMs);
     this.pump();
     const run = ++this.run;
     const frame = () => {
@@ -65,7 +64,7 @@ export class Sequencer {
   }
 
   pump() {
-    const horizon = audioContext().currentTime + LOOKAHEAD;
+    const horizon = audioContext().currentTime + config.audio.sequencer.lookaheadSec;
     while (this.bar) {
       const items = this.bar.items;
       if (this.index >= items.length) {

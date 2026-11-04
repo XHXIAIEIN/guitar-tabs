@@ -1,7 +1,9 @@
 // Turns a parsed song into sequencer bars: count-in, metronome, guitar sounds, loop and speed trainer.
-import { click, pluck, strum, dampAll } from './engine.js';
-import { beatAccent, chordAt } from '../music/format.js';
-import { midiOf } from '../music/theory.js';
+import { click } from './click.js';
+import { pluck, strum, dampAll } from './guitar.js';
+import { beatAccent } from '../music/format/meter.js';
+import { chordAt } from '../music/format/pattern.js';
+import { midiOf } from '../music/pitch.js';
 
 const MUTED = [0, 0, 0, 0, 0, 0];
 

@@ -1,0 +1,21 @@
+/* ---------- song page ---------- */
+.song-page { min-height: 100dvh; background: var(--paper); color: var(--ink); }
+.song-body { max-width: 1240px; margin: 0 auto; padding: 14px 18px calc(110px + env(safe-area-inset-bottom)); }
+.song-info { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
+.song-note { color: var(--ink-2); font-size: 14px; max-width: 72ch; }
+.chord-strip { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: thin; }
+.chord-card { flex: none; padding: 4px 6px 2px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; color: var(--ink); }
+.chord-card:hover { border-color: var(--accent); }
+.diagram { display: block; width: 84px; }
+.diagram-lg { display: block; width: 118px; }
+.diagram-xl { display: block; width: 190px; }
+.strum-box { display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px 0; max-width: 380px; }
+.strum-head { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.strum-head span { color: var(--muted); }
+
+.score { --score-font: "Segoe UI", -apple-system, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; user-select: none; -webkit-user-select: none; }
+.score.mini { width: 100%; }
+.sys { position: relative; }
+.sec-label { display: inline-block; margin: 16px 0 2px; padding: 1px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 13px; font-weight: 600; }
+.sys:first-child .sec-label { margin-top: 4px; }
+.sys-svg { display: block; overflow: visible; }

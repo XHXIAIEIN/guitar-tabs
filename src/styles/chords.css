@@ -1,0 +1,33 @@
+/* ---------- chords page ---------- */
+.chord-group { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.chord-grid .chord-card { padding: 6px 8px 4px; }
+.chord-grid .diagram { width: 100%; max-width: 92px; margin: 0 auto; }
+.drill-stage { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; justify-content: center; align-items: end; gap: 10px 34px; padding: 10px 0; }
+.drill-now, .drill-next { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.drill-now small, .drill-next small { color: var(--muted); font-size: 13px; }
+.drill-next { opacity: 0.55; transition: opacity 0.12s ease-out; }
+.drill-next.ready { opacity: 1; }
+.drill-next.ready small { color: var(--accent); font-weight: 700; }
+.drill-beats { grid-column: 1 / -1; display: flex; justify-content: center; gap: 10px; }
+.drill-beats i, .metro-dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--line); }
+.drill-beats i.past { background: var(--staff); }
+.drill-beats i.on, .metro-dots i.on { background: var(--accent); }
+.metro-dots { display: flex; justify-content: center; gap: 14px; }
+.metro-dots i { width: 26px; height: 26px; }
+.metro-dots i.accent { box-shadow: 0 0 0 3px var(--accent-soft); }
+.minute-stage { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.pair-shapes { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.swap { font-size: 22px; color: var(--muted); }
+.big-clock { font-size: 64px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+.big-clock.pre { color: var(--accent); }
+.big-count { font-size: 40px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.big-count.pop { animation: pop 0.18s ease-out; }
+@keyframes pop { from { transform: scale(1.25); } to { transform: none; } }
+.tap-pad { width: 100%; height: 110px; font-size: 18px; border-radius: 16px; background: var(--surface-2); border-style: dashed; }
+.tap-pad.flash { animation: flash 0.25s ease-out; }
+@keyframes flash { from { background: var(--accent-soft); } to { background: var(--surface-2); } }
+.history .bars { display: flex; align-items: flex-end; gap: 6px; height: 96px; padding-bottom: 16px; margin-top: 8px; }
+.bar-col { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; flex: 1; max-width: 36px; }
+.bar-col i { width: 100%; height: var(--h); background: var(--accent-soft); border-top: 3px solid var(--accent); border-radius: 4px 4px 0 0; }
+.bar-col small { position: absolute; top: 100%; font-size: 11px; color: var(--muted); }

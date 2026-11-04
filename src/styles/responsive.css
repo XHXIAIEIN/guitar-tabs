@@ -1,0 +1,51 @@
+/* ---------- phones ---------- */
+@media (max-width: 760px) {
+  :root { --nav-w: 0px; }
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .nav {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom));
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .brand { display: none; }
+  .nav-link { flex: 1; padding: 6px 2px; font-size: 11px; }
+  .shell.focus .nav { display: none; }
+  .page { padding: 16px 14px 100px; }
+  h1 { font-size: 22px; }
+  .top-actions .with-text span:not(.icon) { display: none; }
+  .top-actions .icon-btn.with-text { width: 40px; padding: 0; }
+  .song-body { padding: 10px 10px calc(104px + env(safe-area-inset-bottom)); }
+  .transport-row { gap: 2px; padding: 6px 8px; }
+  .transport .loop-btn span:not(.icon) { font-size: 12px; }
+  .wide-only { display: none !important; }
+  .narrow-only { display: inline-flex !important; }
+  .panel { top: auto; right: 0; left: 0; bottom: 0; width: 100%; max-height: 84dvh; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+  .panel.wide { width: 100%; }
+  .editor { grid-template-columns: minmax(0, 1fr); }
+  .editor .preview-pane { display: none; }
+  .editor.show-preview .preview-pane { display: block; }
+  .editor.show-preview .editor-pane { display: none; }
+  .editor-pane { border-right: 0; }
+  .step { height: 62px; }
+  .step b { font-size: 19px; }
+  .drill-stage { gap: 10px 18px; }
+  .diagram-xl { width: 150px; }
+  .diagram-lg { width: 100px; }
+  .count-overlay { font-size: 104px; }
+  .tempo-big { font-size: 48px; }
+  .toggle-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 380px) {
+  .transport .loop-btn span:not(.icon) { display: none; }
+  .transport .loop-btn { width: 40px; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

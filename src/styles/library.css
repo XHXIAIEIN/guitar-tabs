@@ -1,0 +1,19 @@
+/* ---------- library ---------- */
+.search { height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); font-size: 15px; width: 100%; }
+.search:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.lib-groups { display: flex; flex-direction: column; gap: 22px; }
+.lib-group h2 { color: var(--muted); font-size: 13px; letter-spacing: 0.06em; margin: 0 0 6px 2px; }
+.song-list { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.song-row { display: flex; align-items: center; gap: 10px; padding: 0 10px 0 0; }
+.song-row + .song-row { border-top: 1px solid var(--line); }
+.song-link { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 12px 16px; text-decoration: none; color: var(--ink); }
+.song-link:hover { background: var(--hover); }
+.song-link strong { font-size: 16px; font-weight: 600; }
+.song-sub { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-sub em { font-style: normal; }
+.setlist { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.setlist-items { list-style: none; margin: 0; padding: 0; }
+.setlist-items li { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.setlist-items a { color: var(--ink); text-decoration: none; font-weight: 500; }
+.set-no { width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; font-size: 12px; color: var(--muted); flex: none; }
+.lib-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; }

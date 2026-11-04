@@ -1,0 +1,62 @@
+/* score elements; sizes scale with --s set on each line's svg */
+.bar-bg { fill: transparent; cursor: pointer; }
+@media (hover: hover) { .bar:hover .bar-bg { fill: var(--hover); } }
+.bar.in-loop .bar-bg { fill: var(--loop-soft); }
+.bar.is-current .bar-bg { fill: var(--accent-soft); }
+.loop-mark { fill: var(--loop); opacity: 0; }
+.bar.in-loop .loop-mark { opacity: 1; }
+.cursor-mark { fill: var(--accent); opacity: 0; }
+.bar.is-cursor .cursor-mark { opacity: 1; }
+.selecting .bar-bg { cursor: crosshair; }
+.selecting .bar:hover .bar-bg { fill: var(--loop-soft); }
+.staff { stroke: var(--staff); stroke-width: 1; }
+.real-strings .staff.s1 { stroke-width: calc(0.6px * var(--s)); }
+.real-strings .staff.s2 { stroke-width: calc(0.8px * var(--s)); }
+.real-strings .staff.s3 { stroke-width: calc(1px * var(--s)); }
+.real-strings .staff.s4 { stroke-width: calc(1.4px * var(--s)); }
+.real-strings .staff.s5 { stroke-width: calc(1.9px * var(--s)); }
+.real-strings .staff.s6 { stroke-width: calc(2.4px * var(--s)); }
+.str-label { font-size: calc(10.5px * var(--s)); fill: var(--muted); }
+.str-tab { font-size: calc(11px * var(--s)); font-weight: 700; fill: var(--ink-2); }
+.barline { stroke: var(--ink-2); stroke-width: calc(1.1px * var(--s)); }
+.barline.faint { stroke: var(--line); }
+.barline-end { fill: var(--ink-2); }
+.bar-no { font-size: calc(9.5px * var(--s)); fill: var(--muted); }
+.fret {
+  font-size: calc(12.5px * var(--s));
+  font-weight: 700;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: calc(4px * var(--s));
+  stroke-linejoin: round;
+  font-variant-numeric: tabular-nums;
+}
+.bar.is-current .fret { stroke: color-mix(in srgb, var(--accent) 13%, var(--paper)); }
+.chord { font-size: calc(15px * var(--s)); font-weight: 700; fill: var(--chord); cursor: pointer; }
+.chord.chart { font-size: calc(18px * var(--s)); }
+.chord.dim { fill: var(--muted); font-weight: 600; }
+.lyr { font-size: calc(15px * var(--s)); fill: var(--ink); }
+.lyr.chart { font-size: calc(16px * var(--s)); }
+.jp { font-size: calc(17px * var(--s)); font-weight: 600; fill: var(--ink); font-variant-numeric: tabular-nums; }
+.jp-acc { font-size: calc(10px * var(--s)); fill: var(--ink); }
+.jp-dot, .dot, .rest-dot { fill: var(--ink-2); }
+.jp-dot { fill: var(--ink); }
+.jp-line, .jp-dash { stroke: var(--ink); stroke-width: calc(1.4px * var(--s)); }
+.stem { stroke: var(--ink-2); stroke-width: calc(1.2px * var(--s)); }
+.head { fill: var(--ink-2); }
+.head.hollow { fill: none; stroke: var(--ink-2); stroke-width: calc(1.3px * var(--s)); }
+.beam, .rest-block { fill: var(--ink-2); }
+.flag { stroke: var(--ink-2); stroke-width: calc(1.5px * var(--s)); fill: none; stroke-linecap: round; }
+.tuplet { font-size: calc(10px * var(--s)); font-weight: 600; fill: var(--ink-2); font-style: italic; }
+.rest { stroke: var(--ink-2); stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.slash { stroke: var(--ink); stroke-width: calc(3px * var(--s)); stroke-linecap: round; }
+.slash.x { stroke-width: calc(1.8px * var(--s)); }
+.slash.hollow { fill: none; stroke-width: calc(1.4px * var(--s)); stroke-linejoin: round; }
+.arrow { stroke: var(--ink); stroke-width: calc(1.6px * var(--s)); fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.beat { stroke: var(--staff); stroke-width: calc(1.4px * var(--s)); stroke-linecap: round; }
+.beat.strong { stroke: var(--muted); }
+.ev.on .fret, .ev.on .lyr, .jp-ev.on .jp, .jp-ev.on .jp-acc { fill: var(--accent); }
+.jp-ev.on .jp-dot { fill: var(--accent); }
+.ev.on .slash, .ev.on .arrow, .ev.on .head.hollow { stroke: var(--accent); }
+.ev.on .head:not(.hollow), .ev.on .dot { fill: var(--accent); }

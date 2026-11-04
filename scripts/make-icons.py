@@ -1,4 +1,4 @@
-"""Draws the PNG app icons (icons/icon-*.png) from the same geometry as icons/icon.svg.
+"""Draws the PNG app icons (assets/icons/icon-*.png) from the same geometry as assets/icons/icon.svg.
 
 Usage: python scripts/make-icons.py
 """
@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-OUT = Path(__file__).resolve().parent.parent / "icons"
+OUT = Path(__file__).resolve().parent.parent / "assets" / "icons"
 ORANGE = (217, 72, 15, 255)
 WHITE = (255, 255, 255, 255)
 FAINT = (255, 255, 255, 140)

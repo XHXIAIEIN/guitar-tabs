@@ -1,0 +1,126 @@
+{
+  "storage": { "key": "liuxian.v1" },
+  "i18n": {
+    "defaultLocale": "zh-CN",
+    "locales": {
+      "zh-CN": { "file": "zh_CN", "name": "简体中文" }
+    }
+  },
+  "defaults": {
+    "settings": {
+      "theme": "auto",
+      "show": { "tab": true, "jianpu": false, "rhythm": false, "lyrics": true, "chords": true },
+      "stringLabels": { "left": "number", "right": "none" },
+      "stringWidth": "uniform",
+      "zoom": 1,
+      "countIn": 1,
+      "metronome": true,
+      "guitar": true,
+      "volMetronome": 0.8,
+      "volGuitar": 0.8,
+      "tapOffset": 0,
+      "performZoom": 1.5,
+      "stage": true,
+      "locale": null
+    },
+    "tools": {
+      "metronome": { "bpm": 80, "time": [4, 4], "subdivision": 1, "accent": true },
+      "drill": { "chords": ["C", "G"], "beatsPer": 4, "bpm": 60, "metronome": true, "strum": true },
+      "minute": { "pair": ["C", "G"] },
+      "rhythm": { "preset": "folk", "time": [4, 4], "grid": "e", "steps": "D-DU.UDU", "bpm": 70, "chord": "C", "metronome": true, "strum": true }
+    }
+  },
+  "format": {
+    "defaultMeta": { "artist": "", "key": "C", "capo": 0, "bpm": 80, "time": [4, 4], "pickup": 0, "jianpu": 0, "level": "", "note": "" },
+    "limits": { "capo": [0, 12], "bpm": [20, 320], "jianpu": [-2, 2], "pickup": [0, 12] }
+  },
+  "audio": {
+    "compressor": { "threshold": -12, "ratio": 4 },
+    "busGain": { "metronome": 1, "guitar": 1.4 },
+    "samples": {
+      "path": "assets/audio/guitar",
+      "recordings": [[40, 1], [43, 10], [47, 7], [50, 5], [53, 4], [56, 7], [59, 13], [62, 8], [65, 3], [69, 5], [72, 12], [75, 4], [78, 4], [81, 10], [84, 9]]
+    },
+    "sequencer": { "intervalMs": 25, "lookaheadSec": 0.15 }
+  },
+  "theme": { "color": { "light": "#f5f2ea", "dark": "#151412" } },
+  "toast": { "plainMs": 2800, "actionMs": 7000 },
+  "tapTempo": { "resetMs": 2000, "minTaps": 3, "window": 6 },
+  "editor": {
+    "keys": ["|", "/", "+", ".", "q", "e", "h", "s", "r", "D", "U", "chord: ", "tab: ", "lyric: ", "# "],
+    "previewScale": 0.95,
+    "autosaveMs": 350
+  },
+  "song": {
+    "bpmStep": 5,
+    "countInOptions": [0, 1, 2],
+    "zoom": { "narrowBelow": 560, "narrow": 0.94, "wide": 1.08, "range": [60, 260], "step": 10 },
+    "tempoPanel": { "slider": [30, 240], "nudges": [-5, -1, 1, 5], "ratios": [0.5, 0.75, 0.9, 1] },
+    "capo": { "maxCapo": 9, "transposeRange": [-6, 6], "optionMaxCapo": 7, "optionsShown": 4 },
+    "trainer": { "step": 2, "maxBpm": 240, "maxRatio": 1.25, "stepRange": [1, 10], "maxRange": [40, 240], "maxStep": 5 }
+  },
+  "chords": {
+    "groups": [
+      { "id": "open", "chords": ["C", "D", "E", "G", "A", "Am", "Dm", "Em"] },
+      { "id": "seventh", "chords": ["A7", "B7", "C7", "D7", "E7", "G7", "Am7", "Dm7", "Em7", "Cmaj7", "Fmaj7", "Gmaj7", "Dmaj7", "Amaj7"] },
+      { "id": "sus", "chords": ["Dsus2", "Dsus4", "Asus2", "Asus4", "Esus4", "Cadd9"] },
+      { "id": "barre", "chords": ["F", "Bm", "B", "Bb", "Cm", "C#m", "Fm", "F#m", "Gm", "G#m", "Bm7", "F#m7"] },
+      { "id": "slash", "chords": ["G/B", "D/F#"] }
+    ],
+    "pickable": ["C", "D", "E", "G", "A", "Am", "Dm", "Em", "A7", "B7", "C7", "D7", "E7", "G7", "Am7", "Dm7", "Em7", "Cmaj7", "Fmaj7", "Dsus2", "Dsus4", "Asus2", "Cadd9", "F", "Bm"],
+    "drill": {
+      "presets": [["C", "G"], ["G", "D"], ["Am", "Em"], ["C", "Am"], ["D", "A"], ["E", "A"], ["G", "D", "Em", "C"], ["C", "Am", "Dm", "G"], ["C", "G", "Am", "F"], ["Am", "F", "C", "G"]],
+      "beatsPerChord": [2, 4, 8],
+      "bpm": { "min": 30, "max": 180, "step": 5 }
+    },
+    "minute": { "seconds": 60, "countdown": 3, "recordsKept": 30, "historyShown": 12 }
+  },
+  "rhythm": {
+    "bpm": { "min": 30, "max": 220, "step": 5 },
+    "chords": ["C", "G", "D", "Am", "Em", "A", "E"],
+    "timeSignatures": ["4/4", "3/4", "6/8"],
+    "presets": [
+      { "id": "quarter", "group": "values", "time": [4, 4], "grid": "q", "steps": "DDDD" },
+      { "id": "half", "group": "values", "time": [4, 4], "grid": "q", "steps": "D-D-" },
+      { "id": "eighth", "group": "values", "time": [4, 4], "grid": "e", "steps": "DUDUDUDU" },
+      { "id": "triplet", "group": "values", "time": [4, 4], "grid": "e3", "steps": "DUDUDUDUDUDU" },
+      { "id": "sixteenth", "group": "values", "time": [4, 4], "grid": "s", "steps": "DUDUDUDUDUDUDUDU" },
+      { "id": "dottedEighth", "group": "values", "time": [4, 4], "grid": "s", "steps": "D--UD--UD--UD--U" },
+      { "id": "folk", "group": "strum", "time": [4, 4], "grid": "e", "steps": "D-DU.UDU" },
+      { "id": "allDown", "group": "strum", "time": [4, 4], "grid": "e", "steps": "DDDDDDDD" },
+      { "id": "muted", "group": "strum", "time": [4, 4], "grid": "e", "steps": "D-XUDUXU" },
+      { "id": "waltz", "group": "strum", "time": [3, 4], "grid": "e", "steps": "D-DUDU" },
+      { "id": "sixEight", "group": "strum", "time": [6, 8], "grid": "e", "steps": "DDUDDU" },
+      { "id": "sixteenthStrum", "group": "strum", "time": [4, 4], "grid": "s", "steps": "D-D-D.DUD.DU.UDU" }
+    ],
+    "tapTest": {
+      "maxToleranceSec": 0.15,
+      "goodMs": 40,
+      "okMs": 80,
+      "calibrationTaps": 8,
+      "calibrationMinTaps": 6,
+      "dotsShown": 24,
+      "dotScaleMs": 120,
+      "meanMinTaps": 4,
+      "meanFlatMs": 10
+    }
+  },
+  "tools": {
+    "metronome": {
+      "bpm": { "min": 30, "max": 260 },
+      "quickBpm": [60, 80, 100, 120],
+      "timeSignatures": ["2/4", "3/4", "4/4", "6/8"],
+      "subdivisions": [1, 2, 3, 4]
+    },
+    "tuner": {
+      "intervalMs": 70,
+      "readingsKept": 5,
+      "minHz": 60,
+      "maxHz": 1100,
+      "inTuneCents": 5,
+      "farCents": 300,
+      "meterCents": 50,
+      "fftSize": 4096
+    }
+  }
+}

@@ -1,7 +1,8 @@
 // Chord box: strings vertical (6th string on the left), nut on top, finger numbers inside the dots.
-import { TUNING, mod12, parseChord } from '../music/theory.js';
-
-const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+import { t } from '../core/i18n.js';
+import { TUNING, mod12 } from '../music/pitch.js';
+import { parseChord } from '../music/chord-name.js';
+import { esc } from './svg.js';
 
 /**
  * @param shape from chordShapes()
@@ -21,7 +22,7 @@ export function chordDiagram(shape, { name = '', chord = name } = {}) {
   const xOf = (string) => left + (6 - string) * sx;
   const yOf = (fret) => gridTop + (fret - shape.base + 0.5) * fy;
 
-  let out = `<svg class="chord-diagram" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(name || chord)} 和弦指法">`;
+  let out = `<svg class="chord-diagram" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t('chords.diagramLabel', { name: name || chord }))}">`;
   if (name) out += `<text class="cd-name" x="${left + sx * 2.5}" y="17" text-anchor="middle">${esc(name)}</text>`;
   for (let i = 0; i <= span; i++) {
     const cls = i === 0 && shape.base === 1 ? 'cd-nut' : 'cd-fret';

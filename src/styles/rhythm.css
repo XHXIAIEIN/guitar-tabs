@@ -1,0 +1,48 @@
+/* ---------- rhythm page ---------- */
+.preset-groups { display: flex; flex-direction: column; gap: 8px; }
+.step-grid { display: flex; gap: 3px; }
+/* Flex with a zero basis keeps all steps the same width despite the extra margin between beat groups. */
+.step {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  color: var(--ink);
+}
+.step.group:not(:first-child) { margin-left: 6px; }
+.step small { font-size: 12px; line-height: 1.2; color: var(--muted); }
+.step.beat small { color: var(--ink); font-weight: 700; }
+.step-mark {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+}
+.step-mark .icon { width: 100%; max-width: 24px; }
+.step-mark svg { width: 100%; height: auto; stroke-width: 3; }
+.step-mark.s-D { background: var(--ink); color: var(--surface); }
+.step-mark.s-U { border-color: var(--ink); color: var(--ink); }
+.step-mark.s-X { border-color: var(--bad); color: var(--bad); }
+.step-mark.s-hold { background: var(--surface-2); color: var(--muted); }
+.step-mark.s-rest { border: 1.5px dashed var(--staff); }
+.step.on .step-mark { border: 2px solid var(--accent); background: var(--accent); color: var(--accent-ink); }
+.step-keys { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--ink-2); }
+.step-key { display: inline-flex; align-items: center; gap: 5px; }
+.step-key .step-mark { width: 22px; height: 22px; border-width: 1.5px; border-radius: 5px; }
+.step-key .step-mark .icon { max-width: 14px; }
+.tap-results { min-height: 54px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.tap-dots { position: relative; height: 26px; border-radius: 8px; background: linear-gradient(90deg, transparent calc(50% - 1px), var(--staff) calc(50% - 1px), var(--staff) calc(50% + 1px), transparent calc(50% + 1px)), var(--surface-2); }
+.tap-dots span { position: absolute; top: 7px; left: calc(50% + var(--x) * 46%); width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; opacity: 0.85; }
+.tap-dots .good { background: var(--good); }
+.tap-dots .ok { background: var(--warn); }
+.tap-dots .bad { background: var(--bad); }

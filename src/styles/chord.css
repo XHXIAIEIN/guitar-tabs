@@ -1,0 +1,22 @@
+/* chord detail */
+.chord-detail { display: flex; flex-direction: column; gap: 14px; }
+.chord-shapes { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
+.chord-shape { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.chord-shape figcaption { font-size: 13px; color: var(--muted); }
+.chord-tones { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tone { display: inline-flex; flex-direction: column; align-items: center; padding: 3px 10px; background: var(--surface-2); border-radius: 8px; font-weight: 700; line-height: 1.2; }
+.tone small { font-weight: 500; color: var(--muted); font-size: 11px; }
+
+/* chord diagram svg */
+.chord-diagram { display: block; width: 100%; height: auto; overflow: visible; }
+.cd-name { font: 700 15px var(--font); fill: var(--ink); }
+.cd-fret { stroke: var(--staff); stroke-width: 1; }
+.cd-nut { stroke: var(--ink); stroke-width: 3.5; }
+.cd-string { stroke: var(--ink-2); stroke-width: 1; }
+.cd-dot, .cd-barre { fill: var(--ink); }
+.cd-dot.root { fill: var(--accent); }
+.cd-finger { font: 700 10.5px var(--font); fill: var(--paper); }
+.cd-open { fill: none; stroke: var(--ink-2); stroke-width: 1.4; }
+.cd-open.root { stroke: var(--accent); stroke-width: 2; }
+.cd-mute { stroke: var(--muted); stroke-width: 1.6; fill: none; stroke-linecap: round; }
+.cd-base { font: 600 10px var(--font); fill: var(--muted); }

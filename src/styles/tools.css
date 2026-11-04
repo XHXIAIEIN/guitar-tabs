@@ -1,0 +1,17 @@
+/* ---------- tools ---------- */
+.tuner { align-items: center; text-align: center; }
+.tuner-note { font-size: 64px; font-weight: 800; line-height: 1.1; }
+.tuner-cents { color: var(--muted); font-variant-numeric: tabular-nums; }
+.tuner-meter { position: relative; width: 100%; max-width: 460px; height: 60px; border-radius: 12px; background: var(--surface-2); overflow: hidden; }
+.tuner-meter .zone { position: absolute; left: 45%; width: 10%; top: 0; bottom: 0; background: color-mix(in srgb, var(--good) 22%, transparent); }
+.tuner-meter .needle { position: absolute; top: 8px; bottom: 8px; width: 4px; margin-left: -2px; border-radius: 2px; left: calc(50% + var(--x, 0) * 48%); background: var(--accent); transition: left 0.12s ease-out; }
+.tuner-meter.in-tune .needle { background: var(--good); }
+.tuner-meter small { position: absolute; bottom: 4px; font-size: 11px; color: var(--muted); }
+.tuner-meter .l { left: 8px; }
+.tuner-meter .r { right: 8px; }
+.tuner-hint { font-size: 16px; font-weight: 500; }
+.string-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; max-width: 420px; }
+.string-row > .small { grid-column: 1 / -1; justify-self: start; }
+.string-btn { flex-direction: column; height: 56px; gap: 0; min-width: 0; padding: 0; line-height: 1.2; }
+.string-btn small { font-size: 11px; color: var(--muted); }
+.string-btn.near { border-color: var(--accent); }

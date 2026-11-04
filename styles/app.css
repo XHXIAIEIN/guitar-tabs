@@ -361,6 +361,7 @@ span.chip { cursor: default; }
 .rest { stroke: var(--ink-2); stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .slash { stroke: var(--ink); stroke-width: calc(3px * var(--s)); stroke-linecap: round; }
 .slash.x { stroke-width: calc(1.8px * var(--s)); }
+.slash.hollow { fill: none; stroke-width: calc(1.4px * var(--s)); stroke-linejoin: round; }
 .arrow { stroke: var(--ink); stroke-width: calc(1.6px * var(--s)); fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .beat { stroke: var(--staff); stroke-width: calc(1.4px * var(--s)); stroke-linecap: round; }
 .beat.strong { stroke: var(--muted); }

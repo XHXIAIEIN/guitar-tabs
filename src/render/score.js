@@ -99,7 +99,19 @@ function lineGeometry(bars, o) {
     g.chord = y + (notes ? 22 : 25) * s;
     y += (notes ? 28 : 33) * s;
   } else y += 12 * s;
-  if (notes) {
+  if (notes && o.notation === 'slash') {
+    if (has((e) => e.dir === 'D' || e.dir === 'U')) {
+      g.strum = y + 1 * s;
+      y += 17 * s;
+    }
+    g.stem = y + (has((e) => e.tuplet) ? 11 : 4) * s;
+    g.lines = 5;
+    g.gap = 8 * s;
+    g.staff = g.stem + 10 * s;
+    // Stems start at the top end of the slash, 7 above the middle line
+    g.head = g.staff + 2 * g.gap - 6 * s;
+    y = g.staff + 4 * g.gap + 10 * s;
+  } else if (notes) {
     if (o.show.jianpu && has((e) => e.kind === 'note')) {
       g.jianpu = y + 22 * s;
       y += 46 * s;
@@ -114,6 +126,7 @@ function lineGeometry(bars, o) {
       y = g.head + 10 * s;
     }
     if (o.show.tab) {
+      g.lines = 6;
       g.gap = 11 * s;
       g.staff = y + 6 * s;
       y = g.staff + 5 * g.gap + 10 * s;
@@ -234,6 +247,18 @@ function jianpuMarks(bar, xs, g, s, o, xAt, groupOf) {
   return out + tupletMarks(bar, xs, y - 20 * s, s);
 }
 
+/** A strum as a slash notehead, or a rest, around the middle line of the five-line staff. */
+function slashMark(e, x, g, s) {
+  const mid = g.staff + 2 * g.gap;
+  if (e.kind === 'rest') return restGlyph(e.base, x, mid + ({ w: -2.5, h: -2 }[e.base] ?? 0) * s, s);
+  let head;
+  if (e.dir === 'X') head = line(x - 4 * s, mid + 7 * s, x + 4 * s, mid - 7 * s, 'slash x') + line(x + 4 * s, mid + 7 * s, x - 4 * s, mid - 7 * s, 'slash x');
+  else if (e.base === 'h' || e.base === 'w') {
+    head = `<path class="slash hollow" d="M${r1(x - 6.3 * s)} ${r1(mid + 7 * s)} L${r1(x - 2.3 * s)} ${r1(mid + 7 * s)} L${r1(x + 3.7 * s)} ${r1(mid - 7 * s)} L${r1(x - 0.3 * s)} ${r1(mid - 7 * s)} Z"/>`;
+  } else head = line(x - 4 * s, mid + 7 * s, x + 4 * s, mid - 7 * s, 'slash');
+  return e.dotted ? head + dot(x + 8 * s, mid - 4 * s, 1.4 * s) : head;
+}
+
 function strumArrow(dir, x, y, s) {
   if (dir === 'X') return line(x - 3.5 * s, y + 3 * s, x + 3.5 * s, y + 10 * s, 'arrow') + line(x + 3.5 * s, y + 3 * s, x - 3.5 * s, y + 10 * s, 'arrow');
   const [tip, tail] = dir === 'D' ? [y + 13 * s, y] : [y, y + 13 * s];
@@ -289,28 +314,30 @@ function renderBar(bar, bx, bw, f, m, song, o, g, F, isFirstInLine, isLast) {
       if (isFirstInLine && bar.startChord && bar.chords[0]?.at !== 0) out += chordText(`(${o.chordLabel(bar.startChord)})`, bar.startChord, xs[0] - 4 * s, g.chord, 'chord dim', 'start');
     }
     if (g.staff !== undefined) {
-      for (let k = 0; k < 6; k++) out += line(bx, g.staff + k * g.gap, bx + bw, g.staff + k * g.gap, `staff s${k + 1}`);
+      for (let k = 0; k < g.lines; k++) out += line(bx, g.staff + k * g.gap, bx + bw, g.staff + k * g.gap, `staff s${k + 1}`);
     }
     if (g.stem !== undefined) out += stemsAndBeams(bar, xs, g, s, groupOf) + tupletMarks(bar, xs, g.stem - 2 * s, s);
     if (g.jianpu !== undefined) out += jianpuMarks(bar, xs, g, s, o, xAt, groupOf);
     bar.events.forEach((e, i) => {
       let ev = `<g class="ev" data-ev="${i}">`;
       const ex = xs[i];
-      if (g.staff !== undefined) {
+      if (o.notation === 'slash') ev += slashMark(e, ex, g, s);
+      else if (g.staff !== undefined) {
         const mid = g.staff + 2.5 * g.gap;
         if (e.kind === 'note') for (const n of e.notes) ev += text(ex, g.staff + (n.s - 1) * g.gap + 4.4 * s, n.f < 0 ? '×' : n.f, 'fret');
         else if (e.kind === 'rest') ev += restGlyph(e.base, ex, mid, s);
         else if (e.dir === 'X') ev += line(ex - 4 * s, mid - 4 * s, ex + 4 * s, mid + 4 * s, 'slash x') + line(ex + 4 * s, mid - 4 * s, ex - 4 * s, mid + 4 * s, 'slash x');
         else ev += line(ex - 4 * s, mid + 7 * s, ex + 4 * s, mid - 7 * s, 'slash');
       } else if (g.head !== undefined && e.kind === 'rest') ev += restGlyph(e.base, ex, g.head - 8 * s, s);
-      if (g.head !== undefined && e.kind !== 'rest') ev += noteHead(e, ex, g.head, s);
-      if (g.strum !== undefined && e.kind === 'strum') ev += strumArrow(e.dir, ex, g.strum, s);
+      if (o.notation !== 'slash' && g.head !== undefined && e.kind !== 'rest') ev += noteHead(e, ex, g.head, s);
+      // An X head already marks a muted strum on the slash staff
+      if (g.strum !== undefined && e.kind === 'strum' && !(o.notation === 'slash' && e.dir === 'X')) ev += strumArrow(e.dir, ex, g.strum, s);
       if (g.lyric !== undefined && e.lyric) ev += text(ex, g.lyric, e.lyric, 'lyr');
       out += ev + '</g>';
     });
   }
 
-  const [y1, y2, cls] = g.staff !== undefined ? [g.staff, g.staff + 5 * g.gap, 'barline'] : [6 * s, h - 6 * s, 'barline faint'];
+  const [y1, y2, cls] = g.staff !== undefined ? [g.staff, g.staff + (g.lines - 1) * g.gap, 'barline'] : [6 * s, h - 6 * s, 'barline faint'];
   if (isFirstInLine) out += line(bx, y1, bx, y2, cls);
   if (isLast) out += line(bx + bw - 4 * s, y1, bx + bw - 4 * s, y2, cls) + `<rect class="barline-end" x="${r1(bx + bw - 2.5 * s)}" y="${r1(y1)}" width="${r1(2.5 * s)}" height="${r1(y2 - y1)}"/>`;
   else out += line(bx + bw, y1, bx + bw, y2, cls);
@@ -338,7 +365,8 @@ function stringLabelMarks(kind, edge, dir, g, s) {
 /**
  * Renders `song` into `root` and returns a handle that moves highlights without re-rendering.
  * @param {object} o width, scale, show {tab, jianpu, rhythm, lyrics, chords}, chordLabel(name), tonic, compact, barNumbers,
- *   stringLabels {left, right} each 'none' | 'tab' | 'number' | 'name', stringWidth 'uniform' | 'real'
+ *   stringLabels {left, right} each 'none' | 'tab' | 'number' | 'name', stringWidth 'uniform' | 'real',
+ *   notation 'slash' draws strums as rhythm notation: slash heads with stems on a five-line staff, instead of the TAB staff
  */
 export function renderScore(root, song, o) {
   const s = o.scale;

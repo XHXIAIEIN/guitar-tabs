@@ -155,7 +155,7 @@ export function songView(root, id, opts = {}) {
     requestAnimationFrame(() => {
       if (!sc.isConnected) return;
       renderScore(sc, patternSong(song.strum, meta.time), {
-        width: Math.min(sc.clientWidth, 340), scale: 1, show: { tab: true, jianpu: false, rhythm: true, lyrics: false, chords: false }, chordLabel: pretty, tonic, barNumbers: false,
+        width: Math.min(sc.clientWidth, 340), scale: 1, show: { tab: true, jianpu: false, rhythm: true, lyrics: false, chords: false }, chordLabel: pretty, tonic, barNumbers: false, notation: 'slash',
       });
     });
     return box;

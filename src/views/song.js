@@ -476,7 +476,7 @@ export function songView(root, id, opts = {}) {
       renderNow();
     });
     openPanel('显示', h('div', { class: 'stack' },
-      showToggles([['tab', '六线谱'], ['chords', '和弦'], ['lyrics', '歌词']]),
+      showToggles([['chords', '和弦'], ['tab', '六线谱'], ['lyrics', '歌词']]),
       h('div', { class: 'stack' },
         h('div', { class: 'field-label' }, '简谱'),
         showToggles([['jianpu', '数字（唱名）'], ['rhythm', '音符（节奏）']]),

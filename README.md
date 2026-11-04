@@ -56,9 +56,9 @@ python -m http.server 5173
 
 ## 数据保存
 
-自己的曲谱、设置、演出歌单和练习记录保存在当前浏览器的 localStorage 里。清除浏览器数据会删掉它们，换设备或换浏览器也看不到。
+自己的曲谱、设置、工具页的选择、演出歌单和练习记录保存在当前浏览器的 localStorage 里。清除浏览器数据会删掉它们，换设备或换浏览器也看不到。
 
-曲谱页的「导出备份」把曲谱、演出歌单和练习记录存成一个 JSON 文件。在另一台设备上，用「导入备份」恢复这个文件。设置、选中的版本和每首曲谱的速度、变调夹、循环不在备份里。
+曲谱页的「导出备份」把曲谱、演出歌单和练习记录存成一个 JSON 文件。在另一台设备上，用「导入备份」恢复这个文件。设置、工具页的选择、选中的版本和每首曲谱的速度、变调夹、循环不在备份里。
 
 ## 曲谱写法
 
@@ -122,13 +122,31 @@ lyric: | 只写和弦和歌词也可以 | 歌词整段显示在小节下面 |
 
 ## 开发
 
-- `src/music/`：乐理（音名、调、简谱）、和弦指法库、曲谱文本解析。
-- `src/render/`：曲谱和和弦图的 SVG 渲染。
-- `src/audio/`：Web Audio 吉他采样播放、节拍器音色和按拍调度。
-- `audio/guitar/`：示范音用的古典吉他录音，来自 FreePats，CC0 许可。来源见目录里的 `README.md`。
-- `src/views/`：各个页面。
-- `src/ui/`：通用界面组件。
-- `src/data/songs.js`：内置练习和曲谱。一首歌有多个版本时写在 `versions` 里，第一个是默认版本。
+根目录只放入口文件和分类目录：
+
+- `index.html`、`manifest.webmanifest`、`sw.js`：这三个文件必须在站点根目录，因为 GitHub Pages 从根目录发布，service worker 只能控制它所在目录以下的页面。
+- `config/app.json`：可调的常量和默认值，例如速度范围、默认设置、预设节奏型、和弦分组和录音列表。
+- `lang/`：界面文案，每种语言一个文件。
+- `assets/icons/`：应用图标。
+- `assets/audio/guitar/`：示范音用的古典吉他录音，来自 FreePats，CC0 许可。来源见目录里的 `README.md`。
+- `src/`：源代码，见下面的列表。
+- `tests/`：`node --test` 测试。
+- `scripts/`：生成图标的脚本。
+
+`src/` 下的目录：
+
+- `app/`：启动顺序、路由和页面外框。
+- `core/`：读取配置、多语言和 localStorage 读写，不依赖其他模块。
+- `state/`：保存的状态、数据迁移、曲谱条目、演出歌单、每首曲谱的偏好和备份。
+- `music/`：乐理（音名、调、简谱）和和弦指法。`music/format/` 解析曲谱文本。
+- `render/`：曲谱和和弦图的 SVG 渲染。
+- `audio/`：Web Audio 吉他采样播放、节拍器音色、按拍调度和音高检测。
+- `ui/`：通用界面组件。
+- `views/`：各个页面，一个页面一个目录。
+- `styles/`：样式，按组件分文件。`app.css` 的 `@import` 顺序就是层叠顺序。
+- `data/`：内置练习（`exercises.js`）和歌曲（`songs.js`）。一首歌有多个版本时写在 `versions` 里，第一个是默认版本。
+
+`config` 和界面文案在启动时才载入，所以模块加载时不能调用 `t()` 或读 `config`，只能在函数运行时用。数据里存 id，渲染时再翻译。
 
 运行测试（需要 Node.js 22 或更新版本）：
 
@@ -136,11 +154,31 @@ lyric: | 只写和弦和歌词也可以 | 歌词整段显示在小节下面 |
 npm test
 ```
 
-测试检查三件事：和弦指法里的音都属于该和弦，内置曲谱解析没有错误，旋律和写好的简谱一致。
+测试检查这些内容：
 
-维护时注意：
+- 和弦指法里的音都属于该和弦，内置曲谱解析没有错误，旋律和写好的简谱一致。
+- 旧格式的保存数据能迁移，缺的字段由默认值补上，备份能导出再导入。
+- 代码用到的文案键都存在，语言文件没有多余的键，文案以外的代码没有中文。
+- `sw.js` 的离线列表和实际文件一致，录音列表和配置一致。
 
-- 添加源文件后，把它加进 `sw.js` 的 `SHELL` 列表，否则离线时缺这个文件。
-- 换吉他录音时，同时改 `src/audio/engine.js` 的 `RECORDINGS` 和 `sw.js` 里的音高列表。`RECORDINGS` 里每个录音的音分误差用 `src/views/tools.js` 的 `detectPitch` 测，播放时减掉。
+### 增加一种语言
+
+1. 把 `lang/zh_CN.json` 复制成新文件并翻译。缺的键显示默认语言的文案。
+2. 在 `config/app.json` 的 `i18n.locales` 里登记语言代码、文件名和显示名。
+3. 把新文件加进 `sw.js` 的 `SHELL` 列表。
+
+登记两种以上语言后，「显示」面板里会出现语言选择。内置曲谱的正文和 `manifest.webmanifest` 的应用名是内容数据，不随语言变化。曲谱文本里的中文写法（如 `标题:`、`和弦:`）属于文件格式，也不随语言变化，定义在 `src/music/format/syntax.js`。
+
+### 改保存的数据
+
+所有状态是 localStorage 里的一个 JSON 文档，键名见 `config/app.json` 的 `storage.key`。
+
+- 增加字段：把默认值写进 `config/app.json` 的 `defaults`，旧数据启动时会自动补上。
+- 改变已有字段的含义：把 `src/state/migrate.js` 的 `SCHEMA` 加 1，并在 `STEPS` 里加一步。
+
+### 维护时注意
+
+- 添加或删除源文件后，同步 `sw.js` 的 `SHELL` 列表，否则离线时缺文件。测试会查出遗漏。
+- 换吉他录音时，同时改 `config/app.json` 的 `audio.samples.recordings` 和 `sw.js` 里的音高列表。每个录音的音分误差用 `src/audio/pitch-detect.js` 的 `detectPitch` 测，播放时减掉。
 - 内置曲谱只收公有领域的作品。
-- PNG 图标由 `scripts/make-icons.py` 按脚本里的坐标绘制（需要 Pillow）。改图标图形时，同时改 `icons/icon.svg` 和脚本里的坐标，再运行 `python scripts/make-icons.py`。
+- PNG 图标由 `scripts/make-icons.py` 按脚本里的坐标绘制（需要 Pillow）。改图标图形时，同时改 `assets/icons/icon.svg` 和脚本里的坐标，再运行 `python scripts/make-icons.py`。

@@ -10,7 +10,7 @@ const NO_LABELS = { left: 'none', right: 'none' };
 
 /**
  * Renders `song` into `root` and returns a handle that moves highlights without re-rendering.
- * @param {object} o width, scale, show {tab, jianpu, rhythm, lyrics, chords}, chordLabel(name), tonic, compact, barNumbers,
+ * @param {object} o width, scale, show {tab, numbers, rhythm, lyrics, chords}, chordLabel(name), tonic, compact, barNumbers,
  *   stringLabels {left, right} each 'none' | 'tab' | 'number' | 'name', stringWidth 'uniform' | 'real',
  *   notation 'slash' draws strums as rhythm notation: slash heads with stems on a five-line staff, instead of the TAB staff
  */
@@ -70,9 +70,9 @@ export function renderScore(root, song, o) {
         current = bar;
       }
       const el = bar == null || ev < 0 ? null : barEls.get(bar)?.querySelector(`[data-ev="${ev}"]`);
-      const jp = bar == null || ev < 0 ? null : barEls.get(bar)?.querySelector(`[data-jp="${ev}"]`);
+      const number = bar == null || ev < 0 ? null : barEls.get(bar)?.querySelector(`[data-number="${ev}"]`);
       for (const old of currentEv ?? []) old.classList.remove('on');
-      currentEv = [el, jp].filter(Boolean);
+      currentEv = [el, number].filter(Boolean);
       for (const n of currentEv) n.classList.add('on');
     },
     setCursor(i) {

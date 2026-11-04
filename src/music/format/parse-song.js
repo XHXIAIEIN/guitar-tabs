@@ -58,7 +58,7 @@ export function parseSong(text) {
       const k = parseKey(stripKeySuffix(v));
       if (k) meta.key = k.name;
       else err(n, t('parser.badKey', { value: v }));
-    } else if (field === 'capo' || field === 'bpm' || field === 'jianpu' || field === 'pickup') {
+    } else if (field === 'capo' || field === 'bpm' || field === 'octave' || field === 'pickup') {
       const num = Number(stripNumberSuffix(v));
       const [lo, hi] = config.format.limits[field];
       if (Number.isFinite(num) && num >= lo && num <= hi) meta[field] = num;

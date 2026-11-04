@@ -5,7 +5,7 @@ import { doPc } from './key.js';
 const DEGREES = [[1, ''], [1, '♯'], [2, ''], [3, '♭'], [3, ''], [4, ''], [4, '♯'], [5, ''], [5, '♯'], [6, ''], [7, '♭'], [7, '']];
 
 /** 简谱 digit of a MIDI pitch: degree, accidental and octave (dots: + above, − below). */
-export function jianpu(midi, tonicMidi) {
+export function numberOf(midi, tonicMidi) {
   const rel = midi - tonicMidi;
   const [deg, acc] = DEGREES[mod12(rel)];
   return { deg, acc, oct: Math.floor(rel / 12) };
@@ -15,7 +15,7 @@ export function jianpu(midi, tonicMidi) {
  * Picks the MIDI pitch written as an undotted "1": the octave that leaves the fewest melody
  * notes dotted. Ties keep the lower tonic. `shift` writes every note that many octaves higher.
  */
-export function jianpuTonic(pitches, key, shift = 0) {
+export function numberTonic(pitches, key, shift = 0) {
   const pc = doPc(key);
   let best = 48 + mod12(pc);
   let bestOut = Infinity;

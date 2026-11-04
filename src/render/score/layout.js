@@ -50,8 +50,8 @@ export function lineGeometry(bars, o) {
     g.head = g.staff + 2 * g.gap - 6 * s;
     y = g.staff + 4 * g.gap + 10 * s;
   } else if (notes) {
-    if (o.show.jianpu && has((e) => e.kind === 'note')) {
-      g.jianpu = y + 22 * s;
+    if (o.show.numbers && has((e) => e.kind === 'note')) {
+      g.numbers = y + 22 * s;
       y += 46 * s;
     }
     if (o.show.tab && has((e) => e.kind === 'strum')) {

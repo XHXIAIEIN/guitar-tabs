@@ -2,7 +2,6 @@
 // One JSON document under one localStorage key. Change it through save() so that listeners hear about it.
 import { config } from '../core/config.js';
 import { readJson, writeJson } from '../core/storage.js';
-import { migrate } from './migrate.js';
 
 export const state = {};
 const listeners = new Set();
@@ -23,7 +22,7 @@ function withDefaults(defaults, saved) {
 /** The state for a saved document, or for a first start when `saved` is null. */
 export function restoreState(saved) {
   const { settings, tools } = config.defaults;
-  return withDefaults({ settings, tools, songs: {}, prefs: {}, versions: {}, setlist: [], records: {} }, migrate(saved ?? {}));
+  return withDefaults({ settings, tools, songs: {}, prefs: {}, versions: {}, setlist: [], records: {} }, saved ?? {});
 }
 
 export function initState() {

@@ -1,5 +1,5 @@
 // Marks that span several events of a bar: stems and beams, tuplets, 简谱 digits, and the string labels beside a staff.
-import { jianpu } from '../../music/jianpu.js';
+import { numberOf } from '../../music/numbers.js';
 import { midiOf } from '../../music/pitch.js';
 import { dot, line, r1, text } from '../svg.js';
 import { HEAD_RX, beam } from './glyphs.js';
@@ -56,9 +56,9 @@ export function tupletMarks(bar, xs, y) {
   return out;
 }
 
-export function jianpuMarks(bar, xs, g, s, o, xAt, groupOf) {
+export function numberMarks(bar, xs, g, s, o, xAt, groupOf) {
   let out = '';
-  const y = g.jianpu;
+  const y = g.numbers;
   const under = (e) => (e.kind === 'strum' ? 0 : e.base === 'e' ? 1 : e.base === 's' ? 2 : 0);
   bar.events.forEach((e, i) => {
     if (e.kind === 'strum') return;
@@ -69,16 +69,16 @@ export function jianpuMarks(bar, xs, g, s, o, xAt, groupOf) {
     if (e.kind === 'note') {
       const top = e.notes.filter((n) => n.f >= 0).sort((a, b) => a.s - b.s)[0];
       if (!top) return;
-      ({ deg: digit, acc, oct } = jianpu(midiOf(top.s, top.f), o.tonic));
+      ({ deg: digit, acc, oct } = numberOf(midiOf(top.s, top.f), o.tonic));
     }
-    let mark = text(x, y, digit, 'jp');
-    if (acc) mark += text(x - 6.5 * s, y - 7 * s, acc, 'jp-acc');
-    for (let k = 0; k < oct; k++) mark += dot(x, y - 16 * s - k * 4.5 * s, 1.7 * s, 'jp-dot');
-    for (let k = 0; k < -oct; k++) mark += dot(x, y + 6.5 * s + under(e) * 3.5 * s + k * 4.5 * s, 1.7 * s, 'jp-dot');
-    out += `<g class="jp-ev" data-jp="${i}">${mark}</g>`;
+    let mark = text(x, y, digit, 'number');
+    if (acc) mark += text(x - 6.5 * s, y - 7 * s, acc, 'number-acc');
+    for (let k = 0; k < oct; k++) mark += dot(x, y - 16 * s - k * 4.5 * s, 1.7 * s, 'number-dot');
+    for (let k = 0; k < -oct; k++) mark += dot(x, y + 6.5 * s + under(e) * 3.5 * s + k * 4.5 * s, 1.7 * s, 'number-dot');
+    out += `<g class="number-ev" data-number="${i}">${mark}</g>`;
     if (e.dur >= 96) {
-      for (let t = 48; t < e.dur; t += 48) out += line(xAt(e.at + t) - 4.5 * s, y - 5.5 * s, xAt(e.at + t) + 4.5 * s, y - 5.5 * s, 'jp-dash');
-    } else if (e.dotted) out += dot(x + 7.5 * s, y - 5 * s, 1.6 * s, 'jp-dot');
+      for (let t = 48; t < e.dur; t += 48) out += line(xAt(e.at + t) - 4.5 * s, y - 5.5 * s, xAt(e.at + t) + 4.5 * s, y - 5.5 * s, 'number-dash');
+    } else if (e.dotted) out += dot(x + 7.5 * s, y - 5 * s, 1.6 * s, 'number-dot');
   });
   for (const level of [1, 2]) {
     const ly = y + 4 * s + (level - 1) * 3.5 * s;
@@ -89,7 +89,7 @@ export function jianpuMarks(bar, xs, g, s, o, xAt, groupOf) {
       }
       let j = i;
       while (j + 1 < bar.events.length && under(bar.events[j + 1]) >= level && groupOf(bar.events[j + 1]) === groupOf(bar.events[i])) j++;
-      out += line(xs[i] - 5 * s, ly, xs[j] + 5 * s, ly, 'jp-line');
+      out += line(xs[i] - 5 * s, ly, xs[j] + 5 * s, ly, 'number-line');
       i = j + 1;
     }
   }

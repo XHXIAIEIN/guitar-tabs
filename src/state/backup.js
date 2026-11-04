@@ -2,7 +2,7 @@
 import { t } from '../core/i18n.js';
 import { state, save } from './store.js';
 
-const APP_ID = 'liuxian';
+const APP_ID = 'guitar';
 
 export function exportData() {
   return JSON.stringify({ app: APP_ID, version: 1, songs: state.songs, setlist: state.setlist, records: state.records }, null, 2);

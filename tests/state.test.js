@@ -2,42 +2,15 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import './helpers/setup.js';
 import { config } from '../src/core/config.js';
-import { SCHEMA, migrate } from '../src/state/migrate.js';
 import { restoreState, state } from '../src/state/store.js';
 import { exportData, importData } from '../src/state/backup.js';
 import { prefsFor } from '../src/state/prefs.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 
-test('简谱 is off by default, and only a save from a later showRevision keeps it on', () => {
-  const load = (saved) => restoreState(saved).settings.show;
-  const fresh = load(null);
-  assert.equal(fresh.jianpu, false);
-  assert.equal(fresh.rhythm, false);
-  const show = { tab: true, jianpu: true, rhythm: true, lyrics: false, chords: true };
-  const old = load({ settings: { show } });
-  assert.equal(old.jianpu, false);
-  assert.equal(old.rhythm, false);
-  assert.equal(old.lyrics, false);
-  const revision1 = load({ settings: { show, showRevision: 1 } });
-  assert.equal(revision1.jianpu, true);
-  assert.equal(revision1.rhythm, false);
-  const chosen = load({ settings: { show, showRevision: 2 } });
-  assert.equal(chosen.jianpu, true);
-  assert.equal(chosen.rhythm, true);
-});
-
-test('migration stamps the schema, drops showRevision and leaves the input alone', () => {
-  const saved = { settings: { showRevision: 2, stringLabels: { left: ['tab', 'name'], right: [] } } };
-  const out = migrate(saved);
-  assert.equal(out.schema, SCHEMA);
-  assert.equal('showRevision' in out.settings, false);
-  assert.deepEqual(out.settings.stringLabels, { left: 'tab', right: 'none' });
-  assert.equal(saved.settings.showRevision, 2);
-});
-
-test('a current save is not migrated again', () => {
-  const show = { tab: true, jianpu: true, rhythm: true, lyrics: true, chords: true };
-  assert.equal(restoreState({ schema: SCHEMA, settings: { show } }).settings.show.jianpu, true);
+test('简谱 and the rhythm notes are off on a first start', () => {
+  const { show } = restoreState(null).settings;
+  assert.equal(show.numbers, false);
+  assert.equal(show.rhythm, false);
 });
 
 test('a saved document keeps its values and gets every default it lacks', () => {
@@ -57,16 +30,6 @@ test('saved lists replace the default lists, and the defaults stay unchanged', (
   const fresh = restoreState(null);
   fresh.tools.drill.chords.push('D');
   assert.deepEqual(config.defaults.tools.drill.chords, ['C', 'D', 'G', 'Em']);
-});
-
-test('a drill saved on the old default C–G moves to the current default, and a later choice of C–G stays', () => {
-  const drill = (saved) => restoreState(saved).tools.drill;
-  const old = drill({ tools: { drill: { chords: ['C', 'G'], bpm: 75 } } });
-  assert.deepEqual(old.chords, config.defaults.tools.drill.chords);
-  assert.equal(old.bpm, 75);
-  assert.deepEqual(drill({ schema: 1, tools: { drill: { chords: ['C', 'G'] } } }).chords, config.defaults.tools.drill.chords);
-  assert.deepEqual(drill({ tools: { drill: { chords: ['G', 'C'] } } }).chords, ['G', 'C']);
-  assert.deepEqual(drill({ schema: SCHEMA, tools: { drill: { chords: ['C', 'G'] } } }).chords, ['C', 'G']);
 });
 
 test('the default rhythm tool settings are the preset they name', () => {

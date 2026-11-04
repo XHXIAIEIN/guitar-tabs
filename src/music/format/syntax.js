@@ -10,7 +10,7 @@ export const META = new Map(Object.entries({
   time: 'time', 拍号: 'time',
   strum: 'strum', 节奏型: 'strum',
   pickup: 'pickup', 弱起: 'pickup',
-  jianpu: 'jianpu', 简谱八度: 'jianpu',
+  octave: 'octave', 简谱八度: 'octave',
   level: 'level', 难度: 'level',
   note: 'note', 说明: 'note',
 }));

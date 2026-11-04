@@ -38,11 +38,11 @@
 .chord.dim { fill: var(--muted); font-weight: 600; }
 .lyr { font-size: calc(15px * var(--s)); fill: var(--ink); }
 .lyr.chart { font-size: calc(16px * var(--s)); }
-.jp { font-size: calc(17px * var(--s)); font-weight: 600; fill: var(--ink); font-variant-numeric: tabular-nums; }
-.jp-acc { font-size: calc(10px * var(--s)); fill: var(--ink); }
-.jp-dot, .dot, .rest-dot { fill: var(--ink-2); }
-.jp-dot { fill: var(--ink); }
-.jp-line, .jp-dash { stroke: var(--ink); stroke-width: calc(1.4px * var(--s)); }
+.number { font-size: calc(17px * var(--s)); font-weight: 600; fill: var(--ink); font-variant-numeric: tabular-nums; }
+.number-acc { font-size: calc(10px * var(--s)); fill: var(--ink); }
+.number-dot, .dot, .rest-dot { fill: var(--ink-2); }
+.number-dot { fill: var(--ink); }
+.number-line, .number-dash { stroke: var(--ink); stroke-width: calc(1.4px * var(--s)); }
 .stem { stroke: var(--ink-2); stroke-width: calc(1.2px * var(--s)); }
 .head { fill: var(--ink-2); }
 .head.hollow { fill: none; stroke: var(--ink-2); stroke-width: calc(1.3px * var(--s)); }
@@ -56,7 +56,7 @@
 .arrow { stroke: var(--ink); stroke-width: calc(1.6px * var(--s)); fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .beat { stroke: var(--staff); stroke-width: calc(1.4px * var(--s)); stroke-linecap: round; }
 .beat.strong { stroke: var(--muted); }
-.ev.on .fret, .ev.on .lyr, .jp-ev.on .jp, .jp-ev.on .jp-acc { fill: var(--accent); }
-.jp-ev.on .jp-dot { fill: var(--accent); }
+.ev.on .fret, .ev.on .lyr, .number-ev.on .number, .number-ev.on .number-acc { fill: var(--accent); }
+.number-ev.on .number-dot { fill: var(--accent); }
 .ev.on .slash, .ev.on .arrow, .ev.on .head.hollow { stroke: var(--accent); }
 .ev.on .head:not(.hollow), .ev.on .dot { fill: var(--accent); }

@@ -9,7 +9,7 @@ import { state } from '../../state/store.js';
 import { deleteSong, getEntry, newSongId, parse, saveSong } from '../../state/songs.js';
 import { renderScore } from '../../render/score/score.js';
 import { parseKey } from '../../music/key.js';
-import { jianpuTonic } from '../../music/jianpu.js';
+import { numberTonic } from '../../music/numbers.js';
 import { pretty } from '../../music/pitch.js';
 import { notFound } from '../not-found.js';
 
@@ -89,7 +89,7 @@ export function editorView(root, id) {
     if (width) {
       renderScore(preview, song, {
         width, scale: config.editor.previewScale, show: state.settings.show, chordLabel: pretty,
-        tonic: jianpuTonic(song.melody, parseKey(song.meta.key), song.meta.jianpu),
+        tonic: numberTonic(song.melody, parseKey(song.meta.key), song.meta.octave),
         stringLabels: state.settings.stringLabels, stringWidth: state.settings.stringWidth,
       });
     }

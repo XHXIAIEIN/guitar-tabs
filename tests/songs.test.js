@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import './helpers/setup.js';
 import { parseKey } from '../src/music/key.js';
-import { jianpu, jianpuTonic } from '../src/music/jianpu.js';
+import { numberOf, numberTonic } from '../src/music/numbers.js';
 import { chordShapes } from '../src/music/chord-shapes.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { BUILTIN, allEntries, getEntry, setVersion } from '../src/state/songs.js';
@@ -23,10 +23,10 @@ const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
 const degreesOnly = (digits) => digits.replace(/[',]/g, '');
 
 function melodyDigits(song) {
-  const tonic = jianpuTonic(song.melody, parseKey(song.meta.key), song.meta.jianpu);
+  const tonic = numberTonic(song.melody, parseKey(song.meta.key), song.meta.octave);
   return song.melody
     .map((m) => {
-      const j = jianpu(m, tonic);
+      const j = numberOf(m, tonic);
       return j.acc + j.deg + (j.oct > 0 ? "'".repeat(j.oct) : ','.repeat(-j.oct));
     })
     .join(' ');

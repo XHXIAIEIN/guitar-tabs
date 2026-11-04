@@ -1,8 +1,8 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'liuxian-v3';
+const CACHE = 'guitar-v4';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
-const OWN_CACHES = /^(liuxian-|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
+const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
 const SHELL = [
   './',
   'index.html',
@@ -33,7 +33,7 @@ const SHELL = [
   'src/music/format/parse-song.js',
   'src/music/format/pattern.js',
   'src/music/format/syntax.js',
-  'src/music/jianpu.js',
+  'src/music/numbers.js',
   'src/music/key.js',
   'src/music/pitch.js',
   'src/render/chord-diagram.js',
@@ -45,7 +45,6 @@ const SHELL = [
   'src/render/score/score.js',
   'src/render/svg.js',
   'src/state/backup.js',
-  'src/state/migrate.js',
   'src/state/prefs.js',
   'src/state/setlist.js',
   'src/state/songs.js',

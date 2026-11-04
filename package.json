@@ -1,5 +1,5 @@
 {
-  "name": "liuxian",
+  "name": "guitar",
   "private": true,
   "type": "module",
   "description": "六弦本：吉他谱阅读、节拍与和弦练习工具（纯前端 PWA，无构建步骤）",

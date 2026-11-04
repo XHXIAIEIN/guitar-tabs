@@ -1,7 +1,7 @@
 // One bar of a score line as SVG markup.
 import { line, r1, text } from '../svg.js';
 import { chordText, noteHead, restGlyph, slashMark, strumArrow } from './glyphs.js';
-import { jianpuMarks, stemsAndBeams, tupletMarks } from './marks.js';
+import { numberMarks, stemsAndBeams, tupletMarks } from './marks.js';
 import { PAD_L, PAD_R, textWidth } from './measure.js';
 
 export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
@@ -53,7 +53,7 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
       for (let k = 0; k < g.lines; k++) out += line(bx, g.staff + k * g.gap, bx + bw, g.staff + k * g.gap, `staff s${k + 1}`);
     }
     if (g.stem !== undefined) out += stemsAndBeams(bar, xs, g, s, groupOf) + tupletMarks(bar, xs, g.stem - 2 * s);
-    if (g.jianpu !== undefined) out += jianpuMarks(bar, xs, g, s, o, xAt, groupOf);
+    if (g.numbers !== undefined) out += numberMarks(bar, xs, g, s, o, xAt, groupOf);
     bar.events.forEach((e, i) => {
       let ev = `<g class="ev" data-ev="${i}">`;
       const ex = xs[i];

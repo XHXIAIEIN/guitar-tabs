@@ -15,7 +15,7 @@ import { renderScore } from '../../render/score/score.js';
 import { chordShapes } from '../../music/chord-shapes.js';
 import { transposeChord } from '../../music/chord-name.js';
 import { parseKey, prettyKey, transposeKey } from '../../music/key.js';
-import { jianpuTonic } from '../../music/jianpu.js';
+import { numberTonic } from '../../music/numbers.js';
 import { pretty } from '../../music/pitch.js';
 import { Sequencer } from '../../audio/sequencer.js';
 import { songSource } from '../../audio/song-source.js';
@@ -42,7 +42,7 @@ export function songView(root, id, opts = {}) {
   const canTranspose = !song.hasEvents;
   if (!canTranspose) prefs.transpose = 0;
   const hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
-  if (perform) prefs.performShow ??= { tab: !hasLyrics || !song.chordsUsed.length, jianpu: false, rhythm: false, lyrics: true, chords: true };
+  if (perform) prefs.performShow ??= { tab: !hasLyrics || !song.chordsUsed.length, numbers: false, rhythm: false, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const seq = new Sequencer();
   const last = song.bars.length - 1;
@@ -64,7 +64,7 @@ export function songView(root, id, opts = {}) {
   const chordName = (name) => transposeChord(name, prefs.transpose, shapeKey());
   const chordLabel = (name) => pretty(chordName(name));
   const shapeOf = (name) => chordShapes(chordName(name))[0]?.frets ?? null;
-  const tonic = jianpuTonic(song.melody, baseKey, meta.jianpu);
+  const tonic = numberTonic(song.melody, baseKey, meta.octave);
   const show = () => (perform ? prefs.performShow : settings.show);
   const zoom = () => {
     const { narrowBelow, narrow, wide } = config.song.zoom;
@@ -145,7 +145,7 @@ export function songView(root, id, opts = {}) {
     if (!width) return;
     renderedWidth = width;
     handle = renderScore(scoreEl, song, {
-      width, scale: zoom(), show: show(), chordLabel, tonic, compact: perform && !show().tab && !show().jianpu,
+      width, scale: zoom(), show: show(), chordLabel, tonic, compact: perform && !show().tab && !show().numbers,
       stringLabels: settings.stringLabels, stringWidth: settings.stringWidth,
     });
     handle.setLoop(...(prefs.loop ?? [null, null]));

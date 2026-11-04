@@ -1,5 +1,5 @@
 {
-  "storage": { "key": "liuxian.v1" },
+  "storage": { "key": "guitar.state.v1" },
   "i18n": {
     "defaultLocale": "zh-CN",
     "locales": {
@@ -9,7 +9,7 @@
   "defaults": {
     "settings": {
       "theme": "auto",
-      "show": { "tab": true, "jianpu": false, "rhythm": false, "lyrics": true, "chords": true },
+      "show": { "tab": true, "numbers": false, "rhythm": false, "lyrics": true, "chords": true },
       "stringLabels": { "left": "number", "right": "none" },
       "stringWidth": "uniform",
       "zoom": 1,
@@ -31,8 +31,8 @@
     }
   },
   "format": {
-    "defaultMeta": { "artist": "", "key": "C", "capo": 0, "bpm": 80, "time": [4, 4], "pickup": 0, "jianpu": 0, "level": "", "note": "" },
-    "limits": { "capo": [0, 12], "bpm": [20, 320], "jianpu": [-2, 2], "pickup": [0, 12] }
+    "defaultMeta": { "artist": "", "key": "C", "capo": 0, "bpm": 80, "time": [4, 4], "pickup": 0, "octave": 0, "level": "", "note": "" },
+    "limits": { "capo": [0, 12], "bpm": [20, 320], "octave": [-2, 2], "pickup": [0, 12] }
   },
   "audio": {
     "compressor": { "threshold": -12, "ratio": 4 },

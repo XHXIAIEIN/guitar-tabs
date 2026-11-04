@@ -5,7 +5,7 @@ import { config } from '../src/core/config.js';
 import { pretty, midiOf, mod12 } from '../src/music/pitch.js';
 import { parseKey, transposeKey } from '../src/music/key.js';
 import { parseChord, transposeChord } from '../src/music/chord-name.js';
-import { jianpu, jianpuTonic } from '../src/music/jianpu.js';
+import { numberOf, numberTonic } from '../src/music/numbers.js';
 import { chordShapes, isEasyChord, shapePitches } from '../src/music/chord-shapes.js';
 import { QUALITIES } from '../src/music/chord-tones.js';
 
@@ -46,17 +46,17 @@ test('barre templates cover chords outside the table', () => {
   assert.ok(isEasyChord('C') && !isEasyChord('F') && !isEasyChord('Bm'));
 });
 
-test('jianpu degrees and octave choice', () => {
+test('number degrees and octave choice', () => {
   const C = parseKey('C');
-  assert.deepEqual(jianpu(55, 48), { deg: 5, acc: '', oct: 0 });
-  assert.deepEqual(jianpu(47, 48), { deg: 7, acc: '', oct: -1 });
-  assert.deepEqual(jianpu(61, 48), { deg: 1, acc: '♯', oct: 1 });
-  assert.equal(jianpuTonic([48, 52, 55, 57, 60], C), 48);
-  assert.equal(jianpuTonic([64, 65, 67, 60, 62], C), 60);
+  assert.deepEqual(numberOf(55, 48), { deg: 5, acc: '', oct: 0 });
+  assert.deepEqual(numberOf(47, 48), { deg: 7, acc: '', oct: -1 });
+  assert.deepEqual(numberOf(61, 48), { deg: 1, acc: '♯', oct: 1 });
+  assert.equal(numberTonic([48, 52, 55, 57, 60], C), 48);
+  assert.equal(numberTonic([64, 65, 67, 60, 62], C), 60);
   // A minor uses the relative major: 简谱 "6" is the tonic A
-  assert.equal(jianpu(57, jianpuTonic([57, 60, 64], parseKey('Am'))).deg, 6);
+  assert.equal(numberOf(57, numberTonic([57, 60, 64], parseKey('Am'))).deg, 6);
   // a positive shift writes the notes an octave higher
-  assert.equal(jianpu(55, jianpuTonic([55, 57, 59], C, 1)).oct, 1);
+  assert.equal(numberOf(55, numberTonic([55, 57, 59], C, 1)).oct, 1);
 });
 
 test('midi of fretted notes', () => {

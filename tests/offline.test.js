@@ -34,3 +34,13 @@ test('the page and the manifest point at files that exist', () => {
   const paths = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((m) => m[1]).concat(manifest.icons.map((i) => i.src));
   for (const path of paths) assert.ok(existsSync(new URL(path, ROOT)), path);
 });
+
+test('the stylesheet entry imports every style file, and each file closes its blocks', () => {
+  const entry = readFileSync(new URL('src/styles/app.css', ROOT), 'utf8');
+  const imported = [...entry.matchAll(/@import "([^"]+)";/g)].map((m) => `src/styles/${m[1]}`);
+  assert.deepEqual([...imported, 'src/styles/app.css'].sort(), filesUnder('src/styles/').sort());
+  for (const file of imported) {
+    const css = readFileSync(new URL(file, ROOT), 'utf8');
+    assert.equal(css.split('{').length, css.split('}').length, file);
+  }
+});

@@ -12,7 +12,7 @@ export async function resumeGuitar() {
   return c;
 }
 
-export function damp(string, time) {
+function damp(string, time) {
   const v = voices[string];
   if (!v) return;
   v.gain.gain.setTargetAtTime(0, Math.max(time, v.start), 0.012);

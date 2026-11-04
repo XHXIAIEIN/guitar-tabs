@@ -232,7 +232,6 @@ span.chip { cursor: default; }
 .brand-name { font-size: 11px; color: var(--muted); }
 .nav-link { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 4px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 12px; }
 .nav-link .icon svg { width: 22px; height: 22px; }
-.nav-link[data-nav="#/chords"] .icon svg { width: 28px; height: 28px; margin: -3px 0; }
 .nav-link:hover { background: var(--hover); color: var(--ink); }
 .nav-link.active { color: var(--accent); background: var(--accent-soft); }
 #view { min-width: 0; }

@@ -1,8 +1,8 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
 const CACHE = 'liuxian-v1';
-// Caches this app may delete: its own versions and those of the app it replaced at this path.
-// All GitHub Pages sites of one user share an origin, so Cache Storage also holds other sites' caches.
-const OWN_CACHES = /^(liuxian-|guitar-tabs-cafcda4b-)/;
+// Caches this app may delete: its own versions and those of the app it replaced at each published path.
+// One origin hosts several sites, so Cache Storage also holds other sites' caches.
+const OWN_CACHES = /^(liuxian-|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
 const SHELL = [
   './',
   'index.html',

@@ -11,6 +11,7 @@ const voices = new Array(7).fill(null);
 
 /**
  * Recordings in audio/guitar/ (FreePats Spanish classical guitar, CC0): [MIDI pitch, tuning error in cents].
+ * The files are WAV named .sample, because download managers intercept requests for .wav and open a dialog per file.
  * The errors were measured with the tuner's detectPitch; playback subtracts them.
  */
 const RECORDINGS = [[40, 1], [43, 10], [47, 7], [50, 5], [53, 4], [56, 7], [59, 13], [62, 8], [65, 3], [69, 5], [72, 12], [75, 4], [78, 4], [81, 10], [84, 9]];
@@ -57,8 +58,8 @@ export function loadSamples() {
     const decoder = new OfflineAudioContext(1, 1, 22050);
     try {
       samples = await Promise.all(RECORDINGS.map(async ([midi, cents]) => {
-        const res = await fetch(new URL(`../../audio/guitar/${midi}.wav`, import.meta.url));
-        if (!res.ok) throw new Error(`${midi}.wav: HTTP ${res.status}`);
+        const res = await fetch(new URL(`../../audio/guitar/${midi}.sample`, import.meta.url));
+        if (!res.ok) throw new Error(`${midi}.sample: HTTP ${res.status}`);
         const buffer = await decoder.decodeAudioData(await res.arrayBuffer());
         return { midi, cents, buffer, ...measure(buffer) };
       }));

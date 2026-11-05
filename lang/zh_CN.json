@@ -214,7 +214,6 @@
     "maxLabel": "最高速度"
   },
   "practice": {
-    "version": "版本",
     "countIn": "预备拍",
     "countInBars": "{n} 小节",
     "volMetronome": "节拍器音量",

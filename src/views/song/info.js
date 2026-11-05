@@ -3,6 +3,7 @@ import { t } from '../../core/i18n.js';
 import { h, fill } from '../../ui/dom.js';
 import { chordDiagramEl } from '../../ui/chord-diagram-el.js';
 import { openChordPanel } from '../../ui/chord-panel.js';
+import { segmented } from '../../ui/controls.js';
 import { renderScore } from '../../render/score/score.js';
 import { describeStrum, patternSong } from '../../music/format/pattern.js';
 import { noteParts } from '../../music/format/syntax.js';
@@ -35,7 +36,7 @@ function strumBox(song, tonic) {
   return box;
 }
 
-/** @param o id, entry, song, prefs, perform, show, tonic, keyText, chordName(name), openPractice, openCapo, openTempo */
+/** @param o id, entry, song, prefs, perform, show, tonic, keyText, chordName(name), chooseVersion(version), openCapo, openTempo */
 export function renderSongInfo(el, o) {
   const { song, prefs, perform } = o;
   const { meta } = song;
@@ -43,7 +44,7 @@ export function renderSongInfo(el, o) {
   const errors = song.errors.concat(song.warnings);
   fill(el,
     h('div', { class: 'chips' },
-      o.entry.version ? chip(t(`version.${o.entry.version.id}`), o.openPractice) : null,
+      o.entry.version ? segmented(o.entry.versions.map((v) => [v.id, t(`version.${v.id}`)]), o.entry.version.id, o.chooseVersion) : null,
       chip(o.keyText, o.openCapo),
       chip(meta.time.join('/')),
       chip(prefs.bpm !== meta.bpm ? t('song.tempoChipChanged', { bpm: prefs.bpm, original: meta.bpm }) : t('song.tempoChip', { bpm: prefs.bpm }), o.openTempo),

@@ -1,4 +1,4 @@
-// Practice settings panel of the song page: version, count-in, volumes and the speed trainer.
+// Practice settings panel of the song page: count-in, volumes and the speed trainer.
 import { config } from '../../../core/config.js';
 import { t } from '../../../core/i18n.js';
 import { h, fill } from '../../../ui/dom.js';
@@ -6,11 +6,10 @@ import { segmented, stepper, toggle } from '../../../ui/controls.js';
 import { openPanel } from '../../../ui/panel.js';
 import { toast } from '../../../ui/toast.js';
 import { state, setSetting } from '../../../state/store.js';
-import { setVersion } from '../../../state/songs.js';
 import { setVolume } from '../../../audio/context.js';
 
-/** @param o id, entry, prefs, savePrefs(), restartIfPlaying() */
-export function openPracticePanel({ id, entry, prefs, savePrefs, restartIfPlaying }) {
+/** @param o prefs, savePrefs(), restartIfPlaying() */
+export function openPracticePanel({ prefs, savePrefs, restartIfPlaying }) {
   const { settings } = state;
   const { trainer } = prefs;
   const limits = config.song.trainer;
@@ -35,14 +34,6 @@ export function openPracticePanel({ id, entry, prefs, savePrefs, restartIfPlayin
   const volume = (key, kind) => h('input', { type: 'range', min: 0, max: 1, step: 0.05, value: settings[key], 'aria-label': kind, oninput: (e) => { setSetting(key, +e.target.value); setVolume(kind, +e.target.value); } });
   const countIn = config.song.countInOptions.map((n) => [n, n ? t('practice.countInBars', { n }) : t('common.none')]);
   openPanel(t('song.practice'), h('div', { class: 'stack' },
-    entry.version
-      ? h('div', { class: 'field' }, h('label', null, t('practice.version')),
-          segmented(entry.versions.map((v) => [v.id, t(`version.${v.id}`)]), entry.version.id, (v) => {
-            setVersion(id, v);
-            // The router rebuilds the page for the chosen version
-            dispatchEvent(new HashChangeEvent('hashchange'));
-          }))
-      : null,
     h('div', { class: 'field' }, h('label', null, t('practice.countIn')), segmented(countIn, settings.countIn, (v) => setSetting('countIn', v))),
     h('div', { class: 'field' }, h('label', null, t('practice.volMetronome')), volume('volMetronome', 'metronome')),
     h('div', { class: 'field' }, h('label', null, t('practice.volGuitar')), volume('volGuitar', 'guitar')),

@@ -9,7 +9,7 @@ import { toast } from '../../ui/toast.js';
 import { holdScreen } from '../../ui/wake-lock.js';
 import { openChordPanel } from '../../ui/chord-panel.js';
 import { state, save, setSetting } from '../../state/store.js';
-import { getEntry, parse } from '../../state/songs.js';
+import { getEntry, parse, setVersion } from '../../state/songs.js';
 import { prefsFor, savePrefs } from '../../state/prefs.js';
 import { renderScore } from '../../render/score/score.js';
 import { chordShapes } from '../../music/chord-shapes.js';
@@ -136,7 +136,13 @@ export function songView(root, id, opts = {}) {
   }
 
   function renderInfo() {
-    renderSongInfo(info, { id, entry, song, prefs, perform, show: show(), tonic, keyText: keyText(), chordName, openPractice, openCapo, openTempo });
+    renderSongInfo(info, { id, entry, song, prefs, perform, show: show(), tonic, keyText: keyText(), chordName, chooseVersion, openCapo, openTempo });
+  }
+
+  function chooseVersion(version) {
+    setVersion(id, version);
+    // The router rebuilds the page for the chosen version
+    dispatchEvent(new HashChangeEvent('hashchange'));
   }
 
   // ---------- score ----------
@@ -368,7 +374,7 @@ export function songView(root, id, opts = {}) {
   }
 
   function openPractice() {
-    openPracticePanel({ id, entry, prefs, savePrefs: persistPrefs, restartIfPlaying });
+    openPracticePanel({ prefs, savePrefs: persistPrefs, restartIfPlaying });
   }
 
   function openDisplay() {

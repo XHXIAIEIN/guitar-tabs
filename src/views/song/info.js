@@ -1,16 +1,22 @@
-// The block above the score: chips, note, chord strip, strum pattern and problems.
+// The block above the score: chips, note, chord strip, strum pattern, symbol legend and problems.
 import { t } from '../../core/i18n.js';
 import { h, fill } from '../../ui/dom.js';
 import { chordDiagramEl } from '../../ui/chord-diagram-el.js';
 import { openChordPanel } from '../../ui/chord-panel.js';
 import { segmented } from '../../ui/controls.js';
 import { renderScore } from '../../render/score/score.js';
+import { restGlyph, strumArrow } from '../../render/score/glyphs.js';
+import { line } from '../../render/svg.js';
 import { describeStrum, patternSong } from '../../music/format/pattern.js';
 import { noteParts } from '../../music/format/syntax.js';
 import { pretty } from '../../music/pitch.js';
 
 const PROBLEMS_SHOWN = 4;
 const FINGERS = ['T', '1', '2', '3', '4'];
+const STRUM_DIRS = ['D', 'U', 'X'];
+const BEAT_FRACTIONS = { 0.25: '¼', 0.33: '⅓', 0.38: '⅜', 0.5: '½', 0.67: '⅔', 0.75: '¾' };
+// Whole and half rests differ only by the side of the line they touch, so their icons draw that line.
+const REST_LINE = { w: -5.5, h: 2 };
 
 const fingerMark = (finger, props) => h('span', { class: `finger finger-${finger}`, ...props }, finger);
 
@@ -21,6 +27,49 @@ function noteBlock(text) {
   return h('div', { class: 'song-note-block' },
     h('p', { class: 'finger-legend' }, FINGERS.map((finger) => h('span', null, fingerMark(finger, { 'aria-hidden': 'true' }), ` ${t(`chords.finger.${finger}`)}`))),
     note);
+}
+
+function symbolIcon(markup) {
+  const el = h('span', { class: 'symbol-icon', 'aria-hidden': 'true' });
+  el.innerHTML = `<svg viewBox="-8 -11 16 22">${markup}</svg>`;
+  return el;
+}
+
+function restIcon(e) {
+  const y = REST_LINE[e.base];
+  return symbolIcon(restGlyph(e, 0, 0, 1) + (y === undefined ? '' : line(-7, y, 7, y, 'rest')));
+}
+
+/** One legend item for each distinct rest in the song, longest first. */
+function restItems(events, beatTicks) {
+  const rests = new Map(events.filter((e) => e.kind === 'rest').map((e) => [e.dur, e]));
+  return [...rests.values()].sort((a, b) => b.dur - a.dur).map((e) => {
+    const beats = Math.round((e.dur / beatTicks) * 100) / 100;
+    return [restIcon(e), t('legend.rest', { beats: BEAT_FRACTIONS[beats] ?? beats })];
+  });
+}
+
+/** Explains the symbols that this song draws with the current display toggles. */
+function symbolLegend(song, show) {
+  const events = song.bars.flatMap((b) => b.events);
+  if (!events.length) return null;
+  const has = (test) => events.some(test);
+  const hasNotes = has((e) => e.kind === 'note');
+  const items = [
+    show.tab && hasNotes && t('legend.strings'),
+    show.tab && hasNotes && t('legend.frets'),
+    show.tab && has((e) => e.notes.some((n) => n.f < 0)) && t('legend.muted'),
+    ...(show.tab || show.rhythm ? restItems(events, song.meter.beatTicks) : []),
+    ...(show.tab
+      ? STRUM_DIRS.filter((dir) => has((e) => e.kind === 'strum' && e.dir === dir)).map((dir) => [symbolIcon(strumArrow(dir, 0, -6.5, 1)), t(`legend.strum.${dir}`)])
+      : []),
+    t('legend.bars'),
+    show.rhythm && t('legend.notes'),
+    (show.rhythm || show.numbers) && has((e) => e.tuplet) && t('legend.tuplet'),
+    show.numbers && t('legend.numbers'),
+    show.tab && !show.rhythm && hasNotes && t('legend.rhythmHint', { panel: t('song.display'), toggle: t('display.rhythm') }),
+  ];
+  return h('p', { class: 'symbol-legend', role: 'note', 'aria-label': t('legend.title') }, items.filter(Boolean).map((item) => h('span', null, item)));
 }
 
 function strumBox(song, tonic) {
@@ -59,6 +108,7 @@ export function renderSongInfo(el, o) {
           }))
       : null,
     song.strum && !perform ? strumBox(song, o.tonic) : null,
+    perform ? null : symbolLegend(song, o.show),
     errors.length && !perform
       ? h('div', { class: 'alert' },
           h('strong', null, t('song.problems', { count: errors.length })),

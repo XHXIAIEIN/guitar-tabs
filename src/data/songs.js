@@ -265,17 +265,59 @@ lyric: | blind, but | now I | see. | |`,
     id: 'perfect',
     group: 'song',
     text: `title: Perfect
-artist: Ed Sheeran · 和弦练习
+artist: Ed Sheeran · 和弦谱
 key: G
-bpm: 60
+capo: 1
+bpm: 63
 time: 4/4
-level: 入门
-note: 练 G、Em、C、D 四个和弦的循环，和「换和弦练习」里的 C – D – G – Em 是同一个循环。每个和弦一小节，每拍向下扫一次（↓）。换和弦时提前在第 4 拍准备，宁可最后一下扫空弦，也不要让节拍停下来。
+strum: q D D D D
+level: 进阶
+note: 原曲是 A♭ 调的 12/8 拍。这里夹 1 品，用 G 调指法，记成 4/4 拍，一拍等于原曲的三个八分音符。每拍向下扫一次（↓）。熟练后，把每拍弹成三连音「下 下 上」，更接近原曲。主歌从 G 开始，副歌从 Em 开始。
 
-# 每个和弦一小节
+# 前奏
+chord: | G |
+
+# 主歌 1
 chord: | G | Em | C | D |
-tab: | q D D D D | D D D D | D D D D | D D D D |
 chord: | G | Em | C | D |
-tab: | q D D D D | D D D D | D D D D | D D D D |`,
+
+# 导歌 1
+chord: | G | Em | C | G D |
+chord: | G | Em | C | D |
+
+# 副歌 1
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | G D/F# Em D | C D |
+
+# 主歌 2
+chord: | G | Em | C | D |
+chord: | G | Em | C | D |
+
+# 导歌 2
+chord: | G | Em | C | G D |
+chord: | G | Em | C | D |
+
+# 副歌 2
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+
+# 间奏
+chord: | G | G | Em | Em |
+chord: | C | C | D | D |
+
+# 副歌 3
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+chord: | Em | C | G | D |
+
+# 尾奏
+chord: | G/B | C | Dsus4 D | G |
+chord: | G D/F# Em D | C D | G |`,
   },
 ];

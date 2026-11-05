@@ -15,11 +15,11 @@
 .tuner-wood-edge { stop-color: #7a4420; }
 .tuner-wood-middle { stop-color: #a4622f; }
 .tuner-grain { fill: none; stroke: #4f2c12; stroke-width: 1.4; opacity: 0.4; }
-.tuner-board { fill: #2b221c; }
+.tuner-board { fill: #2b221c; stroke: #6b665b; stroke-width: 1; }
 .tuner-fret { stroke: #8e8879; stroke-width: 2; }
 .tuner-nut { fill: #efe7d6; }
 .tuner-stem { fill: #a9a496; }
-.tuner-knob { fill: #2a2824; }
+.tuner-knob { fill: #2a2824; stroke: #6b665b; stroke-width: 1.5; }
 .tuner-shine { fill: #fff; opacity: 0.3; }
 .tuner-washer { fill: #cfc9ba; }
 .tuner-post { fill: #8e8879; }

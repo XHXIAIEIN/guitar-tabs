@@ -13,5 +13,10 @@
   {"id":"happy-birthday","group":"song","versions":["simple","full"]},
   {"id":"farewell","group":"song","versions":["simple","full"]},
   {"id":"amazing-grace","group":"song"},
-  {"id":"perfect","group":"song"}
+  {"id":"perfect","group":"song"},
+  {"id":"super-mario","group":"game"},
+  {"id":"tetris","group":"game"},
+  {"id":"pac-man","group":"game"},
+  {"id":"antarctic-adventure","group":"game"},
+  {"id":"mario-bros","group":"game"}
 ]

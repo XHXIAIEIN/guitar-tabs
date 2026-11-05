@@ -1,4 +1,4 @@
-// Song list: search, my songs, exercises, songs, the performance setlist and backup.
+// Song list: search, my songs, exercises, songs, game music, the performance setlist and backup.
 import { t } from '../../core/i18n.js';
 import { h, fill } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
@@ -7,7 +7,7 @@ import { songRow } from './song-row.js';
 import { renderSetlist } from './setlist.js';
 import { backupControls } from './backup-controls.js';
 
-const GROUPS = ['mine', 'exercise', 'song'];
+const GROUPS = ['mine', 'exercise', 'song', 'game'];
 
 export function libraryView(root) {
   let query = '';

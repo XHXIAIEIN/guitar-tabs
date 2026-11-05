@@ -15,6 +15,7 @@ const MELODIES = {
   'happy-birthday': "5 5 6 5 1' 7 5 5 6 5 2' 1' 5 5 5' 3' 1' 7 6 4' 4' 3' 1' 2' 1'",
   farewell: "5 3 5 1' 6 1' 5 5 1 2 3 2 1 2 5 3 5 1' 7 6 1' 5 5 2 3 4 7, 1",
   'mary-lamb': '3 2 1 2 3 3 3 2 2 2 3 5 5 3 2 1 2 3 3 3 3 2 2 3 2 1',
+  'mario-bros': '1 5 1 5 1 5 1 3 5 4 2 4 2 4 2 7 2 5',
 };
 
 const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
@@ -73,6 +74,19 @@ test('simple songs keep the melody and stay on the top strings', () => {
     for (const n of notes) {
       assert.ok(n.s <= 2 || (n.s === 3 && n.f === 0), `${entry.id} plays string ${n.s} fret ${n.f}`);
       assert.ok(n.f <= 8, `${entry.id} plays fret ${n.f}`);
+    }
+  }
+});
+
+test('game music is a single melody on the top strings', () => {
+  for (const entry of BUILTIN.filter((e) => e.group === 'game')) {
+    const song = parseSong(entry.text);
+    assert.deepEqual(song.chordsUsed, [], `${entry.id} chords`);
+    const events = song.bars.flatMap((b) => b.events);
+    for (const e of events) assert.ok(e.notes.length <= 1, `${entry.id} plays ${e.notes.length} notes at once`);
+    for (const n of events.flatMap((e) => e.notes)) {
+      assert.ok(n.s <= 2 || (n.s === 3 && n.f === 0), `${entry.id} plays string ${n.s} fret ${n.f}`);
+      assert.ok(n.f <= 12, `${entry.id} plays fret ${n.f}`);
     }
   }
 });

@@ -15,8 +15,11 @@
   {"id":"amazing-grace","group":"song"},
   {"id":"perfect","group":"song"},
   {"id":"super-mario","group":"game"},
+  {"id":"zelda-overworld","group":"game"},
+  {"id":"zelda-lullaby","group":"game"},
+  {"id":"zelda-lost-woods","group":"game"},
+  {"id":"zelda-song-of-storms","group":"game"},
   {"id":"tetris","group":"game"},
   {"id":"pac-man","group":"game"},
-  {"id":"antarctic-adventure","group":"game"},
   {"id":"mario-bros","group":"game"}
 ]

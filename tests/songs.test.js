@@ -79,15 +79,17 @@ test('simple songs keep the melody and stay on the top strings', () => {
   }
 });
 
-test('game music is a single melody on the top strings', () => {
+test('game music has a melody with bass notes under the chords, within reach of the left hand', () => {
   for (const entry of BUILTIN.filter((e) => e.group === 'game')) {
     const song = parseSong(entry.text);
-    assert.deepEqual(song.chordsUsed, [], `${entry.id} chords`);
+    assert.ok(song.chordsUsed.length, `${entry.id} chords`);
     const events = song.bars.flatMap((b) => b.events);
-    for (const e of events) assert.ok(e.notes.length <= 1, `${entry.id} plays ${e.notes.length} notes at once`);
-    for (const n of events.flatMap((e) => e.notes)) {
-      assert.ok(n.s <= 2 || (n.s === 3 && n.f === 0), `${entry.id} plays string ${n.s} fret ${n.f}`);
-      assert.ok(n.f <= 12, `${entry.id} plays fret ${n.f}`);
+    assert.ok(events.some((e) => e.notes.length === 2), `${entry.id} has no bass notes`);
+    for (const e of events) {
+      assert.ok(e.notes.length <= 2, `${entry.id} plays ${e.notes.length} notes at once`);
+      const fretted = e.notes.map((n) => n.f).filter((f) => f > 0);
+      assert.ok(fretted.every((f) => f <= 8), `${entry.id} plays fret ${Math.max(...fretted)}`);
+      if (fretted.length === 2) assert.ok(Math.abs(fretted[0] - fretted[1]) <= 4, `${entry.id} stretches frets ${fretted}`);
     }
   }
 });

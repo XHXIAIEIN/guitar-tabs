@@ -3,7 +3,6 @@ import { config } from '../../../core/config.js';
 import { t } from '../../../core/i18n.js';
 import { h } from '../../../ui/dom.js';
 import { openPanel } from '../../../ui/panel.js';
-import { tapTempo } from '../../../ui/tap-tempo.js';
 
 /** @param o prefs, meta, setBpm(v), listeners: a set of functions that run when the tempo changes */
 export function openTempoPanel({ prefs, meta, setBpm, listeners }) {
@@ -23,8 +22,6 @@ export function openTempoPanel({ prefs, meta, setBpm, listeners }) {
     slider,
     h('div', { class: 'row wrap gap-s' },
       ...nudges.map((d) => h('button', { class: 'btn', type: 'button', onclick: () => setBpm(prefs.bpm + d) }, d > 0 ? `+${d}` : d)),
-      h('span', { class: 'spacer' }),
-      h('button', { class: 'btn', type: 'button', onclick: tapTempo(setBpm) }, t('common.tapTempo')),
     ),
     h('div', { class: 'row wrap gap-s' },
       h('span', { class: 'muted' }, t('tempo.presets')),

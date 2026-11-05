@@ -17,7 +17,7 @@ const ICONS = {
   minus: '<path d="M5 12h14"/>',
   stage: '<rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5v4"/>',
   library: '<path d="M5 4h4v16H5zM10 4h4v16h-4z"/><path d="m15.5 4.8 3.8-1 4 15.4-3.8 1z" transform="translate(-2 0)"/>',
-  chord: '<path d="M5 4h14M5 10h14M5 16h14M5 4v17M12 4v17M19 4v17"/><circle cx="5" cy="13" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="13" r="2.4" fill="currentColor" stroke="none"/>',
+  chord: '<path d="M5.5 3.5h13" stroke-width="2.4"/><path d="M5.5 3.5v18.3M12 3.5v18.3M18.5 3.5v18.3M5.5 10.5h13M5.5 16.5h13" stroke-width="1.4"/><circle cx="18.5" cy="7.3" r="2.2" fill="currentColor" stroke="none"/><circle cx="12" cy="13.5" r="2.2" fill="currentColor" stroke="none"/><circle cx="5.5" cy="19.5" r="2.2" fill="currentColor" stroke="none"/>',
   rhythm: '<path d="M8 18V5l10-2v13"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="15.5" cy="16" r="2.5"/>',
   tuner: '<path d="M8 3v7a4 4 0 0 0 8 0V3"/><path d="M12 14v7"/><path d="M9 21h6"/>',
   note: '<path d="M12 18V4c.5 3 2.2 4.4 4 5.6 1.4 1 2 2.6 1.5 4.4"/><ellipse cx="8.8" cy="18" rx="3.2" ry="2.6" fill="currentColor" transform="rotate(-20 8.8 18)"/>',

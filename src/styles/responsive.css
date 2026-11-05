@@ -64,6 +64,7 @@
   .minute-idle:has(.bars) .hint { display: none; }
   .tuner-stage { flex: 1; }
   .tuner-neck { --room: 240px; }
+  .tuner-peg { width: 46px; height: 46px; margin: -23px 0 0 -23px; }
   .tuner-read { order: -1; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 14px; }
   .tuner-note { font-size: 38px; min-width: 56px; }
   .tuner-read-text { gap: 2px; }

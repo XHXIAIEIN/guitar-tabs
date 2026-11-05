@@ -44,7 +44,8 @@ export function tunerTool(root) {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
     } catch (e) {
-      hint.textContent = e.name === 'NotAllowedError' ? t('tuner.denied') : t('tuner.micError', { message: e.message });
+      const known = { NotAllowedError: 'tuner.denied', NotFoundError: 'tuner.noMic' }[e.name];
+      hint.textContent = known ? t(known) : t('tuner.micError', { message: e.message });
       return;
     }
     if (!root.isConnected) return stream.getTracks().forEach((track) => track.stop());

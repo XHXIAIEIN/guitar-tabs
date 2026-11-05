@@ -20,7 +20,7 @@ export function metronomeTool(root) {
   const big = h('output', { class: 'tempo-big' }, saved.bpm);
   const slider = h('input', { type: 'range', min: options.bpm.min, max: options.bpm.max, value: saved.bpm, 'aria-label': t('common.speed'), oninput: () => setBpm(+slider.value) });
   const dots = h('div', { class: 'metro-dots' });
-  const playBtn = h('button', { class: 'btn primary big', type: 'button', onclick: () => (seq.running ? stop() : start()) });
+  const playBtn = h('button', { class: 'btn primary big practice-start', type: 'button', onclick: () => (seq.running ? stop() : start()) });
 
   function setBpm(v) {
     saved.bpm = Math.max(options.bpm.min, Math.min(options.bpm.max, Math.round(v)));
@@ -80,18 +80,20 @@ export function metronomeTool(root) {
   playBtn.replaceChildren(icon('play'), t('common.start'));
   renderDots();
   root.append(
-    h('section', { class: 'card stack metronome' },
-      h('div', { class: 'tempo-row center' }, iconButton('minus', t('tools.slower'), () => setBpm(saved.bpm - 1)), big, iconButton('plus', t('tools.faster'), () => setBpm(saved.bpm + 1))),
-      slider,
-      dots,
-      h('div', { class: 'row wrap gap-s center' }, ...options.quickBpm.map((v) => h('button', { class: 'btn small', type: 'button', onclick: () => setBpm(v) }, v)), h('button', { class: 'btn small', type: 'button', onclick: tapTempo(setBpm) }, t('common.tapTempo'))),
-      h('div', { class: 'row wrap gap-m' },
-        h('label', { class: 'field-inline' }, t('common.timeSignature'), segmented(options.timeSignatures.map((v) => [v, v]), saved.time.join('/'), (v) => change({ time: v.split('/').map(Number) }))),
-        h('label', { class: 'field-inline' }, t('common.subdivision'), segmented(options.subdivisions.map((n) => [n, t(`tools.subdivision.${n}`)]), saved.subdivision, (v) => change({ subdivision: v }))),
-        toggle(t('tools.accent'), saved.accent, (v) => change({ accent: v })),
+    h('div', { class: 'practice-main' },
+      h('section', { class: 'card practice-stage metro-stage' },
+        dots,
+        h('div', { class: 'tempo-row center' }, iconButton('minus', t('tools.slower'), () => setBpm(saved.bpm - 1)), big, iconButton('plus', t('tools.faster'), () => setBpm(saved.bpm + 1))),
+        slider,
+        h('div', { class: 'row wrap gap-s center' }, ...options.quickBpm.map((v) => h('button', { class: 'btn small', type: 'button', onclick: () => setBpm(v) }, v)), h('button', { class: 'btn small', type: 'button', onclick: tapTempo(setBpm) }, t('common.tapTempo'))),
+      ),
+      playBtn,
+      h('section', { class: 'card stack metro-settings' },
+        h('div', { class: 'field' }, h('span', { class: 'field-label' }, t('common.timeSignature')), segmented(options.timeSignatures.map((v) => [v, v]), saved.time.join('/'), (v) => change({ time: v.split('/').map(Number) }))),
+        h('div', { class: 'field' }, h('span', { class: 'field-label' }, t('common.subdivision')), segmented(options.subdivisions.map((n) => [n, t(`tools.subdivision.${n}`)]), saved.subdivision, (v) => change({ subdivision: v }))),
+        h('div', { class: 'field' }, toggle(t('tools.accent'), saved.accent, (v) => change({ accent: v }))),
       ),
     ),
-    h('div', { class: 'center' }, playBtn),
   );
   return () => {
     seq.stop();

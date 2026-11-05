@@ -6,17 +6,15 @@ import { metronomeTool } from './metronome.js';
 import { tunerTool } from './tuner.js';
 
 export function toolsView(root, tab = 'metronome') {
-  const body = h('div');
+  const body = h('div', { class: 'practice-grid' });
   let cleanup = () => {};
   const show = (name) => {
     cleanup();
     body.replaceChildren();
-    page.classList.toggle('practice', name === 'tuner');
-    body.className = name === 'tuner' ? 'practice-grid' : '';
     history.replaceState(null, '', `#/tools/${name}`);
     cleanup = (name === 'tuner' ? tunerTool : metronomeTool)(body);
   };
-  const page = h('div', { class: 'page' },
+  const page = h('div', { class: 'page practice' },
     h('header', { class: 'page-head' }, h('h1', null, t('nav.tools')), segmented([['metronome', t('common.metronome')], ['tuner', t('tools.tuner')]], tab, show)),
     body,
   );

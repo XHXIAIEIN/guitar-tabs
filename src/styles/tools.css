@@ -1,4 +1,10 @@
 /* ---------- tools ---------- */
+/* metronome: the practice grid. The beats and the tempo on the left; the start button and the settings on the right. */
+.metro-stage { flex-direction: column; gap: 24px; padding: 40px 24px; }
+.metro-stage input[type="range"] { max-width: 480px; }
+.metro-stage .tempo-big { font-size: 112px; }
+.metro-settings { grid-column: 2; grid-row: 2; }
+.metro-settings .switch { width: 100%; justify-content: space-between; }
 /* tuner: the practice grid. The headstock stage on the left; the start button and the reading on the right. */
 .tuner-stage { --string: #e8e4da; flex-direction: column; justify-content: flex-start; padding: 24px 0 0; overflow: hidden; }
 .tuner-neck { --room: 144px; position: relative; flex: none; width: min(100%, 476px, calc((100dvh - var(--nav-h, 0px) - var(--room)) * 0.85)); aspect-ratio: 340 / 400; }

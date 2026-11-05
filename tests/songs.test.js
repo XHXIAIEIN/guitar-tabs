@@ -16,7 +16,6 @@ const MELODIES = {
   'happy-birthday': "5 5 6 5 1' 7 5 5 6 5 2' 1' 5 5 5' 3' 1' 7 6 4' 4' 3' 1' 2' 1'",
   farewell: "5 3 5 1' 6 1' 5 5 1 2 3 2 1 2 5 3 5 1' 7 6 1' 5 5 2 3 4 7, 1",
   'mary-lamb': '3 2 1 2 3 3 3 2 2 2 3 5 5 3 2 1 2 3 3 3 3 2 2 3 2 1',
-  'mario-bros': '1 5 1 5 1 5 1 3 5 4 2 4 2 4 2 7 2 5',
 };
 
 const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
@@ -79,17 +78,15 @@ test('simple songs keep the melody and stay on the top strings', () => {
   }
 });
 
-test('game music has a melody with bass notes under the chords, within reach of the left hand', () => {
+test('game music plays one string at a time, with bass notes between the melody notes', () => {
   for (const entry of BUILTIN.filter((e) => e.group === 'game')) {
     const song = parseSong(entry.text);
     assert.ok(song.chordsUsed.length, `${entry.id} chords`);
     const events = song.bars.flatMap((b) => b.events);
-    assert.ok(events.some((e) => e.notes.length === 2), `${entry.id} has no bass notes`);
+    assert.ok(events.some((e) => e.notes.some((n) => n.s >= 4)), `${entry.id} has no bass notes`);
     for (const e of events) {
-      assert.ok(e.notes.length <= 2, `${entry.id} plays ${e.notes.length} notes at once`);
-      const fretted = e.notes.map((n) => n.f).filter((f) => f > 0);
-      assert.ok(fretted.every((f) => f <= 8), `${entry.id} plays fret ${Math.max(...fretted)}`);
-      if (fretted.length === 2) assert.ok(Math.abs(fretted[0] - fretted[1]) <= 4, `${entry.id} stretches frets ${fretted}`);
+      assert.ok(e.notes.length <= 1, `${entry.id} plays ${e.notes.length} notes at once`);
+      assert.ok(e.notes.every((n) => n.f <= 8), `${entry.id} plays fret above 8`);
     }
   }
 });

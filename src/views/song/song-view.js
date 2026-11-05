@@ -181,7 +181,7 @@ export function songView(root, id, opts = {}) {
     if (!barEl) return;
     const i = +barEl.dataset.bar;
     if (selecting !== null) return pickLoop(i);
-    if (toolBar === i && ended === null) return hideTool();
+    if (toolBar === i) return hideTool();
     setCursor(i);
     if (playing) start(i);
     else openTool(i);
@@ -289,7 +289,6 @@ export function songView(root, id, opts = {}) {
       setCursor(prefs.loop ? prefs.loop[0] : 0);
       ended = lastPlayed;
       handle.setCurrent(ended);
-      openTool(ended);
       if (nextId) toast(t('song.nextUp', { title: parse(getEntry(nextId).text).meta.title }), [t('common.start'), () => (location.hash = `#/perform/${nextId}?list`)]);
       return;
     }
@@ -413,9 +412,8 @@ export function songView(root, id, opts = {}) {
   function openTool(i) {
     toolBar = i;
     const inLoop = prefs.loop && i >= prefs.loop[0] && i <= prefs.loop[1];
-    const playLabel = ended === null ? t('song.playFromHere') : t(prefs.loop ? 'song.replayLoop' : 'song.replay');
     tool.show(t('song.barTool', { n: i + 1 }), [
-      iconButton('play', playLabel, () => start(cursor), { text: true, cls: 'small primary' }),
+      iconButton('play', t('song.playFromHere'), () => start(cursor), { text: true, cls: 'small primary' }),
       inLoop
         ? iconButton('loop', t('song.loopOff'), () => replaceLoop(null), { text: true, cls: 'small loop-off' })
         : iconButton('loop', t('song.loopThisBar'), () => { setCursor(i); replaceLoop([i, i]); }, { text: true, cls: 'small' }),

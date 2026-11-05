@@ -183,8 +183,6 @@
     "loopPickLast": "从第 {n} 小节开始，再点选最后一个小节（可以是同一个）",
     "barTool": "第 {n} 小节",
     "playFromHere": "从这里播放",
-    "replay": "从头播放",
-    "replayLoop": "从循环起点播放",
     "loopThisBar": "循环这小节",
     "loopTo": "循环到…",
     "loopOff": "取消循环",

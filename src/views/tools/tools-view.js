@@ -11,15 +11,16 @@ export function toolsView(root, tab = 'metronome') {
   const show = (name) => {
     cleanup();
     body.replaceChildren();
+    page.classList.toggle('practice', name === 'tuner');
+    body.className = name === 'tuner' ? 'practice-grid' : '';
     history.replaceState(null, '', `#/tools/${name}`);
     cleanup = (name === 'tuner' ? tunerTool : metronomeTool)(body);
   };
-  root.append(
-    h('div', { class: 'page' },
-      h('header', { class: 'page-head' }, h('h1', null, t('nav.tools')), segmented([['metronome', t('common.metronome')], ['tuner', t('tools.tuner')]], tab, show)),
-      body,
-    ),
+  const page = h('div', { class: 'page' },
+    h('header', { class: 'page-head' }, h('h1', null, t('nav.tools')), segmented([['metronome', t('common.metronome')], ['tuner', t('tools.tuner')]], tab, show)),
+    body,
   );
+  root.append(page);
   show(tab);
   return () => cleanup();
 }

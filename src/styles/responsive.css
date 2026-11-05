@@ -62,6 +62,15 @@
   .minute-pad { height: auto; }
   .minute-idle .history { display: block; }
   .minute-idle:has(.bars) .hint { display: none; }
+  .tuner-stage { flex: 1; }
+  .tuner-neck { --room: 240px; }
+  .tuner-read { order: -1; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 14px; }
+  .tuner-note { font-size: 38px; min-width: 56px; }
+  .tuner-read-text { gap: 2px; }
+  .tuner-cents { font-size: 12px; }
+  .tuner-hint { font-size: 13px; line-height: 1.35; }
+  .tuner-hint.error { padding: 6px 8px; font-size: 12px; }
+  .tuner-reference { display: none; }
 }
 /* landscape phones: two columns with the same top and bottom edges, sized by the height */
 @media (max-height: 520px) {
@@ -72,6 +81,15 @@
   .practice-bar .btn { height: auto; }
   .practice-bar .btn:first-child { grid-column: 1 / -1; }
   .practice-start { grid-column: 2; grid-row: 2; }
+  .tuner-neck { --room: 66px; }
+  .tuner-peg { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
+  .tuner-peg strong { font-size: 13px; }
+  .tuner-peg small { display: none; }
+  .tuner-read { grid-column: 2; grid-row: 1; order: 0; display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 12px; }
+  .tuner-note { font-size: 44px; }
+  .tuner-hint { font-size: 13px; line-height: 1.35; }
+  .tuner-hint.error { padding: 6px 8px; font-size: 12px; }
+  .tuner-reference { display: none; }
   .drill-stage { flex-direction: row; flex-wrap: nowrap; gap: 12px; padding: 6px 10px; }
   .drill-now .drill-diagram { width: calc((100dvh - var(--nav-h, 0px) - 110px) * 0.8); }
   .drill-next .drill-diagram { width: calc((100dvh - var(--nav-h, 0px) - 110px) * 0.5); }

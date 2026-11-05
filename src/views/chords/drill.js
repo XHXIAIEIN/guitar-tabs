@@ -1,9 +1,10 @@
-// Timed chord-change drill: the current and next chord side by side, with a cue on the last beat.
+// Timed chord-change drill: the current chord is largest, the next one beside or below it, with a cue on the last beat.
 import { config } from '../../core/config.js';
 import { t } from '../../core/i18n.js';
 import { h } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
 import { segmented, stepper, toggle } from '../../ui/controls.js';
+import { openPanel, closePanel } from '../../ui/panel.js';
 import { toast } from '../../ui/toast.js';
 import { holdScreen } from '../../ui/wake-lock.js';
 import { chordDiagramEl } from '../../ui/chord-diagram-el.js';
@@ -22,14 +23,22 @@ export function chordDrill(root) {
   const saved = state.tools.drill;
   const options = config.chords.drill;
   let release = null;
-  const stage = h('div', { class: 'drill-stage' });
+  const stage = h('section', { class: 'card practice-stage drill-stage' });
   const presetRow = h('div', { class: 'chip-row' });
   const custom = h('div', { class: 'chip-row' });
-  const playBtn = h('button', { class: 'btn primary big', type: 'button', onclick: () => (seq.running ? stop() : start()) });
+  const playBtn = h('button', { class: 'btn primary big practice-start', type: 'button', onclick: () => (seq.running ? stop() : start()) });
+  const summary = { chords: h('span', { class: 'practice-bar-chords' }), beats: h('span'), bpm: h('span') };
   const update = (patch) => {
     Object.assign(saved, patch);
     save();
+    renderSummary();
   };
+
+  function renderSummary() {
+    summary.chords.textContent = saved.chords.map(pretty).join(' – ');
+    summary.beats.textContent = t('drill.beats', { n: saved.beatsPer });
+    summary.bpm.textContent = `♩${saved.bpm}`;
+  }
 
   function renderPick() {
     presetRow.replaceChildren(
@@ -54,9 +63,9 @@ export function chordDrill(root) {
     const { chords, beatsPer } = saved;
     const next = (idx + 1) % chords.length;
     stage.replaceChildren(
-      h('div', { class: 'drill-now' }, h('small', null, t('drill.now')), chordDiagramEl(chords[idx], 'diagram-xl')),
-      h('div', { class: 'drill-next' + (beat === beatsPer - 1 ? ' ready' : '') }, h('small', null, beat === beatsPer - 1 ? t('drill.ready') : t('drill.next')), chordDiagramEl(chords[next], 'diagram-lg')),
+      h('div', { class: 'drill-now' }, h('small', null, t('drill.now')), chordDiagramEl(chords[idx], 'drill-diagram')),
       h('div', { class: 'drill-beats' }, Array.from({ length: beatsPer }, (_, k) => h('i', { class: k === beat ? 'on' : k < beat ? 'past' : '' }))),
+      h('div', { class: 'drill-next' + (beat === beatsPer - 1 ? ' ready' : '') }, h('small', null, beat === beatsPer - 1 ? t('drill.ready') : t('drill.next')), chordDiagramEl(chords[next], 'drill-diagram')),
     );
   }
 
@@ -104,27 +113,35 @@ export function chordDrill(root) {
     renderStage(0, -1);
   }
 
+  const settings = h('div', { class: 'stack' },
+    h('div', { class: 'field' }, h('span', { class: 'field-label' }, t('drill.perChord')), segmented(options.beatsPerChord.map((n) => [n, t('drill.beats', { n })]), saved.beatsPer, (v) => { update({ beatsPer: v }); renderStage(0, -1); if (seq.running) start(); })),
+    h('div', { class: 'field' }, h('span', { class: 'field-label' }, t('common.speed')), stepper(saved.bpm, { min: options.bpm.min, max: options.bpm.max, step: options.bpm.step, label: t('common.speed'), format: (v) => `♩${v}`, onchange: (v) => { update({ bpm: v }); if (seq.running) seq.setBpm(v); } })),
+    h('div', { class: 'field' }, toggle(t('common.metronome'), saved.metronome, (v) => update({ metronome: v })), toggle(t('drill.strumDemo'), saved.strum, (v) => update({ strum: v }))),
+    h('div', { class: 'practice-divider' }),
+    presetRow,
+    custom,
+    h('p', { class: 'hint' }, t('drill.hint')),
+  );
+  const side = h('aside', { class: 'card practice-side' }, settings);
+  // One settings element: it lives in the side column and moves into the panel where the column is hidden.
+  const openSettings = () => openPanel(t('drill.settings'), settings, { onclose: () => side.append(settings) });
+  const barBtn = (...label) => h('button', { class: 'btn', type: 'button', title: t('drill.settings'), onclick: openSettings }, ...label);
+
+  renderSummary();
   renderPick();
   renderStage(0, -1);
   playBtn.replaceChildren(icon('play'), t('common.start'));
-  // The stage and the start button come first, so on a phone they fill the first screen while you play.
   root.append(
-    stage,
-    h('div', { class: 'center' }, playBtn),
-    h('section', { class: 'card stack' },
-      h('p', { class: 'hint' }, t('drill.hint')),
-      presetRow,
-      custom,
-      h('div', { class: 'row wrap gap-m' },
-        h('label', { class: 'field-inline' }, t('drill.perChord'), segmented(options.beatsPerChord.map((n) => [n, t('drill.beats', { n })]), saved.beatsPer, (v) => { update({ beatsPer: v }); renderStage(0, -1); if (seq.running) start(); })),
-        h('label', { class: 'field-inline' }, t('common.speed'), stepper(saved.bpm, { min: options.bpm.min, max: options.bpm.max, step: options.bpm.step, label: t('common.speed'), format: (v) => `♩${v}`, onchange: (v) => { update({ bpm: v }); if (seq.running) seq.setBpm(v); } })),
-        toggle(t('common.metronome'), saved.metronome, (v) => update({ metronome: v })),
-        toggle(t('drill.strumDemo'), saved.strum, (v) => update({ strum: v })),
-      ),
+    h('div', { class: 'practice-main' },
+      stage,
+      h('div', { class: 'practice-bar' }, barBtn(summary.chords, icon('down')), barBtn(summary.beats), barBtn(summary.bpm)),
+      playBtn,
     ),
+    side,
   );
   return () => {
     seq.stop();
     release?.();
+    closePanel();
   };
 }

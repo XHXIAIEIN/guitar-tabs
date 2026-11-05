@@ -22,45 +22,59 @@ export function minuteChallenge(root) {
   const select = (i) =>
     h('select', { 'aria-label': t('minute.chordLabel', { n: i + 1 }), onchange: (e) => { pair[i] = e.target.value; save(); renderHistory(); } },
       config.chords.pickable.map((c) => h('option', { value: c, selected: c === pair[i] }, pretty(c))));
-  const clock = h('div', { class: 'big-clock' }, String(options.seconds));
-  const counter = h('div', { class: 'big-count' }, '0');
-  const tapBtn = h('button', { class: 'btn tap-pad', type: 'button', disabled: true, onpointerdown: (e) => { e.preventDefault(); tap(); } }, t('minute.tap'));
+  const clock = h('b', null, String(options.seconds));
+  const clockStat = h('div', { class: 'minute-stat' }, clock, h('small', null, t('minute.secondsUnit')));
+  const counter = h('b', null, '0');
+  const tapBtn = h('button', { class: 'btn tap-pad minute-pad', type: 'button', disabled: true, hidden: true, onpointerdown: (e) => { e.preventDefault(); tap(); } },
+    h('span', { class: 'tap-label' }, t('minute.tap')),
+    h('span', { class: 'tap-judge', 'aria-hidden': 'true' }, t('minute.perfect')));
   const startLabel = () => t('minute.start', { seconds: options.seconds });
-  const startBtn = h('button', { class: 'btn primary big', type: 'button', onclick: () => (timer ? finish(false) : begin()) }, icon('play'), startLabel());
-  const historyEl = h('div', { class: 'history' });
-  const pairShapes = h('div', { class: 'pair-shapes' });
+  const startBtn = h('button', { class: 'btn primary big practice-start', type: 'button', onclick: () => (timer ? finish(false) : begin()) }, icon('play'), startLabel());
+  const historyEls = [h('div', { class: 'history' }), h('div', { class: 'history' })];
+  const idle = h('div', { class: 'card minute-idle' }, h('p', { class: 'hint' }, t('minute.hint')), historyEls[0]);
+  const shapes = [h('div'), h('div')];
   const key = () => pair.join('-');
   const pairName = () => pair.map(pretty).join(' ⇄ ');
 
   function renderHistory() {
-    pairShapes.replaceChildren(chordDiagramEl(pair[0], 'diagram-lg'), h('span', { class: 'swap' }, '⇄'), chordDiagramEl(pair[1], 'diagram-lg'));
+    shapes.forEach((el, i) => el.replaceChildren(chordDiagramEl(pair[i], 'minute-diagram')));
     const list = records[key()] ?? [];
     const best = Math.max(0, ...list.map((r) => r.n));
-    historyEl.replaceChildren(
-      list.length
-        ? h('div', null,
-            h('p', null, t('minute.best', { pair: pairName() }), ' ', h('strong', null, best), ` ${t('minute.perMinute')}`),
-            h('div', { class: 'bars' }, list.slice(-options.historyShown).map((r) => h('span', { class: 'bar-col', title: t('minute.resultTitle', { date: new Date(r.t).toLocaleDateString(currentLocale()), count: r.n }), style: { '--h': `${(r.n / Math.max(best, 1)) * 100}%` } }, h('i'), h('small', null, r.n)))))
-        : h('p', { class: 'muted' }, t('minute.noHistory')),
-    );
+    for (const el of historyEls) {
+      el.replaceChildren(
+        list.length
+          ? h('div', null,
+              h('p', null, t('minute.best', { pair: pairName() }), ' ', h('strong', null, best), ` ${t('minute.perMinute')}`),
+              h('div', { class: 'bars' }, list.slice(-options.historyShown).map((r) => h('span', { class: 'bar-col', title: t('minute.resultTitle', { date: new Date(r.t).toLocaleDateString(currentLocale()), count: r.n }), style: { '--h': `${(r.n / Math.max(best, 1)) * 100}%` } }, h('i'), h('small', null, r.n)))))
+          : h('p', { class: 'muted' }, t('minute.noHistory')),
+      );
+    }
   }
 
   function tap() {
-    if (!timer) return;
+    if (tapBtn.disabled) return;
     count++;
     counter.textContent = count;
     counter.classList.remove('pop');
     void counter.offsetWidth; // restart the pop animation
     counter.classList.add('pop');
+    tapBtn.classList.remove('hit');
+    void tapBtn.offsetWidth; // restart the judgement animation
+    tapBtn.classList.add('hit');
   }
 
   async function begin() {
+    startBtn.disabled = true; // a second click while the audio resumes would start a second timer
     await resumeAudio();
+    startBtn.disabled = false;
+    if (!root.isConnected) return;
     count = 0;
     counter.textContent = '0';
     let pre = options.countdown;
     clock.textContent = `${pre}`;
-    clock.classList.add('pre');
+    clockStat.classList.add('pre');
+    idle.hidden = true;
+    tapBtn.hidden = false;
     startBtn.replaceChildren(icon('stop'), t('minute.giveUp'));
     release ??= holdScreen();
     const t0 = audioContext().currentTime;
@@ -69,11 +83,11 @@ export function minuteChallenge(root) {
     timer = setInterval(() => {
       if (pre > 0) {
         pre--;
-        clock.textContent = pre ? `${pre}` : t('common.start');
+        clock.textContent = pre || options.seconds;
         if (!pre) {
           endAt = performance.now() + options.seconds * 1000;
           tapBtn.disabled = false;
-          clock.classList.remove('pre');
+          clockStat.classList.remove('pre');
         }
         return;
       }
@@ -87,9 +101,11 @@ export function minuteChallenge(root) {
     clearInterval(timer);
     timer = 0;
     tapBtn.disabled = true;
+    tapBtn.hidden = true;
+    idle.hidden = false;
     release?.();
     release = null;
-    clock.classList.remove('pre');
+    clockStat.classList.remove('pre');
     startBtn.replaceChildren(icon('play'), startLabel());
     if (!done) {
       clock.textContent = String(options.seconds);
@@ -112,14 +128,19 @@ export function minuteChallenge(root) {
   addEventListener('keydown', onKey);
   renderHistory();
   root.append(
-    h('section', { class: 'card stack' },
-      h('p', { class: 'hint' }, t('minute.hint')),
-      h('div', { class: 'row gap-s' }, select(0), h('span', null, '⇄'), select(1)),
-      pairShapes,
+    h('div', { class: 'practice-main' },
+      h('section', { class: 'card practice-stage minute-stage' },
+        h('div', { class: 'minute-pair' },
+          h('div', { class: 'minute-chord' }, shapes[0], select(0)),
+          h('span', { class: 'swap' }, '⇄'),
+          h('div', { class: 'minute-chord' }, shapes[1], select(1)),
+        ),
+      ),
+      h('div', { class: 'card minute-stats' }, clockStat, h('div', { class: 'minute-stat count' }, counter, h('small', null, t('minute.countUnit')))),
+      h('div', { class: 'minute-slot' }, idle, tapBtn),
+      startBtn,
     ),
-    h('div', { class: 'minute-stage' }, clock, counter, tapBtn),
-    h('div', { class: 'center' }, startBtn),
-    historyEl,
+    h('aside', { class: 'card practice-side' }, historyEls[1]),
   );
   return () => {
     clearInterval(timer);

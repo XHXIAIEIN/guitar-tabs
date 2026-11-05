@@ -301,12 +301,16 @@
     "hint": "跟着节拍换和弦：最后一拍提前抬手去按下一个和弦，换不过来就降速，别停下。",
     "perChord": "每个和弦",
     "beats": "{n} 拍",
-    "strumDemo": "扫弦示范"
+    "strumDemo": "扫弦示范",
+    "settings": "练习设置"
   },
   "minute": {
     "hint": "在两个和弦之间来回换，每次按好并扫响一下就点一次「+1」（电脑上按空格）。只数干净的换和弦。",
     "chordLabel": "第 {n} 个和弦",
-    "tap": "换成功 +1",
+    "tap": "+1",
+    "perfect": "Perfect",
+    "secondsUnit": "秒",
+    "countUnit": "次",
     "start": "开始 {seconds} 秒",
     "giveUp": "放弃",
     "best": "{pair} 最好成绩",

@@ -1,6 +1,6 @@
 /* ---------- phones ---------- */
 @media (max-width: 760px) {
-  :root { --nav-w: 0px; }
+  :root { --nav-w: 0px; --nav-h: calc(64px + env(safe-area-inset-bottom)); }
   .shell { grid-template-columns: minmax(0, 1fr); }
   .nav {
     position: fixed;
@@ -36,12 +36,59 @@
   .editor-pane { border-right: 0; }
   .step { height: 62px; }
   .step b { font-size: 19px; }
-  .drill-stage { gap: 10px 18px; }
-  .diagram-xl { width: 150px; }
   .diagram-lg { width: 100px; }
   .count-overlay { font-size: 104px; }
   .tempo-big { font-size: 48px; }
   .toggle-grid { grid-template-columns: 1fr 1fr; }
+}
+/* practice tabs: the settings move into a panel, and the page fills the screen so nothing floats */
+@media (max-width: 760px), (max-height: 520px) {
+  .page.practice { min-height: calc(100dvh - var(--nav-h, 0px)); padding: 12px 14px; }
+  .practice-grid { display: flex; flex-direction: column; }
+  .practice-main { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .practice-side { display: none; }
+  .practice-bar { display: grid; }
+}
+@media (max-width: 760px) and (min-height: 521px) {
+  .drill-stage { flex: 1; flex-direction: column; flex-wrap: nowrap; justify-content: space-evenly; gap: 8px; padding: 10px 14px; }
+  .drill-beats { order: 0; }
+  .drill-now { gap: 2px; }
+  .drill-now .drill-diagram { width: min(62vw, 28dvh); }
+  .drill-next { flex-direction: row; gap: 14px; }
+  .drill-next .drill-diagram { width: min(92px, 13dvh); }
+  .practice-grid:has(.minute-stage) { --chord-w: min(33vw, 19dvh); }
+  .minute-stage { padding: 12px 14px; }
+  .minute-slot { flex: 1; min-height: 96px; }
+  .minute-pad { height: auto; }
+  .minute-idle .history { display: block; }
+  .minute-idle:has(.bars) .hint { display: none; }
+}
+/* landscape phones: two columns with the same top and bottom edges, sized by the height */
+@media (max-height: 520px) {
+  .page.practice { gap: 8px; padding: 8px 14px; }
+  .practice-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px); grid-template-rows: 1fr auto; gap: 8px; }
+  .practice-stage { grid-column: 1; grid-row: 1 / -1; }
+  .practice-bar { grid-column: 2; grid-row: 1; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 1fr 1fr; }
+  .practice-bar .btn { height: auto; }
+  .practice-bar .btn:first-child { grid-column: 1 / -1; }
+  .practice-start { grid-column: 2; grid-row: 2; }
+  .drill-stage { flex-direction: row; flex-wrap: nowrap; gap: 12px; padding: 6px 10px; }
+  .drill-now .drill-diagram { width: calc((100dvh - var(--nav-h, 0px) - 110px) * 0.8); }
+  .drill-next .drill-diagram { width: calc((100dvh - var(--nav-h, 0px) - 110px) * 0.5); }
+  .drill-next { padding: 4px 8px; }
+  .drill-beats { order: 3; flex-direction: column; width: auto; gap: 6px; }
+  .practice-main:has(.minute-stage) { grid-template-rows: auto 1fr auto; }
+  .practice-grid:has(.minute-stage) { --chord-w: calc((100dvh - var(--nav-h, 0px) - 124px) * 0.8); }
+  .minute-stage { padding: 6px 10px; }
+  .minute-stats { grid-column: 2; grid-row: 1; padding: 4px 10px; }
+  .minute-stat b { font-size: 40px; }
+  .minute-slot { grid-column: 2; grid-row: 2; min-height: 0; }
+  .minute-pad { height: auto; font-size: 18px; }
+  .minute-idle { justify-content: flex-end; padding: 8px 10px; }
+  .minute-idle .hint { display: none; }
+  .minute-idle .history { display: block; }
+  .history .bars { height: 52px; }
+  .practice-grid:has(.minute-stage) .practice-start { grid-row: 3; align-self: auto; }
 }
 @media (max-width: 380px) {
   .transport .loop-btn span:not(.icon) { display: none; }

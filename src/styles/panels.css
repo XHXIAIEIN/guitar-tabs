@@ -37,4 +37,6 @@
   max-width: calc(100vw - 24px);
   animation: panel-in 0.18s ease-out;
 }
+.toast { pointer-events: none; }
+.toast .btn { pointer-events: auto; }
 .toast .btn.link { color: var(--accent); font-weight: 600; }

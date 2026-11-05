@@ -3,31 +3,78 @@
 .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
 .chord-grid .chord-card { padding: 6px 8px 4px; }
 .chord-grid .diagram { width: 100%; max-width: 92px; margin: 0 auto; }
-.drill-stage { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; justify-content: center; align-items: end; gap: 10px 34px; padding: 10px 0; }
-.drill-now, .drill-next { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.drill-now small, .drill-next small { color: var(--muted); font-size: 13px; }
-.drill-next { opacity: 0.55; transition: opacity 0.12s ease-out; }
-.drill-next.ready { opacity: 1; }
-.drill-next.ready small { color: var(--accent); font-weight: 700; }
-.drill-beats { grid-column: 1 / -1; display: flex; justify-content: center; gap: 10px; }
-.drill-beats i, .metro-dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--line); }
+.drill-beats { display: flex; justify-content: center; gap: 10px; }
+.drill-beats i, .metro-dots i { width: 14px; height: 14px; border-radius: 50%; background: var(--line); }
 .drill-beats i.past { background: var(--staff); }
 .drill-beats i.on, .metro-dots i.on { background: var(--accent); }
 .metro-dots { display: flex; justify-content: center; gap: 14px; }
 .metro-dots i { width: 26px; height: 26px; }
 .metro-dots i.accent { box-shadow: 0 0 0 3px var(--accent-soft); }
-.minute-stage { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.pair-shapes { display: flex; align-items: center; justify-content: center; gap: 16px; }
-.swap { font-size: 22px; color: var(--muted); }
-.big-clock { font-size: 64px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
-.big-clock.pre { color: var(--accent); }
-.big-count { font-size: 40px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
-.big-count.pop { animation: pop 0.18s ease-out; }
 @keyframes pop { from { transform: scale(1.25); } to { transform: none; } }
 .tap-pad { width: 100%; height: 110px; font-size: 18px; border-radius: 16px; background: var(--surface-2); border-style: dashed; }
 .tap-pad.flash { animation: flash 0.25s ease-out; }
 @keyframes flash { from { background: var(--accent-soft); } to { background: var(--surface-2); } }
-.history .bars { display: flex; align-items: flex-end; gap: 6px; height: 96px; padding-bottom: 16px; margin-top: 8px; }
+.history p { font-size: 14px; color: var(--ink-2); }
+.history strong { font-size: 18px; color: var(--ink); }
+.history .bars { display: flex; align-items: flex-end; gap: 6px; height: 72px; padding-bottom: 16px; margin-top: 8px; }
 .bar-col { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; flex: 1; max-width: 36px; }
 .bar-col i { width: 100%; height: var(--h); background: var(--accent-soft); border-top: 3px solid var(--accent); border-radius: 4px 4px 0 0; }
 .bar-col small { position: absolute; top: 100%; font-size: 11px; color: var(--muted); }
+
+/* practice tabs: one grid. What to play on the left; the start button and the settings or the history on the right.
+   Every box shares the page edges, and the edges of the two columns line up. */
+.page.practice { max-width: 1040px; padding-bottom: 40px; gap: 12px; }
+.practice-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 320px; grid-template-rows: auto 1fr; gap: 12px; }
+.practice-main { display: contents; }
+.practice-stage { grid-column: 1; grid-row: 1 / -1; min-width: 0; display: flex; align-items: center; justify-content: center; }
+.practice-start { grid-column: 2; grid-row: 1; width: 100%; }
+.practice-side { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 14px; }
+/* Messages stay above the start button, which sits where they would normally appear. */
+body:has(.page.practice) .toast { bottom: calc(var(--nav-h, 0px) + 84px); }
+.practice-divider { border-top: 1px solid var(--line); }
+.practice-bar { display: none; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; }
+.practice-bar-chords { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* The fretboard sits off-centre in the diagram's box: 18 units on the left, 12 on the right, out of 105. This centres it. */
+.drill-diagram svg, .minute-diagram svg { transform: translateX(-2.86%); }
+
+.drill-stage { flex-wrap: wrap; gap: 28px 48px; padding: 28px; }
+.drill-beats { order: 3; width: 100%; }
+.drill-now, .drill-next { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.drill-now small, .drill-next small { color: var(--muted); font-size: 13px; }
+.drill-next { padding: 6px 18px; border-radius: 12px; }
+.drill-next.ready { background: var(--accent-soft); }
+.drill-next.ready small { color: var(--accent); font-weight: 700; }
+.drill-diagram { display: block; }
+.drill-now .drill-diagram { width: 250px; }
+.drill-next .drill-diagram { width: 150px; }
+
+/* The chords and the two numbers below them share these columns. */
+.practice-grid:has(.minute-stage) { --chord-w: 190px; grid-template-rows: auto 1fr auto; }
+.minute-stage { grid-row: 1 / 3; padding: 20px 14px; }
+.minute-pair, .minute-stats { display: grid; grid-template-columns: 1fr 24px 1fr; column-gap: 14px; justify-items: center; align-items: center; width: 100%; }
+.minute-chord { width: var(--chord-w); display: flex; flex-direction: column; gap: 8px; }
+.minute-chord select { width: 71.4%; margin: 0 auto; height: 36px; padding: 0 2px 0 8px; font-size: 14px; }
+.minute-diagram { display: block; }
+.swap { font-size: 22px; color: var(--muted); }
+.minute-stats { grid-column: 2; grid-row: 1; padding: 10px 14px; align-items: baseline; }
+.minute-stat { grid-column: 1; display: flex; align-items: baseline; justify-content: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.minute-stat.count { grid-column: 3; }
+.minute-stat b { font-size: 52px; font-weight: 700; line-height: 1; }
+.minute-stat small { font-size: 14px; color: var(--muted); }
+.minute-stat.pre b, .minute-stat.count b { color: var(--accent); }
+.minute-stat.count b.pop { animation: pop 0.18s ease-out; }
+.minute-slot { grid-column: 1; grid-row: 3; display: flex; flex-direction: column; min-width: 0; }
+.practice-grid:has(.minute-stage) .practice-start { grid-row: 2; align-self: start; }
+.practice-grid:has(.minute-stage) .practice-side { grid-row: 3; }
+.minute-idle { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 14px; }
+.minute-idle .history { display: none; }
+.minute-pad { position: relative; flex: 1; height: 180px; min-height: 0; overflow: hidden; border: 1px solid var(--line); font-size: 24px; color: var(--ink-2); }
+.tap-judge { position: absolute; left: 50%; top: 50%; opacity: 0; font-size: 28px; font-style: italic; font-weight: 800; color: var(--accent); pointer-events: none; transform: translate(-50%, -50%); }
+.minute-pad.hit .tap-judge { animation: judge 0.3s ease-out; }
+.minute-pad.hit .tap-label { animation: label-back 0.3s ease-out; }
+@keyframes judge {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -90%) scale(1); }
+}
+@keyframes label-back { from, 70% { opacity: 0; } to { opacity: 1; } }

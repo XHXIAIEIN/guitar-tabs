@@ -17,7 +17,6 @@
 .chord-card:hover { border-color: var(--accent); }
 .diagram { display: block; width: 84px; }
 .diagram-lg { display: block; width: 118px; }
-.diagram-xl { display: block; width: 190px; }
 .strum-box { display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px 0; max-width: 380px; }
 .strum-head { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
 .strum-head span { color: var(--muted); }

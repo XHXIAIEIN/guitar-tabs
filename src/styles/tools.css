@@ -13,7 +13,8 @@
 .has-reading .tuner-needle { display: block; }
 .in-tune .tuner-needle { stroke: var(--good); }
 .tuner-head { position: absolute; inset: 0; }
-.tuner-bevel { fill: none; stroke: #d6a06c; stroke-width: 0.9; opacity: 0.6; }
+.tuner-wood-base { fill: #54290f; }
+.tuner-bevel { fill: none; stroke: #d6a06c; stroke-width: 0.9; opacity: 0.16; }
 .tuner-board { stroke: #6b665b; stroke-width: 0.7; }
 .tuner-dot { fill: #efe7d6; }
 .tuner-nut { fill: #f1eadb; }

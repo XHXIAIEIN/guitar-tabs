@@ -51,7 +51,7 @@ function gaugeMarkup(zone) {
   const strings = STRINGS.map((st) => `<path d="${line(st)}" class="tuner-string ${st.s > 2 ? 'wound' : 'plain'}" stroke-width="${GAUGE[st.s]}" data-string="${st.s}"/>${st.s > 2 ? `<path d="${line(st)}" class="tuner-winding" stroke-width="${GAUGE[st.s]}"/>` : ''}`).join('');
   const frets = FRET_Y.map((y) => `<rect x="139" y="${y - 1.2}" width="62" height="2.4" fill="url(#tuner-metal)"/>`).join('');
   const dots = DOT_Y.map((y) => `<circle cx="142.5" cy="${y}" r="1.8" class="tuner-dot"/>`).join('');
-  // The needle turns often, so it lives in its own SVG and the filtered wood above it is not redrawn each time.
+  // The needle turns often, so it lives in its own SVG and the headstock above it is not redrawn each time.
   return `<svg class="tuner-svg" viewBox="0 0 ${VIEW.w} ${VIEW.h}" aria-hidden="true">
     <path d="${arc(-SWING, SWING)}" class="tuner-arc"/><path d="${arc(-zone, zone)}" class="tuner-zone"/>${ticks}
     <text x="52" y="52" class="tuner-sign">♭</text><text x="288" y="52" class="tuner-sign">♯</text>
@@ -59,20 +59,14 @@ function gaugeMarkup(zone) {
   </svg>
   <svg class="tuner-svg tuner-head" viewBox="0 0 ${VIEW.w} ${VIEW.h}" aria-hidden="true">
     <defs>
-      <linearGradient id="tuner-wood"><stop offset="0" stop-color="#6f3d1b"/><stop offset="0.5" stop-color="#a5622e"/><stop offset="1" stop-color="#6f3d1b"/></linearGradient>
       <linearGradient id="tuner-metal" x2="0" y2="1"><stop offset="0" stop-color="#e6e2d8"/><stop offset="0.5" stop-color="#8f8a7e"/><stop offset="1" stop-color="#c4bfb2"/></linearGradient>
       <linearGradient id="tuner-ebony"><stop offset="0" stop-color="#1d1612"/><stop offset="0.5" stop-color="#3b2d23"/><stop offset="1" stop-color="#1d1612"/></linearGradient>
       <radialGradient id="tuner-washer" cx="0.38" cy="0.32" r="0.75"><stop offset="0" stop-color="#fbf8f0"/><stop offset="0.6" stop-color="#b9b3a4"/><stop offset="1" stop-color="#7d7769"/></radialGradient>
-      <filter id="tuner-grain" filterUnits="userSpaceOnUse" x="100" y="95" width="140" height="255" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.24 0.012" numOctaves="3" seed="4"/>
-        <feColorMatrix values="0 0 0 0 0.2  0 0 0 0 0.09  0 0 0 0 0.03  2 0 0 0 -0.8"/>
-        <feComposite in2="SourceGraphic" operator="in" result="streaks"/>
-        <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="streaks"/></feMerge>
-      </filter>
+      <clipPath id="tuner-head-shape"><path d="${HEAD}"/></clipPath>
     </defs>
     ${stems}<rect x="139" y="${NUT_Y}" width="62" height="${BOARD_END - NUT_Y}" fill="url(#tuner-ebony)" class="tuner-board"/>${frets}${dots}
     <rect x="139" y="${NUT_Y + 3}" width="62" height="6" class="tuner-nut-shadow"/>
-    <path d="${HEAD}" fill="url(#tuner-wood)" filter="url(#tuner-grain)"/><path d="${HEAD}" class="tuner-bevel"/>
+    <path d="${HEAD}" class="tuner-wood-base"/><image href="assets/textures/tuner-wood.webp" x="100" y="95" width="140" height="255" preserveAspectRatio="none" clip-path="url(#tuner-head-shape)"/><path d="${HEAD}" class="tuner-bevel"/>
     <rect x="137" y="${NUT_Y - 4}" width="66" height="7" rx="1" class="tuner-nut"/>${posts}
     <g class="tuner-string-shadow" transform="translate(1.2 1.4)">${shadows}</g>${strings}
   </svg>`;

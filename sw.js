@@ -10,6 +10,7 @@ const SHELL = [
   'config/app.json',
   'lang/zh_CN.json',
   'assets/icons/icon.svg',
+  'assets/textures/tuner-wood.webp',
   'src/app/main.js',
   'src/app/router.js',
   'src/app/shell.js',

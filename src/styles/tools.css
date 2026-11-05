@@ -12,13 +12,12 @@
 .tuner-needle { display: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transform-box: view-box; transform-origin: 170px 170px; transition: transform 0.12s ease-out; }
 .has-reading .tuner-needle { display: block; }
 .in-tune .tuner-needle { stroke: var(--good); }
-.tuner-wood-edge { stop-color: #7a4420; }
-.tuner-wood-middle { stop-color: #a4622f; }
-.tuner-grain { fill: none; stroke: #4f2c12; stroke-width: 1.4; opacity: 0.4; }
+.tuner-wood-edge { stop-color: #8a4f26; }
+.tuner-wood-middle { stop-color: #9c5a2c; }
 .tuner-board { fill: #2b221c; stroke: #6b665b; stroke-width: 1; }
 .tuner-fret { stroke: #8e8879; stroke-width: 2; }
 .tuner-nut { fill: #efe7d6; }
-.tuner-stem, .tuner-knob { fill: var(--muted); }
+.tuner-stem { stroke: var(--muted); stroke-width: 6; }
 .tuner-washer { fill: #cfc9ba; }
 .tuner-post { fill: #8e8879; }
 .tuner-string { fill: none; }
@@ -27,8 +26,6 @@
 .tuner-string.active { stroke: var(--accent); }
 .in-tune .tuner-string.active { stroke: var(--good); }
 .tuner-peg { position: absolute; width: 50px; height: 50px; margin: -25px 0 0 -25px; padding: 0; border-radius: 50%; flex-direction: column; gap: 0; line-height: 1.1; background: var(--surface); }
-.tuner-peg.left { left: 15%; }
-.tuner-peg.right { left: 85%; }
 .tuner-peg strong { font-size: 16px; }
 .tuner-peg small { font-size: 10px; color: var(--muted); }
 .tuner-peg.on { border-color: var(--accent); border-width: 2px; }

@@ -14,21 +14,20 @@ const VIEW = { w: 340, h: 400 };
 const PIVOT = { x: 170, y: 170 };
 const RADIUS = 150;
 const SWING = 40;
-// Offsets are from the centre line. Each knob sits a little above its post, as the gears hold them on a real headstock.
-const ROWS = [{ knobY: 158, knobX: 76, postY: 168, postX: 35 }, { knobY: 214, knobX: 73, postY: 225, postX: 30 }, { knobY: 268, knobX: 70, postY: 282, postX: 30 }];
+// Offsets are from the centre line. Each note button is a tuning knob: it sits a little above its post, as the gears hold knobs on a real headstock.
+const ROWS = [{ pegY: 158, pegX: 94, postY: 168, postX: 35 }, { pegY: 214, pegX: 91, postY: 225, postX: 30 }, { pegY: 268, pegX: 88, postY: 282, postX: 30 }];
 const NUT_Y = 340;
 const GAUGE = { 6: 3.4, 5: 2.9, 4: 2.4, 3: 1.9, 2: 1.4, 1: 1.2 };
 const NUT_X = { 6: 143, 5: 153.8, 4: 164.6, 3: 175.4, 2: 186.2, 1: 197 };
 const BOARD_END = 1600;
 const FRET_Y = [420, 495, 566, 633, 696, 756, 813, 867];
 const HEAD = 'M139 340 C137 322 127 313 122.6 301 L112 128.5 C128 125 143 116 151 106 L189 106 C197 116 212 125 228 128.5 L217.4 301 C213 313 203 322 201 340 Z';
-const GRAIN = [122, 132, 141, 150, 160, 171, 182, 191, 201, 210, 219];
 // As on a real headstock: the bass strings wind on the left, and the string nearest the nut has the lowest post.
 const STRINGS = [[4, 'left', 0], [5, 'left', 1], [6, 'left', 2], [3, 'right', 0], [2, 'right', 1], [1, 'right', 2]].map(([s, side, row]) => {
   const sign = side === 'left' ? -1 : 1;
-  const { knobY, knobX, postY, postX } = ROWS[row];
+  const { pegY, pegX, postY, postX } = ROWS[row];
   return {
-    s, side, knobY, postY, knobX: PIVOT.x + sign * knobX, postX: PIVOT.x + sign * postX,
+    s, pegY, postY, pegX: PIVOT.x + sign * pegX, postX: PIVOT.x + sign * postX,
     midi: TUNING[s], name: ['', 'E', 'B', 'G', 'D', 'A', 'E'][s] + ['', '4', '3', '3', '3', '2', '2'][s],
   };
 });
@@ -41,24 +40,19 @@ const arc = (from, to) => `M${arcPoint(from, RADIUS)} A${RADIUS} ${RADIUS} 0 0 1
 
 function gaugeMarkup(zone) {
   const ticks = [-SWING, -SWING / 2, SWING / 2, SWING].map((d) => `<path d="M${arcPoint(d, RADIUS + 9)} L${arcPoint(d, RADIUS + 16)}" class="tuner-tick"/>`).join('');
-  const knobs = STRINGS.map(({ side, knobX, knobY }) => {
-    const inner = knobX + (side === 'left' ? 8 : -30);
-    return `<rect x="${inner}" y="${knobY - 3}" width="22" height="6" class="tuner-stem"/><ellipse cx="${knobX}" cy="${knobY}" rx="9" ry="14" class="tuner-knob"/>`;
-  }).join('');
+  const stems = STRINGS.map(({ pegX, pegY }) => `<path d="M${pegX} ${pegY} H${PIVOT.x}" class="tuner-stem"/>`).join('');
   const posts = STRINGS.map(({ postX, postY }) => `<circle cx="${postX}" cy="${postY}" r="9" class="tuner-washer"/><circle cx="${postX}" cy="${postY}" r="4" class="tuner-post"/>`).join('');
   const strings = STRINGS.map(({ s, postX, postY }) => `<path d="M${postX} ${postY} L${NUT_X[s]} ${NUT_Y} V${BOARD_END}" class="tuner-string ${s > 2 ? 'wound' : 'plain'}" stroke-width="${GAUGE[s]}" data-string="${s}"/>`).join('');
-  const grain = GRAIN.map((x, k) => `<path d="M${x} 100 C${x + (k % 2 ? 3 : -3)} 170 ${x + (k % 3 ? -2 : 3)} 270 ${x + (x - PIVOT.x) * -0.1} 345" class="tuner-grain"/>`).join('');
   const frets = FRET_Y.map((y) => `<path d="M139 ${y} H201" class="tuner-fret"/>`).join('');
   return `<svg class="tuner-svg" viewBox="0 0 ${VIEW.w} ${VIEW.h}" aria-hidden="true">
     <defs>
       <linearGradient id="tuner-wood"><stop offset="0" class="tuner-wood-edge"/><stop offset="0.5" class="tuner-wood-middle"/><stop offset="1" class="tuner-wood-edge"/></linearGradient>
-      <clipPath id="tuner-head"><path d="${HEAD}"/></clipPath>
     </defs>
     <path d="${arc(-SWING, SWING)}" class="tuner-arc"/><path d="${arc(-zone, zone)}" class="tuner-zone"/>${ticks}
     <text x="52" y="52" class="tuner-sign">♭</text><text x="288" y="52" class="tuner-sign">♯</text>
     <path d="M${PIVOT.x} ${PIVOT.y} V${PIVOT.y - RADIUS + 4}" class="tuner-needle"/>
-    ${knobs}<rect x="139" y="${NUT_Y}" width="62" height="${BOARD_END - NUT_Y}" class="tuner-board"/>${frets}
-    <path d="${HEAD}" fill="url(#tuner-wood)"/><g clip-path="url(#tuner-head)">${grain}</g>
+    ${stems}<rect x="139" y="${NUT_Y}" width="62" height="${BOARD_END - NUT_Y}" class="tuner-board"/>${frets}
+    <path d="${HEAD}" fill="url(#tuner-wood)"/>
     <rect x="137" y="${NUT_Y - 4}" width="66" height="7" rx="1" class="tuner-nut"/>${posts}${strings}
   </svg>`;
 }
@@ -82,7 +76,7 @@ export function tunerTool(root) {
   });
   const autoInput = autoSwitch.querySelector('input');
   const pegs = new Map(STRINGS.map((st) => [st.s, h('button', {
-    class: `btn tuner-peg ${st.side}`, type: 'button', style: { top: `${(st.knobY / VIEW.h) * 100}%` }, title: t('tuner.stringTitle', { s: st.s, name: st.name }),
+    class: 'btn tuner-peg', type: 'button', style: { left: `${(st.pegX / VIEW.w) * 100}%`, top: `${(st.pegY / VIEW.h) * 100}%` }, title: t('tuner.stringTitle', { s: st.s, name: st.name }),
     onclick: async () => {
       target = st.s;
       autoInput.checked = false;

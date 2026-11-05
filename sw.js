@@ -116,6 +116,7 @@ const SHELL = [
   'src/views/rhythm/rhythm-view.js',
   'src/views/rhythm/steps.js',
   'src/views/rhythm/tap-test.js',
+  'src/views/song/bar-tool.js',
   'src/views/song/info.js',
   'src/views/song/keyboard.js',
   'src/views/song/panels/capo.js',

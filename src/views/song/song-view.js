@@ -22,6 +22,7 @@ import { songSource } from '../../audio/song-source.js';
 import { resumeGuitar } from '../../audio/guitar.js';
 import { notFound } from '../not-found.js';
 import { renderSongInfo } from './info.js';
+import { barTool } from './bar-tool.js';
 import { songKeyHandler } from './keyboard.js';
 import { openCapoPanel } from './panels/capo.js';
 import { openDisplayPanel } from './panels/display.js';
@@ -53,6 +54,9 @@ export function songView(root, id, opts = {}) {
   let playing = false;
   let cursor = prefs.loop ? prefs.loop[0] : 0;
   let current = null;
+  let ended = null; // the bar playback ended on, until the next action
+  let toolBar = null; // the bar the floating toolbar sits beside
+  let startRun = 0; // the latest start(), which a stop or a newer start supersedes while it waits for the audio
   let selecting = null; // null, 'first', or the first bar index while picking a loop
   let following = true; // page scrolls with the playing bar
   let releaseScreen = perform ? holdScreen() : null;
@@ -107,6 +111,7 @@ export function songView(root, id, opts = {}) {
     h('div', { class: 'transport-row' },
       iconButton('restart', t('song.restart'), () => {
         stop();
+        hideTool();
         setCursor(prefs.loop ? prefs.loop[0] : 0);
         follow(cursor, true);
       }),
@@ -121,8 +126,10 @@ export function songView(root, id, opts = {}) {
         : iconButton('sliders', t('song.practice'), openPractice),
     ),
   );
+  const body = h('main', { class: 'song-body' }, info, scoreEl);
+  const tool = barTool(body, topbar, transport);
   const page$ = h('div', { class: 'song-page' + (perform ? ' perform' : '') + (perform && settings.stage ? ' stage' : '') },
-    topbar, h('main', { class: 'song-body' }, info, scoreEl), banner, followBtn, countEl, transport);
+    topbar, body, banner, followBtn, countEl, transport);
   root.append(page$);
   // Hand scrolling stops the following
   // follow() scrolls by script, which fires neither event
@@ -156,7 +163,8 @@ export function songView(root, id, opts = {}) {
     });
     handle.setLoop(...(prefs.loop ?? [null, null]));
     if (!playing) handle.setCursor(cursor);
-    if (current !== null) handle.setCurrent(current);
+    handle.setCurrent(current ?? ended);
+    if (toolBar !== null) tool.place(handle.barBox(toolBar));
   }
   const ro = new ResizeObserver(() => {
     if (Math.floor(scoreEl.clientWidth) !== renderedWidth) renderNow();
@@ -165,16 +173,25 @@ export function songView(root, id, opts = {}) {
 
   scoreEl.addEventListener('click', (e) => {
     const chordEl = e.target.closest('[data-chord]');
-    if (chordEl && selecting === null) return openChordPanel(chordName(chordEl.dataset.chord));
+    if (chordEl && selecting === null) {
+      hideTool();
+      return openChordPanel(chordName(chordEl.dataset.chord));
+    }
     const barEl = e.target.closest('[data-bar]');
     if (!barEl) return;
     const i = +barEl.dataset.bar;
     if (selecting !== null) return pickLoop(i);
+    if (toolBar === i && ended === null) return hideTool();
     setCursor(i);
     if (playing) start(i);
+    else openTool(i);
+  });
+  page$.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-bar], .transport')) hideTool();
   });
 
   function setCursor(i) {
+    clearEnded();
     cursor = Math.max(0, Math.min(last, i));
     handle?.setCursor(playing ? null : cursor);
   }
@@ -208,13 +225,25 @@ export function songView(root, id, opts = {}) {
   }
 
   // ---------- playback ----------
+  /** A start while playing is a jump: the highlight moves at once and no count-in plays. */
   async function start(from) {
+    const jump = playing;
+    const run = ++startRun;
+    seq.stop();
+    hideTool();
+    clearEnded();
+    if (jump) {
+      current = from;
+      handle.setCurrent(from);
+      countEl.hidden = true;
+    }
+    setFollowing(true);
+    follow(from);
     await resumeGuitar();
-    if (!page$.isConnected) return;
+    if (run !== startRun || !page$.isConnected) return;
     const loop = prefs.loop;
-    const begin = loop && (from < loop[0] || from > loop[1]) ? loop[0] : from;
     const source = songSource(song, {
-      from: begin, loop, countIn: settings.countIn, bpm: prefs.bpm, live, shapeOf, capo: prefs.capo,
+      from, loop, countIn: jump ? 0 : settings.countIn, bpm: prefs.bpm, live, shapeOf, capo: prefs.capo,
       trainer: prefs.trainer.on && loop ? prefs.trainer : null,
     });
     seq.start(source, prefs.bpm, onUi, (bpm) => {
@@ -222,7 +251,6 @@ export function songView(root, id, opts = {}) {
       updateBpm();
     });
     playing = true;
-    setFollowing(true);
     releaseScreen ??= holdScreen();
     handle.setCursor(null);
     updatePlay();
@@ -230,6 +258,7 @@ export function songView(root, id, opts = {}) {
 
   function stop() {
     if (!playing) return;
+    startRun++;
     seq.stop();
     playing = false;
     setFollowing(true);
@@ -247,14 +276,20 @@ export function songView(root, id, opts = {}) {
   }
 
   function togglePlay() {
-    if (playing) stop();
-    else start(cursor);
+    if (playing) {
+      stop();
+      openTool(cursor);
+    } else start(cursor);
   }
 
   function onUi(u) {
     if (u.end) {
+      const lastPlayed = current;
       stop();
       setCursor(prefs.loop ? prefs.loop[0] : 0);
+      ended = lastPlayed;
+      handle.setCurrent(ended);
+      openTool(ended);
       if (nextId) toast(t('song.nextUp', { title: parse(getEntry(nextId).text).meta.title }), [t('common.start'), () => (location.hash = `#/perform/${nextId}?list`)]);
       return;
     }
@@ -322,28 +357,26 @@ export function songView(root, id, opts = {}) {
 
   function onLoopButton() {
     if (selecting !== null) return endSelect();
-    if (prefs.loop) {
-      const old = prefs.loop;
-      setLoop(null);
-      toast(t('song.loopCancelled', { from: old[0] + 1, to: old[1] + 1 }), [t('common.undo'), () => setLoop(old)]);
-      return;
-    }
+    if (prefs.loop) return replaceLoop(null);
+    hideTool();
     selecting = 'first';
     showBanner(t('song.loopPickFirst'));
   }
 
   function pickLoop(i) {
-    if (selecting === 'first') {
-      selecting = i;
-      handle.setLoop(i, i);
-      showBanner(t('song.loopPickLast', { n: i + 1 }));
-      return;
-    }
+    if (selecting === 'first') return pickLoopFrom(i);
     const range = [Math.min(selecting, i), Math.max(selecting, i)];
     endSelect();
-    setLoop(range);
     setCursor(range[0]);
-    if (playing) start(range[0]);
+    replaceLoop(range);
+    if (!playing) openTool(range[0]);
+  }
+
+  function pickLoopFrom(i) {
+    hideTool();
+    selecting = i;
+    handle.setLoop(i, i);
+    showBanner(t('song.loopPickLast', { n: i + 1 }));
   }
 
   function endSelect() {
@@ -365,7 +398,40 @@ export function songView(root, id, opts = {}) {
     handle.setLoop(...(range ?? [null, null]));
     loopBtn.classList.toggle('on', !!range);
     loopLabel().textContent = range ? `${range[0] + 1}–${range[1] + 1}` : t('song.loop');
+    if (toolBar !== null) openTool(toolBar);
     if (playing) start(range ? range[0] : current ?? cursor);
+  }
+
+  /** setLoop, with an undo when a loop was already set. */
+  function replaceLoop(range) {
+    const old = prefs.loop;
+    setLoop(range);
+    if (old) toast(t('song.loopCancelled', { from: old[0] + 1, to: old[1] + 1 }), [t('common.undo'), () => setLoop(old)]);
+  }
+
+  // ---------- bar tool ----------
+  function openTool(i) {
+    toolBar = i;
+    const inLoop = prefs.loop && i >= prefs.loop[0] && i <= prefs.loop[1];
+    const playLabel = ended === null ? t('song.playFromHere') : t(prefs.loop ? 'song.replayLoop' : 'song.replay');
+    tool.show(t('song.barTool', { n: i + 1 }), [
+      iconButton('play', playLabel, () => start(cursor), { text: true, cls: 'small primary' }),
+      inLoop
+        ? iconButton('loop', t('song.loopOff'), () => replaceLoop(null), { text: true, cls: 'small loop-off' })
+        : iconButton('loop', t('song.loopThisBar'), () => { setCursor(i); replaceLoop([i, i]); }, { text: true, cls: 'small' }),
+      inLoop ? null : h('button', { class: 'btn small', type: 'button', onclick: () => pickLoopFrom(i) }, t('song.loopTo')),
+    ], handle.barBox(i));
+  }
+
+  function hideTool() {
+    toolBar = null;
+    tool.hide();
+  }
+
+  function clearEnded() {
+    if (ended === null) return;
+    ended = null;
+    handle?.setCurrent(null);
   }
 
   // ---------- panels ----------
@@ -413,7 +479,9 @@ export function songView(root, id, opts = {}) {
       setCursor(cursor + delta);
       follow(cursor);
       if (playing) start(cursor);
+      else if (toolBar !== null) openTool(cursor);
     },
+    dismiss: () => (selecting !== null ? endSelect() : hideTool()),
     toggleLoop: onLoopButton,
     nudgeBpm: (dir) => setBpm(prefs.bpm + dir * bpmStep),
     toggleMetronome: () => setLive('metronome', !live.metronome),

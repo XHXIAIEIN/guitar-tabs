@@ -181,6 +181,13 @@
     "loopCancelled": "已取消第 {from}–{to} 小节的循环",
     "loopPickFirst": "点选循环的第一个小节",
     "loopPickLast": "从第 {n} 小节开始，再点选最后一个小节（可以是同一个）",
+    "barTool": "第 {n} 小节",
+    "playFromHere": "从这里播放",
+    "replay": "从头播放",
+    "replayLoop": "从循环起点播放",
+    "loopThisBar": "循环这小节",
+    "loopTo": "循环到…",
+    "loopOff": "取消循环",
     "changeTempo": "调整速度",
     "demo": "示范音",
     "restart": "回到开头",
@@ -218,7 +225,7 @@
     "countInBars": "{n} 小节",
     "volMetronome": "节拍器音量",
     "volGuitar": "示范音音量",
-    "shortcuts": "快捷键：空格 播放/暂停 · ←/→ 移动起点 · L 循环 · +/− 速度 · M 节拍器"
+    "shortcuts": "快捷键：空格 播放/暂停 · ←/→ 移动起点 · L 循环 · +/− 速度 · M 节拍器 · Esc 收起小节工具"
   },
   "display": {
     "chords": "和弦",

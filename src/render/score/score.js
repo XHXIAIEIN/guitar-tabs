@@ -63,6 +63,7 @@ export function renderScore(root, song, o) {
   let cursor = null;
   return {
     lineEl: (i) => barEls.get(i)?.closest('.sys'),
+    barBox: (i) => barEls.get(i).querySelector('.bar-bg').getBoundingClientRect(),
     setCurrent(bar, ev = -1) {
       if (current !== bar) {
         barEls.get(current)?.classList.remove('is-current');

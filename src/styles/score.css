@@ -2,6 +2,7 @@
 .bar-bg { fill: transparent; cursor: pointer; }
 @media (hover: hover) { .bar:hover .bar-bg { fill: var(--hover); } }
 .bar.in-loop .bar-bg { fill: var(--loop-soft); }
+.bar.is-cursor .bar-bg { fill: color-mix(in srgb, var(--accent) 7%, transparent); }
 .bar.is-current .bar-bg { fill: var(--accent-soft); }
 .loop-mark { fill: var(--loop); opacity: 0; }
 .bar.in-loop .loop-mark { opacity: 1; }
@@ -32,6 +33,7 @@
   stroke-linejoin: round;
   font-variant-numeric: tabular-nums;
 }
+.bar.is-cursor .fret { stroke: color-mix(in srgb, var(--accent) 7%, var(--paper)); }
 .bar.is-current .fret { stroke: color-mix(in srgb, var(--accent) 13%, var(--paper)); }
 .chord { font-size: calc(15px * var(--s)); font-weight: 700; fill: var(--chord); cursor: pointer; }
 .chord.chart { font-size: calc(18px * var(--s)); }

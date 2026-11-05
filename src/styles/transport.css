@@ -43,6 +43,23 @@
   box-shadow: var(--shadow);
 }
 .follow-btn .icon { color: var(--accent); }
+.bar-tool {
+  position: absolute;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.bar-tool .btn { border-color: transparent; border-radius: 999px; }
+.bar-tool .btn:not(.primary) { background: transparent; }
+.bar-tool .btn:not(.primary):hover { background: var(--hover); }
+.bar-tool .icon svg { width: 16px; height: 16px; }
+.bar-tool .loop-off { color: var(--loop); }
 .loop-banner:not([hidden]) + .follow-btn { bottom: calc(140px + env(safe-area-inset-bottom)); }
 
 .transport {

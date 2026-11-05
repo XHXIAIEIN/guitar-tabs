@@ -2,7 +2,7 @@
 
 /**
  * @param perform performance mode, where Enter plays and the up/down keys page through the score
- * @param a togglePlay, page(dir), moveCursor(delta), detach, toggleLoop, nudgeBpm(dir), toggleMetronome
+ * @param a togglePlay, page(dir), moveCursor(delta), detach, dismiss, toggleLoop, nudgeBpm(dir), toggleMetronome
  */
 export function songKeyHandler(perform, a) {
   return (e) => {
@@ -22,6 +22,7 @@ export function songKeyHandler(perform, a) {
       e.preventDefault();
       a.moveCursor(k === 'ArrowRight' ? 1 : -1);
     } else if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(k)) a.detach(); // the browser scrolls the page
+    else if (k === 'Escape') a.dismiss();
     else if (k === 'l' || k === 'L') a.toggleLoop();
     else if (k === '+' || k === '=') a.nudgeBpm(1);
     else if (k === '-') a.nudgeBpm(-1);

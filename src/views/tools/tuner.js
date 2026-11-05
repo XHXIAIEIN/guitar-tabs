@@ -15,19 +15,20 @@ const PIVOT = { x: 170, y: 170 };
 const RADIUS = 150;
 const SWING = 40;
 // Offsets are from the centre line. Each note button is a tuning knob: it sits a little above its post, as the gears hold knobs on a real headstock.
-const ROWS = [{ pegY: 158, pegX: 94, postY: 168, postX: 35 }, { pegY: 214, pegX: 91, postY: 225, postX: 30 }, { pegY: 268, pegX: 88, postY: 282, postX: 30 }];
+const ROWS = [{ pegY: 158, pegX: 94, edge: 56, postY: 168, postX: 35 }, { pegY: 214, pegX: 91, edge: 52.7, postY: 225, postX: 30 }, { pegY: 268, pegX: 88, edge: 49.4, postY: 282, postX: 30 }];
 const NUT_Y = 340;
 const GAUGE = { 6: 3.4, 5: 2.9, 4: 2.4, 3: 1.9, 2: 1.4, 1: 1.2 };
 const NUT_X = { 6: 143, 5: 153.8, 4: 164.6, 3: 175.4, 2: 186.2, 1: 197 };
 const BOARD_END = 1600;
 const FRET_Y = [420, 495, 566, 633, 696, 756, 813, 867];
+const DOT_Y = [530, 664, 785];
 const HEAD = 'M139 340 C137 322 127 313 122.6 301 L112 128.5 C128 125 143 116 151 106 L189 106 C197 116 212 125 228 128.5 L217.4 301 C213 313 203 322 201 340 Z';
 // As on a real headstock: the bass strings wind on the left, and the string nearest the nut has the lowest post.
 const STRINGS = [[4, 'left', 0], [5, 'left', 1], [6, 'left', 2], [3, 'right', 0], [2, 'right', 1], [1, 'right', 2]].map(([s, side, row]) => {
   const sign = side === 'left' ? -1 : 1;
-  const { pegY, pegX, postY, postX } = ROWS[row];
+  const { pegY, pegX, edge, postY, postX } = ROWS[row];
   return {
-    s, pegY, postY, pegX: PIVOT.x + sign * pegX, postX: PIVOT.x + sign * postX,
+    s, sign, edge, pegY, postY, pegX: PIVOT.x + sign * pegX, postX: PIVOT.x + sign * postX,
     midi: TUNING[s], name: ['', 'E', 'B', 'G', 'D', 'A', 'E'][s] + ['', '4', '3', '3', '3', '2', '2'][s],
   };
 });
@@ -40,20 +41,40 @@ const arc = (from, to) => `M${arcPoint(from, RADIUS)} A${RADIUS} ${RADIUS} 0 0 1
 
 function gaugeMarkup(zone) {
   const ticks = [-SWING, -SWING / 2, SWING / 2, SWING].map((d) => `<path d="M${arcPoint(d, RADIUS + 9)} L${arcPoint(d, RADIUS + 16)}" class="tuner-tick"/>`).join('');
-  const stems = STRINGS.map(({ pegX, pegY }) => `<path d="M${pegX} ${pegY} H${PIVOT.x}" class="tuner-stem"/>`).join('');
-  const posts = STRINGS.map(({ postX, postY }) => `<circle cx="${postX}" cy="${postY}" r="9" class="tuner-washer"/><circle cx="${postX}" cy="${postY}" r="4" class="tuner-post"/>`).join('');
-  const strings = STRINGS.map(({ s, postX, postY }) => `<path d="M${postX} ${postY} L${NUT_X[s]} ${NUT_Y} V${BOARD_END}" class="tuner-string ${s > 2 ? 'wound' : 'plain'}" stroke-width="${GAUGE[s]}" data-string="${s}"/>`).join('');
-  const frets = FRET_Y.map((y) => `<path d="M139 ${y} H201" class="tuner-fret"/>`).join('');
+  const stems = STRINGS.map(({ pegX, pegY, sign, edge }) => {
+    const collar = PIVOT.x + sign * edge;
+    return `<rect x="${Math.min(pegX, PIVOT.x)}" y="${pegY - 3}" width="${Math.abs(PIVOT.x - pegX)}" height="6" fill="url(#tuner-metal)"/><rect x="${collar + (sign < 0 ? -9 : 0)}" y="${pegY - 6}" width="9" height="12" rx="2" fill="url(#tuner-metal)"/>`;
+  }).join('');
+  const posts = STRINGS.map(({ postX, postY }) => `<circle cx="${postX}" cy="${postY}" r="9" fill="url(#tuner-washer)"/><circle cx="${postX}" cy="${postY}" r="3.8" class="tuner-post"/><circle cx="${postX - 1}" cy="${postY - 1.2}" r="1.3" class="tuner-post-shine"/>`).join('');
+  const line = ({ s, postX, postY }) => `M${postX} ${postY} L${NUT_X[s]} ${NUT_Y} V${BOARD_END}`;
+  const shadows = STRINGS.map((st) => `<path d="${line(st)}" stroke-width="${GAUGE[st.s]}"/>`).join('');
+  const strings = STRINGS.map((st) => `<path d="${line(st)}" class="tuner-string ${st.s > 2 ? 'wound' : 'plain'}" stroke-width="${GAUGE[st.s]}" data-string="${st.s}"/>${st.s > 2 ? `<path d="${line(st)}" class="tuner-winding" stroke-width="${GAUGE[st.s]}"/>` : ''}`).join('');
+  const frets = FRET_Y.map((y) => `<rect x="139" y="${y - 1.2}" width="62" height="2.4" fill="url(#tuner-metal)"/>`).join('');
+  const dots = DOT_Y.map((y) => `<circle cx="142.5" cy="${y}" r="1.8" class="tuner-dot"/>`).join('');
+  // The needle turns often, so it lives in its own SVG and the filtered wood above it is not redrawn each time.
   return `<svg class="tuner-svg" viewBox="0 0 ${VIEW.w} ${VIEW.h}" aria-hidden="true">
-    <defs>
-      <linearGradient id="tuner-wood"><stop offset="0" class="tuner-wood-edge"/><stop offset="0.5" class="tuner-wood-middle"/><stop offset="1" class="tuner-wood-edge"/></linearGradient>
-    </defs>
     <path d="${arc(-SWING, SWING)}" class="tuner-arc"/><path d="${arc(-zone, zone)}" class="tuner-zone"/>${ticks}
     <text x="52" y="52" class="tuner-sign">♭</text><text x="288" y="52" class="tuner-sign">♯</text>
     <path d="M${PIVOT.x} ${PIVOT.y} V${PIVOT.y - RADIUS + 4}" class="tuner-needle"/>
-    ${stems}<rect x="139" y="${NUT_Y}" width="62" height="${BOARD_END - NUT_Y}" class="tuner-board"/>${frets}
-    <path d="${HEAD}" fill="url(#tuner-wood)"/>
-    <rect x="137" y="${NUT_Y - 4}" width="66" height="7" rx="1" class="tuner-nut"/>${posts}${strings}
+  </svg>
+  <svg class="tuner-svg tuner-head" viewBox="0 0 ${VIEW.w} ${VIEW.h}" aria-hidden="true">
+    <defs>
+      <linearGradient id="tuner-wood"><stop offset="0" stop-color="#6f3d1b"/><stop offset="0.5" stop-color="#a5622e"/><stop offset="1" stop-color="#6f3d1b"/></linearGradient>
+      <linearGradient id="tuner-metal" x2="0" y2="1"><stop offset="0" stop-color="#e6e2d8"/><stop offset="0.5" stop-color="#8f8a7e"/><stop offset="1" stop-color="#c4bfb2"/></linearGradient>
+      <linearGradient id="tuner-ebony"><stop offset="0" stop-color="#1d1612"/><stop offset="0.5" stop-color="#3b2d23"/><stop offset="1" stop-color="#1d1612"/></linearGradient>
+      <radialGradient id="tuner-washer" cx="0.38" cy="0.32" r="0.75"><stop offset="0" stop-color="#fbf8f0"/><stop offset="0.6" stop-color="#b9b3a4"/><stop offset="1" stop-color="#7d7769"/></radialGradient>
+      <filter id="tuner-grain" filterUnits="userSpaceOnUse" x="100" y="95" width="140" height="255" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.24 0.012" numOctaves="3" seed="4"/>
+        <feColorMatrix values="0 0 0 0 0.2  0 0 0 0 0.09  0 0 0 0 0.03  2 0 0 0 -0.8"/>
+        <feComposite in2="SourceGraphic" operator="in" result="streaks"/>
+        <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="streaks"/></feMerge>
+      </filter>
+    </defs>
+    ${stems}<rect x="139" y="${NUT_Y}" width="62" height="${BOARD_END - NUT_Y}" fill="url(#tuner-ebony)" class="tuner-board"/>${frets}${dots}
+    <rect x="139" y="${NUT_Y + 3}" width="62" height="6" class="tuner-nut-shadow"/>
+    <path d="${HEAD}" fill="url(#tuner-wood)" filter="url(#tuner-grain)"/><path d="${HEAD}" class="tuner-bevel"/>
+    <rect x="137" y="${NUT_Y - 4}" width="66" height="7" rx="1" class="tuner-nut"/>${posts}
+    <g class="tuner-string-shadow" transform="translate(1.2 1.4)">${shadows}</g>${strings}
   </svg>`;
 }
 

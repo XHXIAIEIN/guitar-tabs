@@ -12,14 +12,16 @@
 .tuner-needle { display: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transform-box: view-box; transform-origin: 170px 170px; transition: transform 0.12s ease-out; }
 .has-reading .tuner-needle { display: block; }
 .in-tune .tuner-needle { stroke: var(--good); }
-.tuner-wood-edge { stop-color: #8a4f26; }
-.tuner-wood-middle { stop-color: #9c5a2c; }
-.tuner-board { fill: #2b221c; stroke: #6b665b; stroke-width: 1; }
-.tuner-fret { stroke: #8e8879; stroke-width: 2; }
-.tuner-nut { fill: #efe7d6; }
-.tuner-stem { stroke: var(--muted); stroke-width: 6; }
-.tuner-washer { fill: #cfc9ba; }
-.tuner-post { fill: #8e8879; }
+.tuner-head { position: absolute; inset: 0; }
+.tuner-bevel { fill: none; stroke: #d6a06c; stroke-width: 0.9; opacity: 0.6; }
+.tuner-board { stroke: #6b665b; stroke-width: 0.7; }
+.tuner-dot { fill: #efe7d6; }
+.tuner-nut { fill: #f1eadb; }
+.tuner-nut-shadow { fill: #000; opacity: 0.35; }
+.tuner-post { fill: #4f4a40; }
+.tuner-post-shine { fill: #fff; opacity: 0.85; }
+.tuner-string-shadow { fill: none; stroke: #000; opacity: 0.28; }
+.tuner-winding { fill: none; stroke: #6d4726; stroke-dasharray: 0.8 0.8; opacity: 0.55; }
 .tuner-string { fill: none; }
 .tuner-string.wound { stroke: #d9a06a; }
 .tuner-string.plain { stroke: var(--string); }

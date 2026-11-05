@@ -5,7 +5,7 @@ import { chordDiagramEl } from '../../ui/chord-diagram-el.js';
 import { openChordPanel } from '../../ui/chord-panel.js';
 import { segmented } from '../../ui/controls.js';
 import { renderScore } from '../../render/score/score.js';
-import { restGlyph, strumArrow } from '../../render/score/glyphs.js';
+import { restGlyph, shownRest, strumArrow } from '../../render/score/glyphs.js';
 import { line } from '../../render/svg.js';
 import { describeStrum, patternSong } from '../../music/format/pattern.js';
 import { noteParts } from '../../music/format/syntax.js';
@@ -37,15 +37,15 @@ function symbolIcon(markup) {
 
 function restIcon(e) {
   const y = REST_LINE[e.base];
-  return symbolIcon(restGlyph(e, 0, 0, 1) + (y === undefined ? '' : line(-7, y, 7, y, 'rest')));
+  return symbolIcon(restGlyph(e, 0, 0, 1) + (y === undefined ? '' : line(-7, y, 7, y, 'staff')));
 }
 
 /** One legend item for each distinct rest in the song, longest first. */
-function restItems(events, beatTicks) {
+function restItems(events, { beatTicks, barTicks }) {
   const rests = new Map(events.filter((e) => e.kind === 'rest').map((e) => [e.dur, e]));
   return [...rests.values()].sort((a, b) => b.dur - a.dur).map((e) => {
     const beats = Math.round((e.dur / beatTicks) * 100) / 100;
-    return [restIcon(e), t('legend.rest', { beats: BEAT_FRACTIONS[beats] ?? beats })];
+    return [restIcon(shownRest(e, barTicks)), t('legend.rest', { beats: BEAT_FRACTIONS[beats] ?? beats })];
   });
 }
 
@@ -59,7 +59,7 @@ function symbolLegend(song, show) {
     show.tab && hasNotes && t('legend.strings'),
     show.tab && hasNotes && t('legend.frets'),
     show.tab && has((e) => e.notes.some((n) => n.f < 0)) && t('legend.muted'),
-    ...(show.tab || show.rhythm ? restItems(events, song.meter.beatTicks) : []),
+    ...(show.tab || show.rhythm ? restItems(events, song.meter) : []),
     ...(show.tab
       ? STRUM_DIRS.filter((dir) => has((e) => e.kind === 'strum' && e.dir === dir)).map((dir) => [symbolIcon(strumArrow(dir, 0, -6.5, 1)), t(`legend.strum.${dir}`)])
       : []),

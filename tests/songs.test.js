@@ -6,6 +6,7 @@ import { numberOf, numberTonic } from '../src/music/numbers.js';
 import { chordShapes } from '../src/music/chord-shapes.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { BUILTIN, allEntries, getEntry, setVersion } from '../src/state/songs.js';
+import { shownRest } from '../src/render/score/glyphs.js';
 
 // Expected 简谱 of each built-in melody, written down independently of the tab positions.
 const MELODIES = {
@@ -89,6 +90,16 @@ test('game music is a single melody on the top strings', () => {
       assert.ok(n.f <= 12, `${entry.id} plays fret ${n.f}`);
     }
   }
+});
+
+test('only a rest that fills its bar is drawn as a whole rest without a dot', () => {
+  const rests = (text) => parseSong(`time: 3/4\n\ntab: | ${text} |`).bars[0].events;
+  const [whole] = rests('h. r').map((e) => shownRest(e, 144));
+  assert.deepEqual([whole.base, whole.dotted], ['w', false]);
+  const short = rests('h 1/0 q r')[1];
+  assert.equal(shownRest(short, 144), short);
+  const note = rests('h. 1/0')[0];
+  assert.equal(shownRest(note, 144), note);
 });
 
 test('a song opens as its simple version until another version is chosen', () => {

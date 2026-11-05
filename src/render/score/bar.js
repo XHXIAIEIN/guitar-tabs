@@ -1,6 +1,6 @@
 // One bar of a score line as SVG markup.
 import { line, r1, text } from '../svg.js';
-import { chordText, noteHead, restGlyph, slashMark, strumArrow } from './glyphs.js';
+import { chordText, noteHead, restGlyph, shownRest, slashMark, strumArrow } from './glyphs.js';
 import { numberMarks, stemsAndBeams, tupletMarks } from './marks.js';
 import { PAD_L, PAD_R, textWidth } from './measure.js';
 
@@ -56,15 +56,18 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
     if (g.numbers !== undefined) out += numberMarks(bar, xs, g, s, o, xAt, groupOf);
     bar.events.forEach((e, i) => {
       let ev = `<g class="ev" data-ev="${i}">`;
-      const ex = xs[i];
-      if (o.notation === 'slash') ev += slashMark(e, ex, g, s);
+      const drawn = shownRest(e, m.barTicks);
+      // A whole-bar rest stands in the middle of its bar.
+      const ex = drawn === e ? xs[i] : bx + bw / 2;
+      if (o.notation === 'slash') ev += slashMark(drawn, ex, g, s);
       else if (g.staff !== undefined) {
         const mid = g.staff + 2.5 * g.gap;
         if (e.kind === 'note') for (const n of e.notes) ev += text(ex, g.staff + (n.s - 1) * g.gap + 4.4 * s, n.f < 0 ? '×' : n.f, 'fret');
-        else if (e.kind === 'rest') ev += restGlyph(e, ex, mid, s);
+        // mid is halfway between lines 3 and 4: a whole rest drawn here hangs from line 3, and this offset sets a half rest on line 4.
+        else if (e.kind === 'rest') ev += restGlyph(drawn, ex, mid + (drawn.base === 'h' ? 3.5 * s : 0), s);
         else if (e.dir === 'X') ev += line(ex - 4 * s, mid - 4 * s, ex + 4 * s, mid + 4 * s, 'slash x') + line(ex + 4 * s, mid - 4 * s, ex - 4 * s, mid + 4 * s, 'slash x');
         else ev += line(ex - 4 * s, mid + 7 * s, ex + 4 * s, mid - 7 * s, 'slash');
-      } else if (g.head !== undefined && e.kind === 'rest') ev += restGlyph(e, ex, g.head - 8 * s, s);
+      } else if (g.head !== undefined && e.kind === 'rest') ev += restGlyph(drawn, ex, g.head - 8 * s, s);
       if (o.notation !== 'slash' && g.head !== undefined && e.kind !== 'rest') ev += noteHead(e, ex, g.head, s);
       // An X head already marks a muted strum on the slash staff
       if (g.strum !== undefined && e.kind === 'strum' && !(o.notation === 'slash' && e.dir === 'X')) ev += strumArrow(e.dir, ex, g.strum, s);

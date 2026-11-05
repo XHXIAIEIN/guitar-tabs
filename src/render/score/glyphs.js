@@ -12,6 +12,9 @@ function restShape(base, x, y, s) {
   return base === 'e' ? p(hook) + dot(x - 2.6 * s, y - 5.2 * s, 1.6 * s, 'rest-dot') : p(hook) + p('M-4.5 -0.5 C-3 2.5 0 2 2 -0.5') + dot(x - 2.6 * s, y - 5.2 * s, 1.6 * s, 'rest-dot') + dot(x - 3.6 * s, y - 0.2 * s, 1.6 * s, 'rest-dot');
 }
 
+/** The event to draw: a rest that fills its bar is written as a whole rest in every meter, without a dot. */
+export const shownRest = (e, barTicks) => (e.kind === 'rest' && e.dur === barTicks ? { ...e, base: 'w', dotted: false } : e);
+
 export const restGlyph = (e, x, y, s) => restShape(e.base, x, y, s) + (e.dotted ? dot(x + 7 * s, y - s, 1.4 * s, 'rest-dot') : '');
 
 export const beam = (x1, x2, y, s) => `<rect class="beam" x="${r1(Math.min(x1, x2) - 0.7 * s)}" y="${r1(y - 2.6 * s)}" width="${r1(Math.abs(x2 - x1) + 1.4 * s)}" height="${r1(2.6 * s)}"/>`;

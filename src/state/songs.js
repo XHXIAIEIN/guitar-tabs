@@ -1,12 +1,24 @@
 // The song collection: built-in entries and versions, user songs, and the parse cache.
-import { EXERCISES } from '../data/exercises.js';
-import { SONGS } from '../data/songs.js';
 import { parseSong } from '../music/format/parse-song.js';
 import { requestDurableStorage } from '../core/storage.js';
 import { state, save } from './store.js';
 
-/** Every built-in entry in list order. */
-export const BUILTIN = [...EXERCISES, ...SONGS];
+/** Every built-in entry in list order. It is empty until boot. */
+export const BUILTIN = [];
+
+/** Fills BUILTIN from scores/index.json and the text files it names. Both readers take a path from the site root. */
+export async function loadScores(readJson, readText) {
+  const read = (entry, file) => readText(`scores/${entry.group}/${entry.id}/${file}.txt`);
+  const catalog = await readJson('scores/index.json');
+  const entries = await Promise.all(
+    catalog.map(async (entry) =>
+      entry.versions
+        ? { ...entry, versions: await Promise.all(entry.versions.map(async (id) => ({ id, text: await read(entry, id) }))) }
+        : { ...entry, text: await read(entry, entry.id) },
+    ),
+  );
+  BUILTIN.push(...entries);
+}
 
 const parsed = new Map();
 

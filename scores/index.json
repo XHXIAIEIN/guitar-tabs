@@ -1,0 +1,17 @@
+[
+  {"id":"ex-spider","group":"exercise","versions":["simple","full"]},
+  {"id":"ex-c-scale","group":"exercise","versions":["simple","full"]},
+  {"id":"ex-strum-quarter","group":"exercise","versions":["simple","full"]},
+  {"id":"ex-strum-eighth","group":"exercise","versions":["simple","full"]},
+  {"id":"ex-folk-strum","group":"exercise","versions":["simple","full"]},
+  {"id":"ex-arpeggio","group":"exercise","versions":["simple","full"]},
+  {"id":"ex-arpeggio-68","group":"exercise","versions":["simple","full"]},
+  {"id":"mary-lamb","group":"song"},
+  {"id":"twinkle","group":"song","versions":["simple","full"]},
+  {"id":"two-tigers","group":"song","versions":["simple","full"]},
+  {"id":"ode-to-joy","group":"song","versions":["simple","full"]},
+  {"id":"happy-birthday","group":"song","versions":["simple","full"]},
+  {"id":"farewell","group":"song","versions":["simple","full"]},
+  {"id":"amazing-grace","group":"song"},
+  {"id":"perfect","group":"song"}
+]

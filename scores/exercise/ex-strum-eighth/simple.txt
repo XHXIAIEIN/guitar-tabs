@@ -1,0 +1,13 @@
+title: 八分音符下上扫
+artist: 稳定的手腕摆动
+key: Am
+bpm: 60
+time: 4/4
+level: 入门
+note: 只用 Em 和 Am，每个和弦弹两小节。手腕像钟摆一样一直上下摆动：数「1 嗒 2 嗒」，数字时向下（↓），「嗒」时向上（↑）。上扫只需要扫到高音的 3～4 根弦。
+
+# 每个和弦两小节
+chord: | Em | Em | Am | Am |
+tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |
+chord: | Em | Em | Am | Am |
+tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |

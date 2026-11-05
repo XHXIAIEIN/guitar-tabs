@@ -1,0 +1,13 @@
+title: 四分音符扫弦
+artist: 换和弦入门
+key: G
+bpm: 70
+time: 4/4
+level: 入门
+note: 每拍向下扫一次（↓）。换和弦时提前在第 4 拍准备，宁可最后一下扫空弦，也不要让节拍停下来。
+
+# 每个和弦一小节
+chord: | G | D | Em | C |
+tab: | q D D D D | D D D D | D D D D | D D D D |
+chord: | G | D | Em | C |
+tab: | q D D D D | D D D D | D D D D | D D D D |

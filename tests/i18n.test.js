@@ -60,10 +60,9 @@ test('built-in versions have a name', () => {
   assert.ok(t('version.simple') && t('version.full'));
 });
 
-test('UI text lives in the language files: code outside the song data and format vocabulary has no CJK', () => {
-  const allowed = (path) => path.startsWith('src/data/') || path === 'src/music/format/syntax.js';
+test('UI text lives in the language files: code outside the format vocabulary has no CJK', () => {
   for (const { path, code } of sources) {
-    if (!allowed(path)) assert.doesNotMatch(code, /[　-鿿＀-￯]/, path);
+    if (path !== 'src/music/format/syntax.js') assert.doesNotMatch(code, /[　-鿿＀-￯]/, path);
   }
 });
 

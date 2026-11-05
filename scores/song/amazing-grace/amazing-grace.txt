@@ -1,0 +1,19 @@
+title: Amazing Grace
+artist: John Newton 词 · 美国民歌
+key: G
+bpm: 84
+time: 3/4
+pickup: 1
+strum: q D e D U D U
+level: 进阶
+note: 3/4 拍的华尔兹节奏「下 下上 下上」，每小节重复。从第 3 拍弱起，第一个字「A-」只占一拍。
+
+# Verse
+chord: | | G | G7 | C | G |
+lyric: | A- | maz-ing | grace! How | sweet the | sound, That |
+chord: | G | Em | D | D |
+lyric: | saved a | wretch like | me! I | |
+chord: | G | G7 | C | G |
+lyric: | once was | lost, but | now am | found, Was |
+chord: | Em | D | G | G |
+lyric: | blind, but | now I | see. | |

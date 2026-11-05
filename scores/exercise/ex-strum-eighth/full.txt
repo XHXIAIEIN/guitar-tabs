@@ -1,0 +1,13 @@
+title: 八分音符下上扫
+artist: 稳定的手腕摆动
+key: C
+bpm: 70
+time: 4/4
+level: 入门
+note: 手腕像钟摆一样一直上下摆动：数「1 嗒 2 嗒」，数字时向下（↓），「嗒」时向上（↑）。上扫只需要扫到高音的 3～4 根弦。
+
+# 一个和弦一小节
+chord: | C | Am | Dm | G |
+tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |
+chord: | C | Am | Dm | G |
+tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |

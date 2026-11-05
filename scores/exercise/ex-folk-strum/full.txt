@@ -1,0 +1,12 @@
+title: 民谣节奏型 下 下上 上下上
+artist: 弹唱最常用的节奏型
+key: C
+bpm: 76
+time: 4/4
+strum: q D e D U r U D U
+level: 进阶
+note: 节奏型写在开头，每小节重复。第 3 拍的下扫是「空拍」：手照常向下摆，但不碰弦。熟练后把 Fmaj7 换成横按 F。
+
+# 1–6–4–5
+chord: | C | Am | Fmaj7 | G |
+chord: | C | Am | Fmaj7 | G |

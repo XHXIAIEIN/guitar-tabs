@@ -127,6 +127,7 @@ lyric: | 只写和弦和歌词也可以 | 歌词整段显示在小节下面 |
 - `index.html`、`manifest.webmanifest`、`sw.js`：这三个文件必须在站点根目录，因为 GitHub Pages 从根目录发布，service worker 只能控制它所在目录以下的页面。
 - `config/app.json`：可调的常量和默认值，例如速度范围、默认设置、预设节奏型、和弦分组和录音列表。
 - `lang/`：界面文案，每种语言一个文件。
+- `scores/`：内置曲谱，见下面的「增加内置曲谱」。
 - `assets/icons/`：应用图标。
 - `assets/audio/guitar/`：示范音用的古典吉他录音，来自 FreePats，CC0 许可。来源见目录里的 `README.md`。
 - `src/`：源代码，见下面的列表。
@@ -144,9 +145,8 @@ lyric: | 只写和弦和歌词也可以 | 歌词整段显示在小节下面 |
 - `ui/`：通用界面组件。
 - `views/`：各个页面，一个页面一个目录。
 - `styles/`：样式，按组件分文件。`app.css` 的 `@import` 顺序就是层叠顺序。
-- `data/`：内置练习（`exercises.js`）和歌曲（`songs.js`）。一首歌有多个版本时写在 `versions` 里，第一个是默认版本。
 
-`config` 和界面文案在启动时才载入，所以模块加载时不能调用 `t()` 或读 `config`，只能在函数运行时用。数据里存 id，渲染时再翻译。
+`config`、界面文案和内置曲谱在启动时才载入，所以模块加载时不能调用 `t()`，也不能读 `config` 或 `BUILTIN`，只能在函数运行时用。数据里存 id，渲染时再翻译。
 
 运行测试（需要 Node.js 22 或更新版本）：
 
@@ -160,6 +160,15 @@ npm test
 - 旧格式的保存数据能迁移，缺的字段由默认值补上，备份能导出再导入。
 - 代码用到的文案键都存在，语言文件没有多余的键，文案以外的代码没有中文。
 - `sw.js` 的离线列表和实际文件一致，录音列表和配置一致。
+- `scores/index.json` 和 `scores/` 下的文件一一对应。
+
+### 增加内置曲谱
+
+每首曲谱有自己的文件夹 `scores/<group>/<id>/`。`group` 是 `exercise` 或 `song`。
+
+1. 写曲谱文件。只有一个版本时，文件是 `<id>.txt`。有多个版本时，每个版本一个文件，如 `simple.txt` 和 `full.txt`。
+2. 在 `scores/index.json` 里登记。条目的顺序就是曲谱列表的顺序。多个版本写在 `versions` 里，第一个是默认版本。
+3. 把新文件加进 `sw.js` 的 `SHELL` 列表。
 
 ### 增加一种语言
 
@@ -178,7 +187,7 @@ npm test
 ### 维护时注意
 
 - 文件名、配置键、变量、函数、CSS 类和曲谱字段都用英文基础单词，不用拼音。
-- 添加或删除源文件后，同步 `sw.js` 的 `SHELL` 列表，否则离线时缺文件。测试会查出遗漏。
+- 添加或删除源文件和曲谱文件后，同步 `sw.js` 的 `SHELL` 列表，否则离线时缺文件。测试会查出遗漏。
 - 换吉他录音时，同时改 `config/app.json` 的 `audio.samples.recordings` 和 `sw.js` 里的音高列表。每个录音的音分误差用 `src/audio/pitch-detect.js` 的 `detectPitch` 测，播放时减掉。
 - 内置曲谱只收公有领域的作品。还在版权期内的歌只写和弦和扫弦，不写旋律和歌词。
 - PNG 图标由 `scripts/make-icons.py` 按脚本里的坐标绘制（需要 Pillow）。改图标图形时，同时改 `assets/icons/icon.svg` 和脚本里的坐标，再运行 `python scripts/make-icons.py`。

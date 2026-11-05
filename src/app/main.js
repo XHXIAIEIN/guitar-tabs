@@ -1,6 +1,7 @@
-// Entry point: loads the configuration, the saved state and the language, then starts the app.
-import { config, loadConfig } from '../core/config.js';
+// Entry point: loads the configuration, the saved state, the language and the built-in scores, then starts the app.
+import { config, fetchJson, fetchText, loadConfig } from '../core/config.js';
 import { loadLocale, t } from '../core/i18n.js';
+import { loadScores } from '../state/songs.js';
 import { initState, onSave, saveFailed, state } from '../state/store.js';
 import { applyTheme } from '../ui/theme.js';
 import { toast } from '../ui/toast.js';
@@ -30,6 +31,7 @@ async function start() {
   await loadConfig();
   initState();
   applyDocumentText(await loadLocale(state.settings.locale ?? config.i18n.defaultLocale));
+  await loadScores(fetchJson, fetchText);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
   watchSaveFailure();
   setVolume('metronome', state.settings.volMetronome);

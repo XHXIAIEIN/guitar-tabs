@@ -1,0 +1,12 @@
+title: 民谣节奏型 下 下上 上下上
+artist: 弹唱最常用的节奏型
+key: Am
+bpm: 60
+time: 4/4
+strum: q D e D U r U D U
+level: 入门
+note: 节奏型写在开头，每小节重复。只用 Em 和 Am，每个和弦弹两小节。第 3 拍的下扫是「空拍」：手照常向下摆，但不碰弦。
+
+# 每个和弦两小节
+chord: | Em | Em | Am | Am |
+chord: | Em | Em | Am | Am |

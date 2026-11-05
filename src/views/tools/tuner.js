@@ -17,6 +17,7 @@ const SWING = 40;
 // Offsets are from the centre line. Each knob sits a little above its post, as the gears hold them on a real headstock.
 const ROWS = [{ knobY: 158, knobX: 76, postY: 168, postX: 35 }, { knobY: 214, knobX: 73, postY: 225, postX: 30 }, { knobY: 268, knobX: 70, postY: 282, postX: 30 }];
 const NUT_Y = 340;
+const GAUGE = { 6: 3.4, 5: 2.9, 4: 2.4, 3: 1.9, 2: 1.4, 1: 1.2 };
 const NUT_X = { 6: 143, 5: 153.8, 4: 164.6, 3: 175.4, 2: 186.2, 1: 197 };
 const BOARD_END = 1600;
 const FRET_Y = [420, 495, 566, 633, 696, 756, 813, 867];
@@ -42,10 +43,10 @@ function gaugeMarkup(zone) {
   const ticks = [-SWING, -SWING / 2, SWING / 2, SWING].map((d) => `<path d="M${arcPoint(d, RADIUS + 9)} L${arcPoint(d, RADIUS + 16)}" class="tuner-tick"/>`).join('');
   const knobs = STRINGS.map(({ side, knobX, knobY }) => {
     const inner = knobX + (side === 'left' ? 8 : -30);
-    return `<rect x="${inner}" y="${knobY - 3}" width="22" height="6" class="tuner-stem"/><ellipse cx="${knobX}" cy="${knobY}" rx="9" ry="14" class="tuner-knob"/><ellipse cx="${knobX + (side === 'left' ? -2 : 2)}" cy="${knobY - 4}" rx="3" ry="5" class="tuner-shine"/>`;
+    return `<rect x="${inner}" y="${knobY - 3}" width="22" height="6" class="tuner-stem"/><ellipse cx="${knobX}" cy="${knobY}" rx="9" ry="14" class="tuner-knob"/>`;
   }).join('');
   const posts = STRINGS.map(({ postX, postY }) => `<circle cx="${postX}" cy="${postY}" r="9" class="tuner-washer"/><circle cx="${postX}" cy="${postY}" r="4" class="tuner-post"/>`).join('');
-  const strings = STRINGS.map(({ s, postX, postY }) => `<path d="M${postX} ${postY} L${NUT_X[s]} ${NUT_Y} V${BOARD_END}" class="tuner-string ${s > 2 ? 'wound' : 'plain'}" data-string="${s}"/>`).join('');
+  const strings = STRINGS.map(({ s, postX, postY }) => `<path d="M${postX} ${postY} L${NUT_X[s]} ${NUT_Y} V${BOARD_END}" class="tuner-string ${s > 2 ? 'wound' : 'plain'}" stroke-width="${GAUGE[s]}" data-string="${s}"/>`).join('');
   const grain = GRAIN.map((x, k) => `<path d="M${x} 100 C${x + (k % 2 ? 3 : -3)} 170 ${x + (k % 3 ? -2 : 3)} 270 ${x + (x - PIVOT.x) * -0.1} 345" class="tuner-grain"/>`).join('');
   const frets = FRET_Y.map((y) => `<path d="M139 ${y} H201" class="tuner-fret"/>`).join('');
   return `<svg class="tuner-svg" viewBox="0 0 ${VIEW.w} ${VIEW.h}" aria-hidden="true">
@@ -71,7 +72,7 @@ export function tunerTool(root) {
   let lastString = 6;
   const readings = [];
   const tuned = new Set();
-  const noteEl = h('div', { class: 'tuner-note' }, '–');
+  const noteEl = h('div', { class: 'tuner-note' });
   const centsEl = h('div', { class: 'tuner-cents' });
   const hint = h('p', { class: 'tuner-hint' }, t('tuner.start'));
   const startBtn = h('button', { class: 'btn primary big practice-start', type: 'button', onclick: () => (stream ? stop() : begin()) }, icon('mic'), t('tuner.begin'));
@@ -178,7 +179,7 @@ export function tunerTool(root) {
     readings.length = 0;
     tuned.clear();
     main.classList.remove('has-reading', 'in-tune');
-    noteEl.textContent = '–';
+    noteEl.textContent = '';
     centsEl.textContent = '';
     showHint(t('tuner.start'));
     markStrings();

@@ -1,7 +1,7 @@
 /* ---------- tools ---------- */
 /* tuner: the practice grid. The headstock stage on the left; the start button and the reading on the right. */
-.tuner-stage { --string: #e8e4da; flex-direction: column; justify-content: flex-start; padding: 0; overflow: hidden; }
-.tuner-neck { --room: 120px; position: relative; flex: none; width: min(100%, 476px, calc((100dvh - var(--nav-h, 0px) - var(--room)) * 0.85)); aspect-ratio: 340 / 400; }
+.tuner-stage { --string: #e8e4da; flex-direction: column; justify-content: flex-start; padding: 24px 0 0; overflow: hidden; }
+.tuner-neck { --room: 144px; position: relative; flex: none; width: min(100%, 476px, calc((100dvh - var(--nav-h, 0px) - var(--room)) * 0.85)); aspect-ratio: 340 / 400; }
 /* The strings run past the box, down to the bottom of a taller stage. */
 .tuner-svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .tuner-arc { fill: none; stroke: var(--surface-2); stroke-width: 14; stroke-linecap: round; }
@@ -18,15 +18,13 @@
 .tuner-board { fill: #2b221c; stroke: #6b665b; stroke-width: 1; }
 .tuner-fret { stroke: #8e8879; stroke-width: 2; }
 .tuner-nut { fill: #efe7d6; }
-.tuner-stem { fill: #a9a496; }
-.tuner-knob { fill: #2a2824; stroke: #6b665b; stroke-width: 1.5; }
-.tuner-shine { fill: #fff; opacity: 0.3; }
+.tuner-stem, .tuner-knob { fill: var(--muted); }
 .tuner-washer { fill: #cfc9ba; }
 .tuner-post { fill: #8e8879; }
-.tuner-string { fill: none; stroke-width: 1.4; }
-.tuner-string.wound { stroke: #d9a06a; stroke-width: 1.8; }
+.tuner-string { fill: none; }
+.tuner-string.wound { stroke: #d9a06a; }
 .tuner-string.plain { stroke: var(--string); }
-.tuner-string.active { stroke: var(--accent); stroke-width: 2.8; }
+.tuner-string.active { stroke: var(--accent); }
 .in-tune .tuner-string.active { stroke: var(--good); }
 .tuner-peg { position: absolute; width: 50px; height: 50px; margin: -25px 0 0 -25px; padding: 0; border-radius: 50%; flex-direction: column; gap: 0; line-height: 1.1; background: var(--surface); }
 .tuner-peg.left { left: 15%; }
@@ -41,8 +39,9 @@
 .in-tune .tuner-peg.near { border-color: var(--good); background: var(--good); color: #fff; }
 .tuner-read { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 14px; }
 .tuner-note { font-size: 72px; font-weight: 700; line-height: 1; }
+.tuner-note:empty { display: none; }
 .in-tune .tuner-note { color: var(--good); }
-.tuner-read-text { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.tuner-read-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .tuner-cents { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tuner-cents:empty { display: none; }
 .tuner-hint { font-size: 15px; line-height: 1.5; }

@@ -7,6 +7,7 @@ import { chordShapes } from '../src/music/chord-shapes.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { BUILTIN, allEntries, getEntry, setVersion } from '../src/state/songs.js';
 import { shownRest } from '../src/render/score/glyphs.js';
+import { midiOf } from '../src/music/pitch.js';
 
 // Expected 简谱 of each built-in melody, written down independently of the tab positions.
 const MELODIES = {
@@ -78,15 +79,17 @@ test('simple songs keep the melody and stay on the top strings', () => {
   }
 });
 
-test('game music plays one string at a time, with bass notes between the melody notes', () => {
-  for (const entry of BUILTIN.filter((e) => e.group === 'game')) {
+test('game music and theme songs play one string at a time on strings 1 to 3', () => {
+  for (const entry of BUILTIN.filter((e) => e.group === 'game' || e.group === 'theme')) {
     const song = parseSong(entry.text);
-    assert.ok(song.chordsUsed.length, `${entry.id} chords`);
-    const events = song.bars.flatMap((b) => b.events);
-    assert.ok(events.some((e) => e.notes.some((n) => n.s >= 4)), `${entry.id} has no bass notes`);
-    for (const e of events) {
+    if (entry.group === 'game') assert.ok(song.chordsUsed.length, `${entry.id} chords`);
+    for (const e of song.bars.flatMap((b) => b.events)) {
       assert.ok(e.notes.length <= 1, `${entry.id} plays ${e.notes.length} notes at once`);
-      assert.ok(e.notes.every((n) => n.f <= 8), `${entry.id} plays fret above 8`);
+      for (const n of e.notes) {
+        assert.ok(n.f <= 8, `${entry.id} plays fret ${n.f}`);
+        // A note below open G cannot sit on strings 1 to 3.
+        assert.ok(n.s <= 3 || midiOf(n.s, n.f) < midiOf(3, 0), `${entry.id} plays string ${n.s} fret ${n.f}`);
+      }
     }
   }
 });

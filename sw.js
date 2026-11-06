@@ -45,6 +45,7 @@ const SHELL = [
   'scores/song/twinkle/simple.txt',
   'scores/song/two-tigers/full.txt',
   'scores/song/two-tigers/simple.txt',
+  'scores/theme/crayon-shin-chan/crayon-shin-chan.txt',
   'assets/icons/icon.svg',
   'assets/textures/tuner-wood.webp',
   'src/app/main.js',

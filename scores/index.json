@@ -21,5 +21,6 @@
   {"id":"zelda-song-of-storms","group":"game"},
   {"id":"tetris","group":"game"},
   {"id":"pac-man","group":"game"},
-  {"id":"mario-bros","group":"game"}
+  {"id":"mario-bros","group":"game"},
+  {"id":"crayon-shin-chan","group":"theme"}
 ]

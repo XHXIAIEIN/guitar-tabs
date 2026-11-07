@@ -193,7 +193,7 @@ npm test
 - 添加或删除源文件和曲谱文件后，同步 `sw.js` 的 `SHELL` 列表，否则离线时缺文件。测试会查出遗漏。
 - 换吉他录音时，同时改 `config/app.json` 的 `audio.samples.recordings` 和 `sw.js` 里的音高列表。每个录音的音分误差用 `src/audio/pitch-detect.js` 的 `detectPitch` 测，播放时减掉。
 - `exercise` 和 `song` 组只收公有领域的作品。还在版权期内的歌只写和弦和扫弦，不写旋律和歌词。
-- `game` 组收游戏配乐的主旋律段落，标和弦。旋律的空档里加和弦里的音，每个音只弹一根弦，尽量放在 1 到 3 弦，音域放不下时整首移调。
+- `game` 组收游戏配乐的主旋律段落，标和弦。只写旋律，一次弹一个音，尽量放在 1 到 3 弦的前几品，为此可以整首移调。
 - `theme` 组收动画和影视主题曲的旋律段落，每个音只弹一根弦，放在 1 到 3 弦。
 - `game` 和 `theme` 组供作者个人在不同设备上练习，也包括还在版权期内的作品。这些作品只写主要段落，不写整首，也不写歌词。
 - PNG 图标由 `scripts/make-icons.py` 按脚本里的坐标绘制（需要 Pillow）。改图标图形时，同时改 `assets/icons/icon.svg` 和脚本里的坐标，再运行 `python scripts/make-icons.py`。

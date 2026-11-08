@@ -1,4 +1,4 @@
-// App configuration from config/app.json. It is empty until boot, so modules read it when they run, not when they load.
+// App configuration from src/config.json. It is empty until boot, so modules read it when they run, not when they load.
 
 export const config = {};
 
@@ -23,5 +23,5 @@ export async function fetchText(path) {
 }
 
 export async function loadConfig() {
-  setConfig(await fetchJson('config/app.json'));
+  setConfig(await fetchJson('src/config.json'));
 }

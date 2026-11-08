@@ -25,13 +25,13 @@ test('the offline list and the score catalog each name every score file', () => 
 });
 
 test('the offline list holds the configuration and every language file', () => {
-  assert.ok(listed.includes('config/app.json'));
-  const { locales } = readJsonFile('config/app.json').i18n;
-  for (const { file } of Object.values(locales)) assert.ok(listed.includes(`lang/${file}.json`), file);
+  assert.ok(listed.includes('src/config.json'));
+  const { locales } = readJsonFile('src/config.json').i18n;
+  for (const { file } of Object.values(locales)) assert.ok(listed.includes(`src/lang/${file}.json`), file);
 });
 
 test('the offline list and the configuration name the same recordings, and each has a file', () => {
-  const pitches = readJsonFile('config/app.json').audio.samples.recordings.map(([midi]) => midi);
+  const pitches = readJsonFile('src/config.json').audio.samples.recordings.map(([midi]) => midi);
   assert.deepEqual(JSON.parse(/\.\.\.(\[[\d, ]+\])\.map/.exec(shell)[1]), pitches);
   for (const midi of pitches) assert.ok(existsSync(new URL(`assets/audio/guitar/${midi}.sample`, ROOT)), `${midi}`);
 });

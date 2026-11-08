@@ -9,7 +9,7 @@ export const ROOT = new URL('../../', import.meta.url);
 const readTextFile = (path) => readFileSync(new URL(path, ROOT), 'utf8');
 export const readJsonFile = (path) => JSON.parse(readTextFile(path));
 
-setConfig(readJsonFile('config/app.json'));
-setMessages(readJsonFile('lang/zh_CN.json'));
+setConfig(readJsonFile('src/config.json'));
+setMessages(readJsonFile('src/lang/zh_CN.json'));
 initState();
 await loadScores(readJsonFile, readTextFile);

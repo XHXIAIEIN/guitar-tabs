@@ -5,13 +5,13 @@ import { h } from '../../ui/dom.js';
 import { iconButton, segmented } from '../../ui/controls.js';
 import { openPanel } from '../../ui/panel.js';
 import { toast } from '../../ui/toast.js';
+import { notFound } from '../../ui/not-found.js';
 import { state } from '../../state/store.js';
 import { deleteSong, getEntry, newSongId, parse, saveSong } from '../../state/songs.js';
 import { renderScore } from '../../render/score/score.js';
 import { parseKey } from '../../music/key.js';
 import { numberTonic } from '../../music/numbers.js';
 import { pretty } from '../../music/pitch.js';
-import { notFound } from '../not-found.js';
 
 export function editorView(root, id) {
   const entry = id === 'new' ? null : getEntry(id);

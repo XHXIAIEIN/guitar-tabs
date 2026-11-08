@@ -1,5 +1,5 @@
 // Tap tempo: turns a series of button presses into a BPM.
-import { config } from '../core/config.js';
+import { config } from '../../core/config.js';
 
 /** Returns the function to call on each tap; it reports a BPM once enough taps came in close succession. */
 export function tapTempo(onBpm) {

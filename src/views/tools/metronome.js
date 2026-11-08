@@ -4,13 +4,13 @@ import { t } from '../../core/i18n.js';
 import { h } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
 import { iconButton, segmented, toggle } from '../../ui/controls.js';
-import { tapTempo } from '../../ui/tap-tempo.js';
 import { holdScreen } from '../../ui/wake-lock.js';
 import { state, save } from '../../state/store.js';
 import { beatAccent, meter } from '../../music/format/meter.js';
 import { Sequencer } from '../../audio/sequencer.js';
 import { resumeAudio } from '../../audio/context.js';
 import { click } from '../../audio/click.js';
+import { tapTempo } from './tap-tempo.js';
 
 export function metronomeTool(root) {
   const seq = new Sequencer();

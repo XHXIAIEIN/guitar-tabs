@@ -1,4 +1,4 @@
-/* chord detail */
+/* ---------- chord diagrams and the chord detail panel ---------- */
 .chord-detail { display: flex; flex-direction: column; gap: 14px; }
 .chord-shapes { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
 .chord-shape { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
@@ -7,7 +7,7 @@
 .tone { display: inline-flex; flex-direction: column; align-items: center; padding: 3px 10px; background: var(--surface-2); border-radius: 8px; font-weight: 700; line-height: 1.2; }
 .tone small { font-weight: 500; color: var(--muted); font-size: 11px; }
 
-/* chord diagram svg */
+/* diagram svg */
 .chord-diagram { display: block; width: 100%; height: auto; overflow: visible; }
 .cd-name { font: 700 15px var(--font); fill: var(--ink); }
 .cd-fret { stroke: var(--staff); stroke-width: 1; }

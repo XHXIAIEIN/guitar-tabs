@@ -5,7 +5,7 @@ import { ROOT, readJsonFile } from './helpers/setup.js';
 import { config } from '../src/core/config.js';
 import { setMessages, t } from '../src/core/i18n.js';
 
-const lang = readJsonFile('lang/zh_CN.json');
+const lang = readJsonFile('src/lang/zh_CN.json');
 
 function sourceFiles(dir = 'src/') {
   return readdirSync(new URL(dir, ROOT), { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? sourceFiles(`${dir}${e.name}/`) : e.name.endsWith('.js') ? [`${dir}${e.name}`] : []));
@@ -69,6 +69,6 @@ test('UI text lives in the language files: code outside the format vocabulary ha
 test('the configured default language has a file', () => {
   const { defaultLocale, locales } = config.i18n;
   assert.equal(defaultLocale, 'zh-CN');
-  for (const { file } of Object.values(locales)) assert.ok(readJsonFile(`lang/${file}.json`));
+  for (const { file } of Object.values(locales)) assert.ok(readJsonFile(`src/lang/${file}.json`));
   assert.ok(locales[defaultLocale]);
 });

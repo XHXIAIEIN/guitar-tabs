@@ -1,4 +1,4 @@
-// UI text from lang/<file>.json. It is empty until boot, so modules call t() when they run, not when they load.
+// UI text from src/lang/<file>.json. It is empty until boot, so modules call t() when they run, not when they load.
 import { config, fetchJson } from './config.js';
 
 const messages = new Map();
@@ -25,7 +25,7 @@ export async function loadLocale(locale) {
   const { defaultLocale, locales } = config.i18n;
   active = locales[locale] ? locale : defaultLocale;
   const codes = active === defaultLocale ? [defaultLocale] : [defaultLocale, active];
-  setMessages(...(await Promise.all(codes.map((code) => fetchJson(`lang/${locales[code].file}.json`)))));
+  setMessages(...(await Promise.all(codes.map((code) => fetchJson(`src/lang/${locales[code].file}.json`)))));
   return active;
 }
 

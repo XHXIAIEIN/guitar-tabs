@@ -8,12 +8,12 @@ export const BUILTIN = [];
 
 /** Fills BUILTIN from scores/index.json and the text files it names. Both readers take a path from the site root. */
 export async function loadScores(readJson, readText) {
-  const read = (entry, file) => readText(`scores/${entry.group}/${entry.id}/${file}.txt`);
+  const read = (entry, file) => readText(`scores/${entry.group}/${file}.txt`);
   const catalog = await readJson('scores/index.json');
   const entries = await Promise.all(
     catalog.map(async (entry) =>
       entry.versions
-        ? { ...entry, versions: await Promise.all(entry.versions.map(async (id) => ({ id, text: await read(entry, id) }))) }
+        ? { ...entry, versions: await Promise.all(entry.versions.map(async (id) => ({ id, text: await read(entry, `${entry.id}/${id}`) }))) }
         : { ...entry, text: await read(entry, entry.id) },
     ),
   );

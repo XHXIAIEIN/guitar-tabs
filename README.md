@@ -169,9 +169,9 @@ npm test
 
 ### 增加内置曲谱
 
-每首曲谱有自己的文件夹 `scores/<group>/<id>/`。`group` 是 `practice`（练习）、`game`（游戏）、`anime`（动漫）或 `song`（歌曲）。前三个在「指弹」下，`song` 在「扫弦」下，对应关系写在 `src/views/library/library-view.js` 的 `STYLES` 里。`id` 不带分组前缀，因为上一级目录已经是分组。
+曲谱放在分组目录 `scores/<group>/` 下。`group` 是 `practice`（练习）、`game`（游戏）、`anime`（动漫）或 `song`（歌曲）。前三个在「指弹」下，`song` 在「扫弦」下，对应关系写在 `src/views/library/library-view.js` 的 `STYLES` 里。`id` 不带分组前缀，因为上一级目录已经是分组。
 
-1. 写曲谱文件。只有一个版本时，文件是 `<id>.txt`。有多个版本时，每个版本一个文件，如 `simple.txt` 和 `full.txt`。
+1. 写曲谱文件。只有一个版本时，文件直接是 `scores/<group>/<id>.txt`。有多个版本时，曲谱有自己的文件夹 `scores/<group>/<id>/`，每个版本一个文件，如 `simple.txt` 和 `full.txt`。
 2. 在 `scores/index.json` 里登记。条目的顺序就是曲谱列表的顺序。多个版本写在 `versions` 里，第一个是默认版本。
 3. 把新文件加进 `sw.js` 的 `SHELL` 列表。
 

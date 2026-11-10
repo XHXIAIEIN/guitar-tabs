@@ -1,0 +1,16 @@
+\title "Amazing Grace"
+\artist "John Newton 词 · 美国民谣曲"
+\tempo 80
+\ts 3 4
+\ks F
+\systemsLayout (4 4 4 4)
+\lyrics "A-ma-zing  grace how sweet the
+sound that saved a  wretch like me
+ I once was  lost but now am
+found was blind but  now I see"
+\instructions "从第 3 拍弱起。「zing」「a」「was」「but」一个字弹两个音。最高音在 1 弦 8 品。"
+
+\section "全曲" \ac 1.2 | 1.1.2 5.1.8 1.1 | 5.1.2 3.1.4 | 1.1.2 3.2.4 |
+1.2.2 1.2.4 | 1.1.2 5.1.8 1.1 | 5.1.2 3.1.4 | 8.1.2{d} |
+8.1 5.1.4 | 8.1.2 5.1.8 1.1 | 5.1.2 3.1.4 | 1.1.2 3.2.4 |
+1.2.2 1.2.4 | 1.1.2 5.1.8 1.1 | 5.1.2 3.1.4 | 1.1.2{d}

@@ -1,0 +1,17 @@
+\title "Jingle Bells"
+\artist "J. S. Pierpont"
+\tempo 120
+\ts 4 4
+\ks C
+\systemsLayout (4 4 4 4)
+\lyrics "Jin-gle bells jin-gle bells jin-gle all the way
+Oh what fun it is to ride in a one-horse o-pen sleigh hey
+Jin-gle bells jin-gle bells jin-gle all the way
+Oh what fun it is to ride in a one-horse o-pen sleigh"
+\instructions "只有副歌。弹熟后用 C、F、G、G7 扫弦，边弹边唱。"
+
+\section "副歌 1" 2.4{ch "C"} 2.4 2.4.2 | 2.4.4 2.4 2.4.2 | 2.4.4 0.3 3.5{d} 0.4.8 | 2.4.1 |
+3.4.4{ch "F"} 3.4 3.4{d} 3.4.8 | 3.4.4{ch "C"} 2.4 2.4 2.4.8 2.4 | 2.4.4{ch "G"} 0.4 0.4 2.4 | 0.4.2 0.3 |
+
+\section "副歌 2" 2.4.4{ch "C"} 2.4 2.4.2 | 2.4.4 2.4 2.4.2 | 2.4.4 0.3 3.5{d} 0.4.8 | 2.4.1 |
+3.4.4{ch "F"} 3.4 3.4{d} 3.4.8 | 3.4.4{ch "C"} 2.4 2.4 2.4.8 2.4 | 0.3.4{ch "G7"} 0.3 3.4 0.4 | 3.5.1{ch "C"}

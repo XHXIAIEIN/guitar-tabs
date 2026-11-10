@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v8';
+const CACHE = 'guitar-v10';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -9,6 +9,9 @@ const SHELL = [
   'manifest.webmanifest',
   'scores/index.json',
   'scores/anime/crayon-shin-chan.atex',
+  'scores/anime/doraemon.atex',
+  'scores/anime/huluwa.atex',
+  'scores/anime/totoro.atex',
   'scores/game/mario-bros.atex',
   'scores/game/pac-man.atex',
   'scores/game/super-mario.atex',
@@ -17,13 +20,30 @@ const SHELL = [
   'scores/game/zelda-overworld.atex',
   'scores/game/zelda-sarias-song.atex',
   'scores/game/zelda-song-of-storms.atex',
+  'scores/practice/amazing-grace/full.atex',
+  'scores/practice/amazing-grace/simple.atex',
   'scores/practice/farewell/full.atex',
   'scores/practice/farewell/simple.atex',
   'scores/practice/happy-birthday/full.atex',
   'scores/practice/happy-birthday/simple.atex',
+  'scores/practice/jingle-bells/full.atex',
+  'scores/practice/jingle-bells/simple.atex',
+  'scores/practice/little-bee/full.atex',
+  'scores/practice/little-bee/simple.atex',
+  'scores/practice/london-bridge/full.atex',
+  'scores/practice/london-bridge/simple.atex',
   'scores/practice/mary-lamb.atex',
+  'scores/practice/new-year/full.atex',
+  'scores/practice/new-year/simple.atex',
+  'scores/practice/nokia-tune.atex',
   'scores/practice/ode-to-joy/full.atex',
   'scores/practice/ode-to-joy/simple.atex',
+  'scores/practice/painter/full.atex',
+  'scores/practice/painter/simple.atex',
+  'scores/practice/row-your-boat/full.atex',
+  'scores/practice/row-your-boat/simple.atex',
+  'scores/practice/saints/full.atex',
+  'scores/practice/saints/simple.atex',
   'scores/practice/twinkle/full.atex',
   'scores/practice/twinkle/simple.atex',
   'scores/practice/two-tigers/full.atex',

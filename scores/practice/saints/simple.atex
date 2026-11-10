@@ -1,0 +1,16 @@
+\title "When the Saints Go Marching In"
+\artist "美国灵歌"
+\tempo 90
+\ts 4 4
+\ks C
+\systemsLayout (4 4 4 3)
+\lyrics "Oh when the saints go mar-ching in
+Oh when the saints go mar-ching in
+Oh Lord I want to be in that num-ber when the
+saints go mar-ching in"
+\instructions "左手 {1} 按 1 品，{3} 按 3 品。从第 2 拍弱起。全音符数满四拍，二分音符数满两拍。"
+
+\section "全曲" \ac 1.2 0.1 1.1 | 3.1.1 | r.4 1.2 0.1 1.1 | 3.1.1 |
+r.4 1.2 0.1 1.1 | 3.1.2 0.1 | 1.2 0.1 | 3.2.1 |
+r.4 0.1 0.1 3.2 | 1.2.2{d} 1.2.4 | 0.1 3.1 3.1 1.1 | 1.1.2 0.1.4 1.1 |
+3.1.2 0.1 | 1.2 3.2 | 1.2.1

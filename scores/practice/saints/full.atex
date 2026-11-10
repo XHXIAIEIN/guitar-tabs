@@ -1,0 +1,16 @@
+\title "When the Saints Go Marching In"
+\artist "美国灵歌"
+\tempo 110
+\ts 4 4
+\ks C
+\systemsLayout (4 4 4 3)
+\lyrics "Oh when the saints go mar-ching in
+Oh when the saints go mar-ching in
+Oh Lord I want to be in that num-ber when the
+saints go mar-ching in"
+\instructions "从第 2 拍弱起。和弦用 C、F、G7，弹熟后用民谣节奏边弹边唱。"
+
+\section "全曲" \ac 3.5{ch "C"} 2.4 3.4 | 0.3.1 | r.4 3.5 2.4 3.4 | 0.3.1 |
+r.4 3.5 2.4 3.4 | 0.3.2 2.4 | 3.5 2.4 | 0.4.1{ch "G7"} |
+r.4 2.4{ch "C"} 2.4 0.4 | 3.5.2{d} 3.5.4 | 2.4 0.3 0.3 3.4{ch "F"} | 3.4.2 2.4.4{ch "C"} 3.4 |
+0.3.2 2.4 | 3.5 0.4{ch "G7"} | 3.5.1{ch "C"}

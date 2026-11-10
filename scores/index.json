@@ -1,5 +1,5 @@
 [
-  {"id":"happy-birthday","group":"practice","subgroup":"nursery","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
+  {"id":"happy-birthday","group":"starter","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"twinkle","group":"practice","subgroup":"nursery","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"mary-lamb","group":"practice","subgroup":"nursery","level":"入门"},
   {"id":"two-tigers","group":"practice","subgroup":"nursery","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},

@@ -1,13 +1,18 @@
 // One bar of a score line as SVG markup.
 import { line, r1, text } from '../svg.js';
-import { chordText, noteHead, restGlyph, shownRest, slashMark, strumArrow } from './glyphs.js';
+import { chordText, noteHead, restGlyph, shownRest, slashMark, strumArrow, tieArc } from './glyphs.js';
 import { numberMarks, stemsAndBeams, tupletMarks } from './marks.js';
 import { PAD_L, PAD_R, textWidth } from './measure.js';
 
+/**
+ * Returns the bar's markup and the x of its last event. `f.tieFrom` is the x of the event before the bar on the same line,
+ * where a tie into the bar's first event starts.
+ */
 export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
   const s = o.scale;
   const h = g.height;
   let out = `<g class="bar" data-bar="${bar.index}">`;
+  let lastX;
   out += `<rect class="bar-bg" x="${r1(bx)}" y="${r1(1 * s)}" width="${r1(bw)}" height="${r1(h - 2 * s)}" rx="${r1(6 * s)}"/>`;
   out += `<rect class="loop-mark" x="${r1(bx + 2 * s)}" y="0" width="${r1(bw - 4 * s)}" height="${r1(3 * s)}" rx="${r1(1.5 * s)}"/>`;
   out += `<rect class="cursor-mark" x="${r1(bx)}" y="${r1(3 * s)}" width="${r1(3 * s)}" height="${r1(h - 6 * s)}" rx="${r1(1.5 * s)}"/>`;
@@ -42,6 +47,7 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
       xs.push(x + Math.min(w / 2, Math.max(8 * s, lw / 2 + 2 * s)));
       x += w;
     });
+    lastX = xs.at(-1);
     const xAt = (tick) => {
       for (let i = 0; i < bar.events.length; i++) {
         const e = bar.events[i];
@@ -79,13 +85,19 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
       if (o.notation === 'slash') ev += slashMark(drawn, ex, g, s);
       else if (g.staff !== undefined) {
         const mid = g.staff + 2.5 * g.gap;
-        if (e.kind === 'note') for (const n of e.notes) ev += text(ex, g.staff + (n.s - 1) * g.gap + 4.4 * s, n.f < 0 ? '×' : n.f, 'fret');
+        if (e.kind === 'note') for (const n of e.notes) ev += text(ex, g.staff + (n.s - 1) * g.gap + 4.4 * s, n.f < 0 ? '×' : n.tie ? `(${n.f})` : n.f, 'fret');
         // mid is halfway between lines 3 and 4: a whole rest drawn here hangs from line 3, and this offset sets a half rest on line 4.
         else if (e.kind === 'rest') ev += restGlyph(drawn, ex, mid + (drawn.base === 'h' ? 3.5 * s : 0), s);
         else if (e.dir === 'X') ev += line(ex - 4 * s, mid - 4 * s, ex + 4 * s, mid + 4 * s, 'slash x') + line(ex + 4 * s, mid - 4 * s, ex - 4 * s, mid + 4 * s, 'slash x');
         else ev += line(ex - 4 * s, mid + 7 * s, ex + 4 * s, mid - 7 * s, 'slash');
       } else if (g.head !== undefined && e.kind === 'rest') ev += restGlyph(drawn, ex, g.head - 8 * s, s);
       if (o.notation !== 'slash' && g.head !== undefined && e.kind !== 'rest') ev += noteHead(e, ex, g.head, s);
+      // at the start of a line, a tie from the bar before starts at the bar line
+      if (e.notes.some((n) => n.tie)) {
+        const from = i ? xs[i - 1] : f.tieFrom ?? bx;
+        if (g.head !== undefined && o.notation !== 'slash') ev += tieArc(from, ex, g.head + 5 * s, 1, s);
+        if (g.numbers !== undefined) ev += tieArc(from, ex, g.numbers - 19 * s, -1, s);
+      }
       // An X head already marks a muted strum on the slash staff
       if (g.strum !== undefined && e.kind === 'strum' && !(o.notation === 'slash' && e.dir === 'X')) ev += strumArrow(e.dir, ex, g.strum, s);
       if (g.lyric !== undefined && e.lyric) ev += lyricMarks(i, ex);
@@ -97,5 +109,5 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
   if (isFirstInLine) out += line(bx, y1, bx, y2, cls);
   if (isLast) out += line(bx + bw - 4 * s, y1, bx + bw - 4 * s, y2, cls) + `<rect class="barline-end" x="${r1(bx + bw - 2.5 * s)}" y="${r1(y1)}" width="${r1(2.5 * s)}" height="${r1(y2 - y1)}"/>`;
   else out += line(bx + bw, y1, bx + bw, y2, cls);
-  return out + '</g>';
+  return { svg: out + '</g>', lastX };
 }

@@ -52,7 +52,7 @@ test('alphaTab reads every alphaTex score and finds the same notes, chords, lyri
         at: b.playbackStart / TICK,
         dur: b.playbackDuration / TICK,
         kind: b.isRest ? 'rest' : 'note',
-        notes: b.notes.map((n) => ({ s: 7 - n.string, f: n.isDead ? -1 : n.fret })),
+        notes: b.notes.map((n) => ({ s: 7 - n.string, f: n.isDead ? -1 : n.fret, ...(n.isTieDestination && { tie: true }) })),
         lyric: b.lyrics?.[0] ?? '',
         chord: b.chord?.name ?? null,
       }));

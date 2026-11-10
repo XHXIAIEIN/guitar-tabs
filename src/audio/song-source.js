@@ -51,6 +51,7 @@ export function songSource(song, o) {
       return (t) => {
         if (!o.live.guitar) return;
         for (const n of e.notes) {
+          if (n.tie) continue;
           if (n.f < 0) pluck(t, n.s, midiOf(n.s, 0, o.capo), 0.5, true);
           else pluck(t, n.s, midiOf(n.s, n.f, o.capo), 0.8);
         }

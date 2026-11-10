@@ -31,5 +31,6 @@
   {"id":"totoro","group":"anime","level":"入门"},
   {"id":"huluwa","group":"anime","level":"入门"},
   {"id":"really-love-you","group":"pop","level":"进阶"},
+  {"id":"encounter","group":"pop","level":"进阶"},
   {"id":"perfect","group":"song","format":"cho","level":"进阶"}
 ]

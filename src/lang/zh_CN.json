@@ -3,7 +3,7 @@
     "name": "六弦本",
     "mark": "六",
     "title": "六弦本 · 吉他练习",
-    "description": "吉他谱阅读与练习：六线谱、简谱、节拍器、小节循环、变调夹、和弦与节奏训练、演出模式。"
+    "description": "吉他谱阅读与练习：六线谱、简谱、节拍器、乐句循环、变调夹、和弦与节奏训练、演出模式。"
   },
   "nav": {
     "label": "主导航",
@@ -54,7 +54,7 @@
     "unknownToken": "无法识别「{token}」。音符写成 弦/品（如 5/3），和音用 + 连接（如 5/3+2/1），休止符写 r，扫弦写 D、U、X",
     "fretRange": "「{token}」超出 {max} 品",
     "unknownChord": "无法识别的和弦「{name}」",
-    "chordSlots": "和弦格「{cell}」写了 {count} 个位置，这一小节有 {slots} 拍（每个和弦或 . 占一拍）",
+    "chordSlots": "和弦格「{cell}」写了 {count} 个位置，这一节经过 {slots} 拍（每个和弦或 . 占一拍）",
     "badKey": "调号「{value}」无法识别，写成 C、G、Eb、Am 这样的形式",
     "outOfRange": "{field} 应为 {lo}–{hi} 之间的数字",
     "badTime": "拍号「{value}」无法识别，写成 4/4、3/4、6/8 这样的形式",
@@ -62,8 +62,8 @@
     "strumNotes": "节奏型只能包含扫弦（D、U、X）和休止（r）",
     "unknownRow": "未知的行类型「{name}」，可用 chord / tab / lyric",
     "unknownLine": "无法识别这一行：「{line}」",
-    "rowLength": "这一行有 {count} 个小节，同组的其他行有 {expected} 个",
-    "inBar": "第 {n} 小节：{message}",
+    "rowLength": "这一行有 {count} 节，同组的其他行有 {expected} 节",
+    "inBar": "第 {n} 节：{message}",
     "extraLyrics": "歌词有 {count} 个字，音符只有 {notes} 个，多出的字接在最后一个音上"
   },
   "library": {
@@ -117,7 +117,7 @@
       "error": "错误：{message}",
       "warning": "提醒：{message}"
     },
-    "noProblems": "没有问题 · {bars} 个小节",
+    "noProblems": "没有问题 · {bars} 节",
     "copied": "已复制到「我的曲谱」，原曲谱保持不变",
     "saved": "已自动保存",
     "savesAsCopy": "修改后自动另存为我的曲谱",
@@ -138,19 +138,21 @@
       "lyric: | 第一小节 | 第二小节 | 第三小节 | 第四小节 |",
       "",
       "# 旋律",
-      "chord: | C                 | G             |",
-      "tab:   | q 5/3 4/2 3/0 2/1 | 2/0 2/3 h 1/0 |",
-      "lyric: | 一二三四          | 五六七        |",
+      "// 有六线谱时，| 之间写一句完整的旋律，长短不限",
+      "chord: | C G                             |",
+      "tab:   | q 5/3 4/2 3/0 2/1 2/0 2/3 h 1/0 |",
+      "lyric: | 一二三四五六七                  |",
       ""
     ],
     "help": [
       "",
       "<h3>开头的信息</h3>",
-      "<p><code>title:</code> 曲名 · <code>artist:</code> 作者 · <code>key:</code> 调（C、G、Eb、Am）· <code>capo:</code> 变调夹品位 · <code>bpm:</code> 速度 · <code>time:</code> 拍号（4/4、3/4、6/8）· <code>strum:</code> 弹唱的节奏型 · <code>pickup:</code> 弱起拍数 · <code>level:</code> 难度 · <code>note:</code> 练习说明，<code>{T}</code>、<code>{1}</code> 到 <code>{4}</code> 显示成手指标记。也可以写中文：标题、调、变调夹、速度、拍号、节奏型。</p>",
+      "<p><code>title:</code> 曲名 · <code>artist:</code> 作者 · <code>key:</code> 调（C、G、Eb、Am）· <code>capo:</code> 变调夹品位 · <code>bpm:</code> 速度 · <code>time:</code> 拍号（4/4、3/4、6/8）· <code>strum:</code> 弹唱的节奏型 · <code>pickup:</code> 第一个强拍前的弱起拍数 · <code>level:</code> 难度 · <code>note:</code> 练习说明，<code>{T}</code>、<code>{1}</code> 到 <code>{4}</code> 显示成手指标记。也可以写中文：标题、调、变调夹、速度、拍号、节奏型。</p>",
       "<h3>段落和三种行</h3>",
-      "<p><code># 主歌</code> 开始一个新段落。<code>chord:</code> 和弦行、<code>tab:</code> 六线谱行、<code>lyric:</code> 歌词行写在一起成为一组，用 <code>|</code> 分隔小节，同一组里第几个小节就对应第几个小节。一组在页面上占一行，所以一组写一个完整的乐句。</p>",
+      "<p><code># 主歌</code> 开始一个新段落。<code>chord:</code> 和弦行、<code>tab:</code> 六线谱行、<code>lyric:</code> 歌词行写在一起成为一组，用 <code>|</code> 分成几节，同一组里第几格就对应第几节。有六线谱时，一节写一句完整的旋律，长短不限，例如「祝你生日快乐」；只有和弦时，一节是一个小节。一组在页面上占一行。</p>",
+      "<p>节拍器按拍号数拍，重音在每小节的第一拍，和竖线的位置无关。曲子从弱拍开始时，在开头写 <code>pickup:</code> 和弱起的拍数，例如从 3/4 拍的第 3 拍开始写 <code>pickup: 1</code>。</p>",
       "<h3>和弦</h3>",
-      "<p><code>C</code> 占整小节；<code>C G</code> 平分小节；<code>C . G .</code> 每个记号占一拍，<code>.</code> 表示延续。</p>",
+      "<p><code>C</code> 占整节；<code>C G</code> 平分这一节；<code>C . G .</code> 每个记号占这一节经过的一拍，<code>.</code> 表示延续。节从半拍开始时，开头的半拍也算一个记号。</p>",
       "<h3>六线谱</h3>",
       "<table>",
       "<tr><td><code>w h q e s</code></td><td>全音符、二分、四分、八分、十六分音符。在同一组里写一次后一直有效，直到写新的时值；每组开头是四分音符</td></tr>",
@@ -162,9 +164,9 @@
       "<tr><td><code>r</code></td><td>休止</td></tr>",
       "<tr><td><code>D U X</code></td><td>下扫、上扫、切音（扫当前和弦）</td></tr>",
       "</table>",
-      "<p>例：<code>tab: | q 5/3 e 4/2 4/0 h 3/0 |</code> 一小节 4 拍：四分 + 两个八分 + 二分。</p>",
+      "<p>例：<code>tab: | q 5/3 e 4/2 4/0 h 3/0 |</code> 一节 4 拍：四分 + 两个八分 + 二分。</p>",
       "<h3>歌词</h3>",
-      "<p>六线谱有音符时，歌词按顺序对到音符上：汉字一字一音，英文按空格和 <code>-</code> 分；<code>_</code> 表示这个音不唱新字（拖腔）。没有音符时，歌词整段显示在小节下面。</p>",
+      "<p>六线谱有音符时，歌词按顺序对到音符上：汉字一字一音，英文按空格和 <code>-</code> 分；<code>_</code> 表示这个音不唱新字（拖腔）。没有音符时，歌词整段显示在这一节下面。</p>",
       "<h3>其他</h3>",
       "<p><code>//</code> 开头的行是注释。空行把行组分开。</p>"
     ]
@@ -182,12 +184,12 @@
     "backToPlayhead": "回到播放位置",
     "playTitle": "播放 / 暂停（空格）",
     "loop": "循环",
-    "loopCancelled": "已取消第 {from}–{to} 小节的循环",
-    "loopPickFirst": "点选循环的第一个小节",
-    "loopPickLast": "从第 {n} 小节开始，再点选最后一个小节（可以是同一个）",
-    "barTool": "第 {n} 小节",
+    "loopCancelled": "已取消第 {from}–{to} 节的循环",
+    "loopPickFirst": "点选循环的第一节",
+    "loopPickLast": "从第 {n} 节开始，再点选最后一节（可以是同一节）",
+    "barTool": "第 {n} 节",
     "playFromHere": "从这里播放",
-    "loopThisBar": "循环这小节",
+    "loopThisBar": "循环这一节",
     "loopTo": "循环到…",
     "loopOff": "取消循环",
     "changeTempo": "调整速度",
@@ -216,7 +218,7 @@
   },
   "trainer": {
     "toggle": "循环时逐步加速",
-    "needLoop": "先点「循环」选好要练的小节，加速会在每次重新开始时生效",
+    "needLoop": "先点「循环」选好要练的几节，加速会在每次重新开始时生效",
     "perRound": "每轮",
     "perRoundLabel": "每轮增加",
     "max": "最高",
@@ -225,11 +227,11 @@
   "practice": {
     "countIn": "预备拍",
     "countInBars": "{n} 小节",
-    "jumpCountIn": "播放中点小节跳转时的预备拍",
+    "jumpCountIn": "播放中点一节跳转时的预备拍",
     "jumpCountInBeats": "{n} 拍",
     "volMetronome": "节拍器音量",
     "volGuitar": "示范音音量",
-    "shortcuts": "快捷键：空格 播放/暂停 · ←/→ 移动起点 · L 循环 · +/− 速度 · M 节拍器 · Esc 收起小节工具"
+    "shortcuts": "快捷键：空格 播放/暂停 · ←/→ 移动起点 · L 循环 · +/− 速度 · M 节拍器 · Esc 收起小工具"
   },
   "legend": {
     "title": "符号说明",

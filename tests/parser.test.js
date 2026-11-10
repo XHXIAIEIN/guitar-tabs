@@ -29,6 +29,16 @@ tab: | e 1/0 1/0 q 1/0 2/1 1/3 h 1/0 | q 1/0 e 2/1 |`);
   assert.deepEqual(s.bars[1].events.map((e) => e.dur), [48, 24]);
 });
 
+test('a phrase that starts between beats counts that part as its first chord slot', () => {
+  const s = parseSong(`time: 4/4
+chord: | G | . . F . . |
+tab: | q 3/0 q. 4/0 | e 3/0 s 3/0 3/2 2/0 2/1 h. 2/3 |`);
+  assert.deepEqual(s.errors, []);
+  assert.equal(s.bars[1].phase, 120);
+  // F falls on the downbeat of the second metric bar
+  assert.deepEqual(s.bars[1].chords, [{ at: 72, name: 'F' }]);
+});
+
 test('chord-only cells last one metric bar, the first one the pickup', () => {
   const s = parseSong(`time: 4/4
 pickup: 1

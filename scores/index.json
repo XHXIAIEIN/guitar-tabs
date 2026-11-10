@@ -2,6 +2,7 @@
   {"id":"happy-birthday","group":"practice","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"twinkle","group":"practice","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"mary-lamb","group":"practice","level":"入门"},
+  {"id":"nokia-tune","group":"practice","level":"入门"},
   {"id":"ode-to-joy","group":"practice","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"two-tigers","group":"practice","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"farewell","group":"practice","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"进阶"}]},
@@ -14,5 +15,7 @@
   {"id":"tetris","group":"game","level":"进阶"},
   {"id":"pac-man","group":"game","level":"入门"},
   {"id":"crayon-shin-chan","group":"anime","level":"入门"},
+  {"id":"doraemon","group":"anime","level":"入门"},
+  {"id":"totoro","group":"anime","level":"入门"},
   {"id":"perfect","group":"song","format":"cho","level":"进阶"}
 ]

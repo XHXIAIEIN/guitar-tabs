@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v7';
+const CACHE = 'guitar-v8';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -9,6 +9,8 @@ const SHELL = [
   'manifest.webmanifest',
   'scores/index.json',
   'scores/anime/crayon-shin-chan.atex',
+  'scores/anime/doraemon.atex',
+  'scores/anime/totoro.atex',
   'scores/game/mario-bros.atex',
   'scores/game/pac-man.atex',
   'scores/game/super-mario.atex',
@@ -22,6 +24,7 @@ const SHELL = [
   'scores/practice/happy-birthday/full.atex',
   'scores/practice/happy-birthday/simple.atex',
   'scores/practice/mary-lamb.atex',
+  'scores/practice/nokia-tune.atex',
   'scores/practice/ode-to-joy/full.atex',
   'scores/practice/ode-to-joy/simple.atex',
   'scores/practice/twinkle/full.atex',

@@ -226,6 +226,8 @@
   "practice": {
     "countIn": "预备拍",
     "countInBars": "{n} 小节",
+    "jumpCountIn": "播放中点小节跳转时的预备拍",
+    "jumpCountInBeats": "{n} 拍",
     "volMetronome": "节拍器音量",
     "volGuitar": "示范音音量",
     "shortcuts": "快捷键：空格 播放/暂停 · ←/→ 移动起点 · L 循环 · +/− 速度 · M 节拍器 · Esc 收起小节工具"

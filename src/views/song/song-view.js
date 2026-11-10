@@ -225,11 +225,15 @@ export function songView(root, id, opts = {}) {
   }
 
   // ---------- playback ----------
-  /** A start while playing is a jump: the highlight moves at once and no count-in plays. */
+  /**
+   * A start while playing is a jump: the highlight moves at once and the shorter jump count-in plays.
+   * The page counts as playing while the audio loads, so a bar clicked meanwhile is a jump too.
+   */
   async function start(from) {
     const jump = playing;
     const run = ++startRun;
     seq.stop();
+    playing = true;
     hideTool();
     clearEnded();
     if (jump) {
@@ -237,23 +241,27 @@ export function songView(root, id, opts = {}) {
       handle.setCurrent(from);
       countEl.hidden = true;
     }
+    handle.setCursor(null);
+    updatePlay();
     setFollowing(true);
     follow(from);
-    await resumeGuitar();
+    try {
+      await resumeGuitar();
+    } catch (e) {
+      if (run === startRun) stop();
+      throw e;
+    }
     if (run !== startRun || !page$.isConnected) return;
     const loop = prefs.loop;
     const source = songSource(song, {
-      from, loop, countIn: jump ? 0 : settings.countIn, bpm: prefs.bpm, live, shapeOf, capo: prefs.capo,
+      from, loop, countIn: jump ? settings.jumpCountIn : settings.countIn * m.beats, bpm: prefs.bpm, live, shapeOf, capo: prefs.capo,
       trainer: prefs.trainer.on && loop ? prefs.trainer : null,
     });
     seq.start(source, prefs.bpm, onUi, (bpm) => {
       prefs.bpm = bpm;
       updateBpm();
     });
-    playing = true;
     releaseScreen ??= holdScreen();
-    handle.setCursor(null);
-    updatePlay();
   }
 
   function stop() {
@@ -264,7 +272,8 @@ export function songView(root, id, opts = {}) {
     setFollowing(true);
     countEl.hidden = true;
     markBeat(-1);
-    if (current !== null) setCursor(current);
+    // before the first bar plays (count-in or loading audio) there is no current bar, so the cursor stays
+    setCursor(current ?? cursor);
     current = null;
     handle?.setCurrent(null);
     if (!perform) {

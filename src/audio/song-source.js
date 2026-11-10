@@ -18,7 +18,7 @@ export function beatItems(m, live, force = false, ui = (k) => ({ beat: k })) {
 
 /**
  * @param song parsed song
- * @param o from: first bar; loop: [a, b] or null; countIn: bars; bpm;
+ * @param o from: first bar; loop: [a, b] or null; countIn: beats; bpm;
  *          live: { metronome, guitar } read at schedule time so toggles apply at once;
  *          shapeOf(name): frets for a chord name or null; capo;
  *          trainer: { step, max } raises the tempo each time the loop restarts
@@ -54,8 +54,14 @@ export function songSource(song, o) {
   return {
     next() {
       if (countLeft > 0) {
-        countLeft--;
-        return { ticks: m.barTicks, beatTicks: m.beatTicks, items: beatItems(m, o.live, true, (k) => ({ count: k + 1, of: m.beats })) };
+        // a count-in shorter than a bar plays the bar's last beats, so it always ends on the last beat
+        const n = countLeft % m.beats || m.beats;
+        const skip = m.beats - n;
+        countLeft -= n;
+        const items = beatItems(m, o.live, true, (k) => ({ count: k + 1, of: m.beats }))
+          .slice(skip)
+          .map((item) => ({ ...item, tick: item.tick - skip * m.beatTicks }));
+        return { ticks: n * m.beatTicks, beatTicks: m.beatTicks, items };
       }
       if (next === null) return null;
       const i = next;

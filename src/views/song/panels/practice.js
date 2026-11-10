@@ -33,8 +33,10 @@ export function openPracticePanel({ prefs, savePrefs, restartIfPlaying }) {
   renderTrainer();
   const volume = (key, kind) => h('input', { type: 'range', min: 0, max: 1, step: 0.05, value: settings[key], 'aria-label': kind, oninput: (e) => { setSetting(key, +e.target.value); setVolume(kind, +e.target.value); } });
   const countIn = config.song.countInOptions.map((n) => [n, n ? t('practice.countInBars', { n }) : t('common.none')]);
+  const jumpCountIn = config.song.jumpCountInOptions.map((n) => [n, n ? t('practice.jumpCountInBeats', { n }) : t('common.none')]);
   openPanel(t('song.practice'), h('div', { class: 'stack' },
     h('div', { class: 'field' }, h('label', null, t('practice.countIn')), segmented(countIn, settings.countIn, (v) => setSetting('countIn', v))),
+    h('div', { class: 'field' }, h('label', null, t('practice.jumpCountIn')), segmented(jumpCountIn, settings.jumpCountIn, (v) => setSetting('jumpCountIn', v))),
     h('div', { class: 'field' }, h('label', null, t('practice.volMetronome')), volume('volMetronome', 'metronome')),
     h('div', { class: 'field' }, h('label', null, t('practice.volGuitar')), volume('volGuitar', 'guitar')),
     trainerBox,

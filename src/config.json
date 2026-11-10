@@ -14,6 +14,7 @@
       "stringWidth": "uniform",
       "zoom": 1,
       "countIn": 1,
+      "jumpCountIn": 2,
       "metronome": true,
       "guitar": true,
       "volMetronome": 0.8,
@@ -55,6 +56,7 @@
   "song": {
     "bpmStep": 5,
     "countInOptions": [0, 1, 2],
+    "jumpCountInOptions": [0, 1, 2, 4],
     "zoom": { "narrowBelow": 560, "narrow": 0.94, "wide": 1.08, "range": [60, 260], "step": 10 },
     "tempoPanel": { "slider": [30, 240], "nudges": [-5, -1, 1, 5], "ratios": [0.5, 0.75, 0.9, 1] },
     "capo": { "maxCapo": 9, "transposeRange": [-6, 6], "optionMaxCapo": 7, "optionsShown": 4 },

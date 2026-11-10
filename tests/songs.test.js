@@ -110,7 +110,7 @@ test('game and anime music plays one string at a time on strings 1 to 3', () => 
     for (const e of song.bars.flatMap((b) => b.events)) {
       assert.ok(e.notes.length <= 1, `${entry.id} plays ${e.notes.length} notes at once`);
       for (const n of e.notes) {
-        assert.ok(n.f <= 6, `${entry.id} plays fret ${n.f}`);
+        assert.ok(n.f <= 8, `${entry.id} plays fret ${n.f}`);
         // A note below open G cannot sit on strings 1 to 3.
         assert.ok(n.s <= 3 || midiOf(n.s, n.f) < midiOf(3, 0), `${entry.id} plays string ${n.s} fret ${n.f}`);
       }

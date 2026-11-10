@@ -142,7 +142,7 @@ export function songView(root, id, opts = {}) {
   }
 
   function renderInfo() {
-    renderSongInfo(info, { id, entry, song, prefs, perform, show: show(), tonic, keyText: keyText(), chordName, chooseVersion, openCapo, openTempo });
+    renderSongInfo(info, { id, entry, song, prefs, perform, show: show(), stringLabels: settings.stringLabels, tonic, keyText: keyText(), chordName, chooseVersion, openCapo, openTempo });
   }
 
   function chooseVersion(version) {

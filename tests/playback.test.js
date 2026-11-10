@@ -49,6 +49,16 @@ test('a bar in 2/4 clicks two beats and the next 4/4 bar starts on beat 1', () =
   assert.deepEqual(out.find(([k]) => k === '2.0'), ['2.0', 288]);
 });
 
+test('a tied note is not plucked again', () => {
+  const song = parseSong('0.1.2 -.1 | -.1.1');
+  const src = songSource(song, { from: 0, loop: null, countIn: 0, bpm: 80, live: { metronome: false, guitar: true }, shapeOf: () => null, capo: 0 });
+  const notes = [src.next(), src.next()].flatMap((plan) => plan.items.filter((it) => it.ui?.ev >= 0));
+  assert.equal(notes.length, 3);
+  // Node has no AudioContext, so only a pluck throws
+  assert.throws(() => notes[0].sound(0), /AudioContext/);
+  for (const it of notes.slice(1)) it.sound(0);
+});
+
 test('starting or looping on the pickup waits for its beat each time', () => {
   const out = play(HAPPY, { from: 0, countIn: 0, loop: [0, 0] });
   assert.deepEqual(out.slice(0, 3), [['beat', 0, 0], ['beat', 48, 1], ['beat', 96, 2]]);

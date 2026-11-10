@@ -6,8 +6,9 @@ import { chordName, clip, lyricChunks, newBar, parseTime, setMeta } from './synt
 
 const BASE_OF = { 1: 'w', 2: 'h', 4: 'q', 8: 'e', 16: 's' };
 const MAX_FRET = 24;
-const NOTE = /^(\d{1,2}|x)\.([1-6])$/;
-const BEAT = /^(\d{1,2}|x)\.([1-6])(?:\.(\d+))?$/;
+// `-` as the fret ties the note to the previous note on its string
+const NOTE = /^(\d{1,2}|x|-)\.([1-6])$/;
+const BEAT = /^(\d{1,2}|x|-)\.([1-6])(?:\.(\d+))?$/;
 const REST = /^r(?:\.(\d+))?$/;
 // tags that describe the whole song, so they belong before the first beat; 	s may also start a later bar
 const HEADER = new Set(['title', 'artist', 'instructions', 'tempo', 'ks', 'capo', 'lyrics', 'systemslayout']);
@@ -174,12 +175,26 @@ export function parseAlphaTex(text, song, err, warn) {
     else err(line, barMessage(t('parser.badDuration', { value: v })));
   };
 
+  /** The note for fret text `fret` on string `s`; a tie takes the fret of the last note on that string. */
+  const note = (fret, s, line) => {
+    if (fret === 'x') return { s, f: -1 };
+    if (fret !== '-') return { s, f: +fret };
+    for (const bar of [cur, ...song.bars.toReversed()]) {
+      for (const e of bar?.events.toReversed() ?? []) {
+        const prev = e.notes.find((n) => n.s === s);
+        if (prev) return { s, f: prev.f, tie: true };
+      }
+    }
+    err(line, barMessage(t('parser.tieStart', { string: s })));
+    return { s, f: 0 };
+  };
+
   const readNotes = (tok) => {
     if (tok.type === '(') {
       const notes = [];
       for (; i < toks.length && toks[i].type !== ')'; i++) {
         const m = toks[i].type === 'word' && NOTE.exec(toks[i].value);
-        if (m) notes.push({ s: +m[2], f: m[1] === 'x' ? -1 : +m[1] });
+        if (m) notes.push(note(m[1], +m[2], toks[i].line));
         else err(toks[i].line, barMessage(t('parser.unknownToken', { token: clip(String(toks[i].value)) })));
       }
       if (i >= toks.length) err(tok.line, t('parser.unclosed', { open: '(' }));
@@ -199,7 +214,7 @@ export function parseAlphaTex(text, song, err, warn) {
     const m = BEAT.exec(tok.value);
     if (!m) return null;
     if (m[3]) setDur(+m[3], tok.line);
-    return { kind: 'note', notes: [{ s: +m[2], f: m[1] === 'x' ? -1 : +m[1] }] };
+    return { kind: 'note', notes: [note(m[1], +m[2], tok.line)] };
   };
 
   while (i < toks.length) {

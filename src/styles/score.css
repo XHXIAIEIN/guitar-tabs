@@ -50,6 +50,7 @@
 .head.hollow { fill: none; stroke: var(--ink-2); stroke-width: calc(1.3px * var(--s)); }
 .beam, .rest-block { fill: var(--ink-2); }
 .flag { stroke: var(--ink-2); stroke-width: calc(1.5px * var(--s)); fill: none; stroke-linecap: round; }
+.tie { stroke: var(--ink-2); stroke-width: calc(1.2px * var(--s)); fill: none; }
 .tuplet { font-size: calc(10px * var(--s)); font-weight: 600; fill: var(--ink-2); font-style: italic; }
 .rest { stroke: var(--ink-2); stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .slash { stroke: var(--ink); stroke-width: calc(3px * var(--s)); stroke-linecap: round; }

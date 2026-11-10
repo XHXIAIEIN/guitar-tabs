@@ -47,3 +47,6 @@ export function strumArrow(dir, x, y, s) {
 export function chordText(label, name, x, y, cls, anchor = 'start') {
   return `<text class="${cls}" data-chord="${esc(name)}" x="${r1(x)}" y="${r1(y)}" text-anchor="${anchor}">${esc(label)}</text>`;
 }
+
+/** A tie from `x1` to `x2` at height `y`, bowing down (`dir` 1) or up (-1). */
+export const tieArc = (x1, x2, y, dir, s) => `<path class="tie" d="M${r1(x1 + 5 * s)} ${r1(y)} Q${r1((x1 + x2) / 2)} ${r1(y + dir * 6 * s)} ${r1(x2 - 5 * s)} ${r1(y)}"/>`;

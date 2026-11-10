@@ -59,6 +59,7 @@ function symbolLegend(song, show) {
     show.tab && hasNotes && t('legend.strings'),
     show.tab && hasNotes && t('legend.frets'),
     show.tab && has((e) => e.notes.some((n) => n.f < 0)) && t('legend.muted'),
+    has((e) => e.notes.some((n) => n.tie)) && t('legend.tie'),
     ...(show.tab || show.rhythm ? restItems(song) : []),
     ...(show.tab
       ? STRUM_DIRS.filter((dir) => has((e) => e.kind === 'strum' && e.dir === dir)).map((dir) => [symbolIcon(strumArrow(dir, 0, -6.5, 1)), t(`legend.strum.${dir}`)])

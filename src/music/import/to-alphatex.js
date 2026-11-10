@@ -51,16 +51,12 @@ export function scoreToAlphaTex(score, trackIndex, source) {
       if (beat.hasTuplet && !triplet) count('tuplet');
       const notes = [];
       for (const n of beat.isRest ? [] : beat.notes) {
-        if (n.isTieDestination) {
-          count('tie');
-          continue;
-        }
         if (n.hasBend || n.slideInType || n.slideOutType || n.isHammerPullOrigin || n.harmonicType || n.vibrato || n.isTrill) count('technique');
         const s = 7 - n.string;
         const f = n.fret + shift[s - 1];
         if (n.isDead) notes.push(`x.${s}`);
         else if (f < 0) count('low');
-        else notes.push(`${f}.${s}`);
+        else notes.push(n.isTieDestination ? `-.${s}` : `${f}.${s}`);
       }
       const name = beat.chord?.name;
       const chord = name && chordName(name);

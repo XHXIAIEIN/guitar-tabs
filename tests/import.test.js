@@ -44,11 +44,10 @@ const atex = BUILTIN.filter((e) => (e.format ?? 'atex') === 'atex').flatMap((e) 
 
 test('a MusicXML tab in drop D is moved to standard tuning, and what is lost is listed', async () => {
   const { text, remarks } = await importFile('drop-d.musicxml', readFileSync(new URL('tests/fixtures/drop-d.musicxml', ROOT)));
-  assert.equal(remarks.length, 3);
+  assert.equal(remarks.length, 2);
   assert.equal(text, [
     '// 从 drop-d.musicxml 导入，第 1 轨（Guitar）',
     '// 原谱调弦是 D A D G B E，已换算成标准调弦的品位',
-    '// 1 个延音线后半的音没有写出，那里成了休止符或少了一个音',
     '// 1 个音比标准调弦的空弦还低，去掉了',
     '\\title "Drop D"',
     '\\artist "Test"',
@@ -57,7 +56,7 @@ test('a MusicXML tab in drop D is moved to standard tuning, and what is lost is 
     '\\ks Eminor',
     '\\systemsLayout (2)',
     '',
-    '0.6 0.5 0.4.2 | r r.4 0.3',
+    '0.6 0.5 0.4.2 | -.4 r.4 0.3',
     '',
   ].join('\n'));
   assert.deepEqual(parseSong(text).errors, []);

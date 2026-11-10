@@ -43,9 +43,12 @@ export function renderScore(root, song, o) {
     const g = lineGeometry(bars, o);
     let x = gutterL;
     let svg = '';
+    let tieFrom;
     bars.forEach((bar, i) => {
       const bw = metrics[bar.index].natural * k;
-      svg += renderBar(bar, x, bw, { slots: metrics[bar.index].slots, k }, bar.meter, o, g, F, i === 0, bar.index === song.bars.length - 1);
+      const out = renderBar(bar, x, bw, { slots: metrics[bar.index].slots, k, tieFrom }, bar.meter, o, g, F, i === 0, bar.index === song.bars.length - 1);
+      svg += out.svg;
+      tieFrom = out.lastX;
       x += bw;
     });
     if (g.staff !== undefined) svg += stringLabelMarks(labels.left, gutterL, -1, g, s) + stringLabelMarks(labels.right, x, 1, g, s);

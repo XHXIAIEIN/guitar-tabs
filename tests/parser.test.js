@@ -54,6 +54,23 @@ test('\\ts at the start of a bar changes the meter from that bar on', () => {
   assert.deepEqual(late.errors.map((e) => e.message), [t('parser.barStart', { tag: '\\ts' })]);
 });
 
+test('-.string ties a note to the last note on that string, across bars too', () => {
+  const s = parseSong('0.1.4 -.1 0.2 | -.2 (0.1 -.2) 3.1.2');
+  assert.deepEqual(s.errors, []);
+  assert.deepEqual(s.bars.flatMap((b) => b.events.map((e) => e.notes)), [
+    [{ s: 1, f: 0 }],
+    [{ s: 1, f: 0, tie: true }],
+    [{ s: 2, f: 0 }],
+    [{ s: 2, f: 0, tie: true }],
+    [{ s: 1, f: 0 }, { s: 2, f: 0, tie: true }],
+    [{ s: 1, f: 3 }],
+  ]);
+  // a tied note goes on sounding, so the melody has no new note there
+  assert.equal(s.melody.length, 4);
+  const lone = parseSong('0.1.4 -.2 0.1.2');
+  assert.ok(lone.errors[0].message.endsWith(t('parser.tieStart', { string: 2 })));
+});
+
 test('alphaTex problems name their line', () => {
   const s = parseSong(`\\ts 4 4
 0.1 0.1 0.1 | 5/3 0.1

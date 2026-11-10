@@ -50,7 +50,7 @@ function finishBars(song) {
       if (e.kind !== 'note') continue;
       // the top voice carries the melody that 简谱 shows
       const top = e.notes.filter((n) => n.f >= 0).sort((a, b) => a.s - b.s)[0];
-      if (top) pitches.push(midiOf(top.s, top.f));
+      if (top && !top.tie) pitches.push(midiOf(top.s, top.f));
     }
   }
   song.chordsUsed = used;

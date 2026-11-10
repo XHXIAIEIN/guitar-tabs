@@ -1,17 +1,21 @@
-// Song list: search, my songs, exercises, songs, game music, theme songs, the performance setlist and backup.
+// Song list: search, the performance setlist, my songs, built-in songs by playing style and group, and backup.
 import { t } from '../../core/i18n.js';
 import { h, fill } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
+import { segmented } from '../../ui/controls.js';
+import { state, setSetting } from '../../state/store.js';
 import { allEntries, parse } from '../../state/songs.js';
 import { songRow } from './song-row.js';
 import { renderSetlist } from './setlist.js';
 import { backupControls } from './backup-controls.js';
 
-const GROUPS = ['mine', 'exercise', 'song', 'game', 'theme'];
+// Built-in groups under each playing style, in list order.
+const STYLES = { fingerstyle: ['practice', 'game', 'anime'], strum: ['song'] };
 
 export function libraryView(root) {
   let query = '';
   const listEl = h('div', { class: 'lib-groups' });
+  const styleSeg = segmented(Object.keys(STYLES).map((s) => [s, t(`library.style.${s}`)]), state.settings.libraryStyle, (s) => { setSetting('libraryStyle', s); renderList(); }, 'lib-style');
   const setlistEl = h('section', { class: 'setlist' });
 
   const refreshSetlist = () => renderSetlist(setlistEl, refreshAll);
@@ -41,16 +45,20 @@ export function libraryView(root) {
       const s = parse(e.text);
       return [s.meta.title, s.meta.artist, ...s.chordsUsed].join(' ').toLowerCase().includes(query);
     });
+    const group = (g) => {
+      const items = entries.filter((e) => e.group === g);
+      if (!items.length && (query || g !== 'mine')) return null;
+      return h('section', { class: 'lib-group' },
+        h('h2', null, t(`library.group.${g}`)),
+        items.length
+          ? h('ul', { class: 'song-list' }, items.map((entry) => songRow(entry, refreshAll)))
+          : h('p', { class: 'empty' }, t('library.emptyMine')));
+    };
     fill(listEl,
-      ...GROUPS.map((g) => {
-        const items = entries.filter((e) => e.group === g);
-        if (!items.length && (query || g !== 'mine')) return null;
-        return h('section', { class: 'lib-group' },
-          h('h2', null, t(`library.group.${g}`)),
-          items.length
-            ? h('ul', { class: 'song-list' }, items.map((entry) => songRow(entry, refreshAll)))
-            : h('p', { class: 'empty' }, t('library.emptyMine')));
-      }),
+      group('mine'),
+      query ? null : styleSeg,
+      // A search looks through both styles, so the style choice cannot hide a match.
+      ...(query ? Object.values(STYLES).flat() : STYLES[state.settings.libraryStyle]).map(group),
       entries.length ? null : h('p', { class: 'empty' }, t('library.noMatch', { query })),
     );
   }

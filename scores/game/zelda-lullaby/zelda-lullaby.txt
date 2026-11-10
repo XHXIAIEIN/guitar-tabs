@@ -1,4 +1,4 @@
-title: 塞尔达的摇篮曲
+title: 塞尔达传说 摇篮曲
 artist: 近藤浩治
 key: C
 bpm: 80

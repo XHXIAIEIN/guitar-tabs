@@ -72,12 +72,16 @@
     "newSong": "新建曲谱",
     "searchPlaceholder": "搜索曲名、作者、和弦…",
     "searchLabel": "搜索曲谱",
+    "style": {
+      "fingerstyle": "指弹",
+      "strum": "扫弦"
+    },
     "group": {
       "mine": "我的曲谱",
-      "exercise": "练习",
-      "song": "歌曲",
-      "game": "游戏音乐",
-      "theme": "主题曲"
+      "practice": "练习",
+      "game": "游戏",
+      "anime": "动漫",
+      "song": "歌曲"
     },
     "emptyMine": "还没有自己的曲谱。点「新建曲谱」写一首，或在任意曲谱里点「编辑」复制一份来改。",
     "noMatch": "没有找到「{query}」。",

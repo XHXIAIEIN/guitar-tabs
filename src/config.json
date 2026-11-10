@@ -21,6 +21,7 @@
       "tapOffset": 0,
       "performZoom": 1.5,
       "stage": true,
+      "libraryStyle": "fingerstyle",
       "locale": null
     },
     "tools": {

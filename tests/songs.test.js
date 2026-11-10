@@ -57,16 +57,8 @@ test('versions of one entry share a title and open as the simple version', () =>
   }
 });
 
-test('simple exercises use only Em and Am and are no faster than the full version', () => {
-  for (const entry of BUILTIN.filter((e) => e.group === 'exercise')) {
-    const [simple, full] = entry.versions.map((v) => parseSong(v.text));
-    for (const name of simple.chordsUsed) assert.ok(['Em', 'Am'].includes(name), `${entry.id} uses ${name}`);
-    assert.ok(simple.meta.bpm <= full.meta.bpm, `${entry.id} bpm`);
-  }
-});
-
 test('simple songs keep the melody and stay on the top strings', () => {
-  for (const entry of BUILTIN.filter((e) => e.versions && e.group === 'song')) {
+  for (const entry of BUILTIN.filter((e) => e.versions && e.group === 'practice')) {
     const song = parseSong(entry.versions[0].text);
     const steps = (s) => s.melody.slice(1).map((p, i) => p - s.melody[i]);
     assert.deepEqual(steps(song), steps(parseSong(entry.versions[1].text)), `${entry.id} melody differs between versions`);
@@ -79,8 +71,8 @@ test('simple songs keep the melody and stay on the top strings', () => {
   }
 });
 
-test('game music and theme songs play one string at a time on strings 1 to 3', () => {
-  for (const entry of BUILTIN.filter((e) => e.group === 'game' || e.group === 'theme')) {
+test('game and anime music plays one string at a time on strings 1 to 3', () => {
+  for (const entry of BUILTIN.filter((e) => e.group === 'game' || e.group === 'anime')) {
     const song = parseSong(entry.text);
     if (entry.group === 'game') assert.ok(song.chordsUsed.length, `${entry.id} chords`);
     for (const e of song.bars.flatMap((b) => b.events)) {

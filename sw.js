@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v16';
+const CACHE = 'guitar-v17';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -11,6 +11,9 @@ const SHELL = [
   'scores/anime/crayon-shin-chan.atex',
   'scores/anime/doraemon.atex',
   'scores/anime/huluwa.atex',
+  'scores/anime/conan.atex',
+  'scores/anime/inuyasha.atex',
+  'scores/anime/butterfly.atex',
   'scores/anime/totoro.atex',
   'scores/classical/bach-minuet.atex',
   'scores/classical/canon.atex',

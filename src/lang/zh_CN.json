@@ -97,6 +97,7 @@
       "practice": "练习",
       "game": "游戏",
       "anime": "动漫",
+      "pop": "流行",
       "song": "歌曲"
     },
     "noMatch": "没有找到「{query}」。",

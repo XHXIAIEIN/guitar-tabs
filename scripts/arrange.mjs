@@ -1,7 +1,7 @@
 // Arranges music written by pitch for guitar, so a piano score can be copied note by note. A source file
-// arrangements/<group>/<id>.txt is alphaTex whose notes are pitch names such as `D4`, `F#3` or `(G2 D4)` instead of
-// `fret.string`. `npm run arrange` picks a string and fret for each note and writes scores/<group>/<id>.atex; the rest
-// of the source passes through unchanged.
+// under arrangements/ is alphaTex whose notes are pitch names such as `D4`, `F#3` or `(G2 D4)` instead of
+// `fret.string`. `npm run arrange` picks a string and fret for each note and writes the score at the same path under
+// scores/; the rest of the source passes through unchanged.
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { TUNING, mod12 } from '../src/music/pitch.js';

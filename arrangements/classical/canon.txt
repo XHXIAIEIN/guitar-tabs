@@ -1,0 +1,19 @@
+\transpose -12
+\title "卡农"
+\artist "帕赫贝尔"
+\tempo 70
+\ts 4 4
+\ks C
+\systemsLayout (2 2 2 2 2 2 4 1)
+\instructions "每两拍换一个和弦，依次是 C G Am Em F C F G。低音在第 1、3 拍和旋律一起弹，让它响满两拍。十六分音符多，先降到 50 练顺。"
+
+\section "主题" (G5 C4).8 E5.16 F5 G5.8 E5.16 F5 (G5 G3).16 G4 A4 B4 C5 D5 E5 F5 | (E5 A3).8 C5.16 D5 E5.8 E4.16 F4 (G4 E3).16 A4 G4 F4 G4 C5 B4 C5 |
+(A4 F3).8 C5.16 B4 A4.8 G4.16 F4 (G4 C4).16 F4 E4 F4 G4 A4 B4 C5 | (A4 F3).8 C5.16 B4 C5.8 B4.16 C5 (B4 G3).16 A4 B4 C5 D5 E5 F5 G5 |
+
+\section "第二遍" (G5 C4).8 E5.16 F5 G5.8 E5.16 F5 (G5 G3).16 G4 A4 B4 C5 D5 E5 F5 | (E5 A3).8 C5.16 D5 E5.8 E4.16 F4 (G4 E3).16 A4 G4 F4 G4 C5 B4 C5 |
+(A4 F3).8 C5.16 B4 A4.8 G4.16 F4 (G4 C4).16 F4 E4 F4 G4 A4 B4 C5 | (A4 F3).8 C5.16 B4 C5.8 B4.16 C5 (B4 G3).16 A4 B4 C5 D5 E5 F5 G5 |
+
+\section "变奏" (E5 C4).8 C5.16 D5 E5.8 D5.16 C5 (D5 G3).16 B4 C5 D5 E5 D5 C5 B4 | (C5 A3).8 A4.16 B4 C5.8 C4.16 D4 (E4 E3).16 F4 E4 D4 E4 C5 B4 C5 |
+(A4 F3).8 C5.16 B4 A4.8 G4.16 F4 (G4 C4).16 F4 E4 F4 G4 A4 B4 C5 | (A4 F3).8 C5.16 B4 C5.8 B4.16 A4 (B4 G3).16 C5 D5 C5 B4 C5 A4 B4 |
+
+\section "尾声" (C5 C4).2 (D5 G3).2 | (C5 A3).2 (B4 E3).2 | (A4 F3).2 (G4 C4).2 | (A4 F3).2 (B4 G3).2 | (C5 E4 C4).1

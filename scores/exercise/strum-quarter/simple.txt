@@ -9,5 +9,6 @@ note: 每拍向下扫一次（↓）。只用 Em 和 Am，每个和弦弹两小�
 # 每个和弦两小节
 chord: | Em | Em | Am | Am |
 tab: | q D D D D | D D D D | D D D D | D D D D |
+
 chord: | Em | Em | Am | Am |
 tab: | q D D D D | D D D D | D D D D | D D D D |

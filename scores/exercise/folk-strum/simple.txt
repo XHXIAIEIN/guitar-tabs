@@ -9,4 +9,5 @@ note: 节奏型写在开头，每小节重复。只用 Em 和 Am，每个和弦�
 
 # 每个和弦两小节
 chord: | Em | Em | Am | Am |
+
 chord: | Em | Em | Am | Am |

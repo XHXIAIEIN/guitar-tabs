@@ -9,5 +9,6 @@ note: 只用 Em 和 Am，每个和弦弹两小节。手腕像钟摆一样一直�
 # 每个和弦两小节
 chord: | Em | Em | Am | Am |
 tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |
+
 chord: | Em | Em | Am | Am |
 tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |

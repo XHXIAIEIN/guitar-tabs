@@ -9,5 +9,6 @@ note: 手腕像钟摆一样一直上下摆动：数「1 嗒 2 嗒」，数字时
 # 一个和弦一小节
 chord: | C | Am | Dm | G |
 tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |
+
 chord: | C | Am | Dm | G |
 tab: | e D U D U D U D U | D U D U D U D U | D U D U D U D U | D U D U D U D U |

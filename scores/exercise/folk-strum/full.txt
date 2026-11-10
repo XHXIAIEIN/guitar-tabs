@@ -9,4 +9,5 @@ note: 节奏型写在开头，每小节重复。第 3 拍的下扫是「空拍�
 
 # 1–6–4–5
 chord: | C | Am | Fmaj7 | G |
+
 chord: | C | Am | Fmaj7 | G |

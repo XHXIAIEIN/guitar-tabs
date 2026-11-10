@@ -3,24 +3,19 @@
 export function breakLines(song, metrics, avail) {
   const lines = [];
   const bars = song.bars;
+  const fits = (start, count) => count === 1 || metrics.slice(start, start + count).reduce((w, b) => w + b.natural, 0) <= avail;
+  // A phrase that is too wide for one line splits in halves, so the halves line up with each other.
+  const place = (start, count, sectionStart) => {
+    if (fits(start, count)) return lines.push({ start, count, sectionStart });
+    const half = Math.ceil(count / 2);
+    place(start, half, sectionStart);
+    place(start + half, count - half, false);
+  };
   let i = 0;
   while (i < bars.length) {
-    const section = bars[i].section;
-    let end = i;
-    while (end < bars.length && bars[end].section === section) end++;
-    // Every line of a section holds the same phrase length, so phrases line up from one line to the next.
-    const pickup = bars[i].pickup ? 1 : 0;
-    const split = (per) => {
-      const out = [];
-      for (let a = i; a < end; a += out[out.length - 1].count) {
-        out.push({ start: a, count: Math.min(end, a + per + (a === i ? pickup : 0)) - a, sectionStart: a === i });
-      }
-      return out;
-    };
-    const fits = (ln) => ln.count === 1 || metrics.slice(ln.start, ln.start + ln.count).reduce((w, b) => w + b.natural, 0) <= avail;
-    let per = 8;
-    while (per > 1 && !split(per).every(fits)) per /= 2;
-    lines.push(...split(per));
+    let end = i + 1;
+    while (end < bars.length && !bars[end].phrase) end++;
+    place(i, end - i, bars[i].section !== bars[i - 1]?.section);
     i = end;
   }
   return lines;

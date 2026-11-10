@@ -4,6 +4,7 @@ import './helpers/setup.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { chordAt } from '../src/music/format/pattern.js';
 import { noteParts, syllables } from '../src/music/format/syntax.js';
+import { breakLines } from '../src/render/score/layout.js';
 
 test('note text splits into strings and finger marks', () => {
   assert.deepEqual(noteParts('{T} 弹 {1}。'), [{ finger: 'T' }, ' 弹 ', { finger: '1' }, '。']);
@@ -35,3 +36,15 @@ tab: | e 1/0 1/0 | q 1/0 2/1 1/3 | h 1/0 q 1/1 |`);
   assert.deepEqual(s.bars[1].events.map((e) => e.dur), [48, 48, 48]);
 });
 
+test('each row block is one line, and a block too wide for the page splits in halves', () => {
+  const s = parseSong(`time: 4/4
+# A
+chord: | C | G |
+chord: | C | G | Am | F | C |
+
+# B
+chord: | F | G |`);
+  const lines = (avail) => breakLines(s, s.bars.map(() => ({ natural: 10 })), avail).map((l) => [l.start, l.count, l.sectionStart]);
+  assert.deepEqual(lines(100), [[0, 2, true], [2, 5, false], [7, 2, true]]);
+  assert.deepEqual(lines(30), [[0, 2, true], [2, 3, false], [5, 2, false], [7, 2, true]]);
+});

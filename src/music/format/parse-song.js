@@ -144,6 +144,8 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
       line: (tab ?? chord ?? lyric).line,
       ticks: m.barTicks,
       pickup: false,
+      // the first bar of a row block: a block is one phrase and starts a new line on the page
+      phrase: k === 0,
       chords: [],
       events: [],
       lyric: '',

@@ -1,5 +1,5 @@
 // SVG score: chord names, 简谱, strum arrows, rhythm notes, TAB staff, lyrics.
-// Lines break at section headings and otherwise hold a whole phrase (1, 2, 4 or 8 bars).
+// Each row block of the source is one phrase and one line; a phrase too wide for the page splits in halves.
 import { esc, r1 } from '../svg.js';
 import { renderBar } from './bar.js';
 import { breakLines, lineGeometry } from './layout.js';

@@ -11,9 +11,12 @@ note: 3/4 拍的华尔兹节奏「下 下上 下上」，每小节重复。从�
 # Verse
 chord: | | G | G7 | C | G |
 lyric: | A- | maz-ing | grace! How | sweet the | sound, That |
+
 chord: | G | Em | D | D |
 lyric: | saved a | wretch like | me! I | |
+
 chord: | G | G7 | C | G |
 lyric: | once was | lost, but | now am | found, Was |
+
 chord: | Em | D | G | G |
 lyric: | blind, but | now I | see. | |

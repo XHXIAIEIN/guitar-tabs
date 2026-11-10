@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v7';
+const CACHE = 'guitar-v8';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -56,6 +56,8 @@ const SHELL = [
   'src/music/format/parse-song.js',
   'src/music/format/pattern.js',
   'src/music/format/syntax.js',
+  'src/music/import/load-score.js',
+  'src/music/import/to-alphatex.js',
   'src/music/key.js',
   'src/music/numbers.js',
   'src/music/pitch.js',
@@ -105,6 +107,7 @@ const SHELL = [
   'src/views/chords/minute.js',
   'src/views/editor/editor-view.js',
   'src/views/library/backup-controls.js',
+  'src/views/library/import-score.js',
   'src/views/library/library-view.js',
   'src/views/library/setlist.js',
   'src/views/library/song-row.js',

@@ -8,6 +8,7 @@ import { allEntries, parse } from '../../state/songs.js';
 import { songRow } from './song-row.js';
 import { renderSetlist } from './setlist.js';
 import { backupControls } from './backup-controls.js';
+import { importScoreButton } from './import-score.js';
 
 // Built-in groups under each playing style, in list order.
 const STYLES = { fingerstyle: ['practice', 'game', 'anime'], strum: ['song'] };
@@ -29,6 +30,7 @@ export function libraryView(root) {
       h('header', { class: 'page-head' },
         h('h1', null, t('library.title')),
         h('div', { class: 'row gap-s' },
+          importScoreButton(),
           h('a', { class: 'btn primary', href: '#/edit/new' }, icon('plus'), h('span', null, t('library.newSong'))),
         ),
       ),

@@ -46,6 +46,19 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
       }
       return bx + bw;
     };
+    // A syllable that ends in "-" goes on into the next one, so the hyphen stands alone midway in the gap, as in engraved lyrics.
+    const syllable = (lyric) => lyric.replace(/-$/, '');
+    const lyricMarks = (i, ex) => {
+      const word = syllable(bar.events[i].lyric);
+      let marks = text(ex, g.lyric, word, 'lyr');
+      if (word !== bar.events[i].lyric) {
+        const left = ex + textWidth(word, F.lyric) / 2;
+        const next = bar.events[i + 1];
+        const right = next ? xs[i + 1] - textWidth(syllable(next.lyric), F.lyric) / 2 : bx + bw;
+        marks += text((left + right) / 2, g.lyric, '-', 'lyr');
+      }
+      return marks;
+    };
     if (g.chord !== undefined) {
       for (const c of bar.chords) out += chordText(o.chordLabel(c.name), c.name, xAt(c.at) - 4 * s, g.chord, 'chord', 'start');
       if (isFirstInLine && bar.startChord && bar.chords[0]?.at !== 0) out += chordText(`(${o.chordLabel(bar.startChord)})`, bar.startChord, xs[0] - 4 * s, g.chord, 'chord dim', 'start');
@@ -72,7 +85,7 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
       if (o.notation !== 'slash' && g.head !== undefined && e.kind !== 'rest') ev += noteHead(e, ex, g.head, s);
       // An X head already marks a muted strum on the slash staff
       if (g.strum !== undefined && e.kind === 'strum' && !(o.notation === 'slash' && e.dir === 'X')) ev += strumArrow(e.dir, ex, g.strum, s);
-      if (g.lyric !== undefined && e.lyric) ev += text(ex, g.lyric, e.lyric, 'lyr');
+      if (g.lyric !== undefined && e.lyric) ev += lyricMarks(i, ex);
       out += ev + '</g>';
     });
   }

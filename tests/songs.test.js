@@ -11,6 +11,9 @@ import { midiOf } from '../src/music/pitch.js';
 
 // Expected 简谱 of each built-in melody, written down independently of the tab positions.
 const MELODIES = {
+  'note-names':
+    '3 4 5 4 3 4 5 7 1 2 1 7 1 2 5 6 5 6 5 6 5 1 2 3 4 5 5 4 3 2 1 5 6 7 1 2 3 4 5 4 3 2 1 7 6 5 ' +
+    '3 3 4 5 5 4 3 2 1 1 2 3 3 2 2 3 3 4 5 5 4 3 2 1 1 2 3 2 1 1',
   twinkle: '1 1 5 5 6 6 5 4 4 3 3 2 2 1',
   'two-tigers': '1 2 3 1 1 2 3 1 3 4 5 3 4 5 5 6 5 4 3 1 5 6 5 4 3 1 1 5, 1',
   'ode-to-joy': "3 3 4 5 5 4 3 2 1 1 2 3 3 2 2",

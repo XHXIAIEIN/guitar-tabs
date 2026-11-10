@@ -1,11 +1,11 @@
-\title "London Bridge Is Falling Down"
-\artist "英国童谣"
+\title "有只雀仔跌落水"
+\artist "粤语童谣"
 \tempo 100
 \ts 4 4
 \ks C
 \systemsLayout (4 4)
-\lyrics "Lon-don bridge is fal-ling down fal-ling down fal-ling down
-Lon-don bridge is fal-ling down my fair la-dy"
+\lyrics "有 只 雀 仔 跌 落 水 跌 落 水 跌 落 水
+有 只 雀 仔 跌 落 水 被 水 冲 去"
 \instructions "第 1、5 小节的附点四分音符占一拍半，后面的八分音符只占半拍。"
 
 \section "全曲" 0.3{d ch "C"} 2.3.8 0.3.4 3.4 | 2.4 3.4 0.3.2 | 0.4.4{ch "G7"} 2.4 3.4.2 | 2.4.4{ch "C"} 3.4 0.3.2 |

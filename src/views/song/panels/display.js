@@ -33,7 +33,7 @@ export function openDisplayPanel({ perform, show, saveShow, refresh, renderScore
   );
   const labelChoice = (side) => segmented([['none', t('common.none')], ['tab', 'TAB'], ['number', '123456'], ['name', 'EBGDAe']], settings.stringLabels[side], (v) => {
     setSetting('stringLabels', { ...settings.stringLabels, [side]: v });
-    renderScore();
+    refresh();
   });
   openPanel(t('song.display'), h('div', { class: 'stack' },
     showToggles([['chords', t('display.chords')], ['tab', t('display.tab')], ['lyrics', t('display.lyrics')]]),

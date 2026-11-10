@@ -23,9 +23,10 @@ const fingerMark = (finger, props) => h('span', { class: `finger finger-${finger
 function noteBlock(text) {
   const parts = noteParts(text);
   const note = h('p', { class: 'song-note' }, parts.map((part) => (typeof part === 'string' ? part : fingerMark(part.finger, { role: 'img', 'aria-label': t(`chords.finger.${part.finger}`) }))));
-  if (parts.every((part) => typeof part === 'string')) return note;
+  const used = FINGERS.filter((finger) => parts.some((part) => part.finger === finger));
+  if (!used.length) return note;
   return h('div', { class: 'song-note-block' },
-    h('p', { class: 'finger-legend' }, FINGERS.map((finger) => h('span', null, fingerMark(finger, { 'aria-hidden': 'true' }), ` ${t(`chords.finger.${finger}`)}`))),
+    h('p', { class: 'finger-legend' }, used.map((finger) => h('span', null, fingerMark(finger, { 'aria-hidden': 'true' }), ` ${t(`chords.finger.${finger}`)}`))),
     note);
 }
 
@@ -49,14 +50,14 @@ function restItems(song) {
   });
 }
 
-/** Explains the symbols that this song draws with the current display toggles. */
-function symbolLegend(song, show) {
+/** Explains the symbols that this song draws with the current display toggles and string labels. */
+function symbolLegend(song, show, stringLabels) {
   const events = song.bars.flatMap((b) => b.events);
   if (!events.length) return null;
   const has = (test) => events.some(test);
   const hasNotes = has((e) => e.kind === 'note');
   const items = [
-    show.tab && hasNotes && t('legend.strings'),
+    show.tab && hasNotes && !Object.values(stringLabels).includes('number') && t('legend.strings'),
     show.tab && hasNotes && t('legend.frets'),
     show.tab && has((e) => e.notes.some((n) => n.f < 0)) && t('legend.muted'),
     has((e) => e.notes.some((n) => n.tie)) && t('legend.tie'),
@@ -85,7 +86,7 @@ function strumBox(song, tonic) {
   return box;
 }
 
-/** @param o id, entry, song, prefs, perform, show, tonic, keyText, chordName(name), chooseVersion(version), openCapo, openTempo */
+/** @param o id, entry, song, prefs, perform, show, stringLabels, tonic, keyText, chordName(name), chooseVersion(version), openCapo, openTempo */
 export function renderSongInfo(el, o) {
   const { song, prefs, perform } = o;
   const { meta } = song;
@@ -108,7 +109,7 @@ export function renderSongInfo(el, o) {
           }))
       : null,
     song.strum && !perform ? strumBox(song, o.tonic) : null,
-    perform ? null : symbolLegend(song, o.show),
+    perform ? null : symbolLegend(song, o.show, o.stringLabels),
     errors.length && !perform
       ? h('div', { class: 'alert' },
           h('strong', null, t('song.problems', { count: errors.length })),

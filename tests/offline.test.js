@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { ROOT, readJsonFile } from './helpers/setup.js';
-import { BUILTIN } from '../src/state/songs.js';
+import { BUILTIN, scorePath } from '../src/state/songs.js';
 
 const sw = readFileSync(new URL('sw.js', ROOT), 'utf8');
 const shell = sw.slice(sw.indexOf('const SHELL = ['), sw.indexOf('];', sw.indexOf('const SHELL = [')));
@@ -20,7 +20,7 @@ test('the offline list names every source file and only files that exist', () =>
 test('the offline list and the score catalog each name every score file', () => {
   const files = filesUnder('scores/').sort();
   assert.deepEqual(listed.filter((f) => f.startsWith('scores/')).sort(), files);
-  const named = BUILTIN.flatMap((e) => (e.versions?.map((v) => `${e.id}/${v.id}`) ?? [e.id]).map((file) => `scores/${e.group}/${file}.${e.format ?? 'atex'}`));
+  const named = BUILTIN.flatMap((e) => (e.versions?.map((v) => `${e.id}/${v.id}`) ?? [e.id]).map((file) => scorePath(e, file)));
   assert.deepEqual(['scores/index.json', ...named].sort(), files);
 });
 

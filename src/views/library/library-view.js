@@ -47,12 +47,17 @@ export function libraryView(root) {
       const s = parse(e.text);
       return [s.meta.title, s.meta.artist, ...s.chordsUsed].join(' ').toLowerCase().includes(query);
     });
+    const list = (items) => h('ul', { class: 'song-list' }, items.map((entry) => songRow(entry, refreshAll)));
     const group = (g) => {
       const items = entries.filter((e) => e.group === g);
       if (!items.length) return null;
+      // A group whose entries name a subgroup lists each subgroup under its own heading, in catalog order.
+      const subgroups = [...new Set(items.map((e) => e.subgroup))];
       return h('section', { class: 'lib-group' },
         h('h2', null, t(`library.group.${g}`)),
-        h('ul', { class: 'song-list' }, items.map((entry) => songRow(entry, refreshAll))));
+        subgroups[0]
+          ? subgroups.map((s) => h('div', { class: 'lib-subgroup' }, h('h3', null, t(`library.subgroup.${s}`)), list(items.filter((e) => e.subgroup === s))))
+          : list(items));
     };
     fill(listEl,
       group('mine'),

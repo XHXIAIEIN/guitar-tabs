@@ -7,11 +7,16 @@ import { state, save } from './store.js';
 export const BUILTIN = [];
 
 /**
- * Fills BUILTIN from scores/index.json and the files it names: `.atex` (alphaTex), or `.cho` (ChordPro) when the entry
- * says `"format": "cho"`. Both readers take a path from the site root.
+ * Path from the site root to one score file of a catalog entry: `scores/<group>/[<subgroup>/]<file>`, with `.atex`
+ * (alphaTex), or `.cho` (ChordPro) when the entry says `"format": "cho"`. `file` is the id, or `<id>/<version id>`.
  */
+export function scorePath(entry, file) {
+  return `scores/${entry.group}/${entry.subgroup ? `${entry.subgroup}/` : ''}${file}.${entry.format ?? 'atex'}`;
+}
+
+/** Fills BUILTIN from scores/index.json and the files it names. Both readers take a path from the site root. */
 export async function loadScores(readJson, readText) {
-  const read = (entry, file) => readText(`scores/${entry.group}/${file}.${entry.format ?? 'atex'}`);
+  const read = (entry, file) => readText(scorePath(entry, file));
   const catalog = await readJson('scores/index.json');
   const entries = await Promise.all(
     catalog.map(async (entry) =>

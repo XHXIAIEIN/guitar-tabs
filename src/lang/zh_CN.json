@@ -102,6 +102,11 @@
       "pop": "流行",
       "song": "歌曲"
     },
+    "subgroup": {
+      "nursery": "童谣",
+      "folk": "民歌",
+      "instrumental": "纯音乐"
+    },
     "noMatch": "没有找到「{query}」。",
     "errorCount": "{count} 处错误",
     "setlistRemove": "移出演出歌单",

@@ -33,8 +33,8 @@
     }
   },
   "format": {
-    "defaultMeta": { "artist": "", "key": "C", "capo": 0, "bpm": 80, "time": [4, 4], "pickup": 0, "octave": 0, "level": "", "note": "" },
-    "limits": { "capo": [0, 12], "bpm": [20, 320], "octave": [-2, 2], "pickup": [0, 12] }
+    "defaultMeta": { "artist": "", "key": "C", "capo": 0, "bpm": 80, "time": [4, 4], "instructions": "" },
+    "limits": { "capo": [0, 12], "bpm": [20, 320] }
   },
   "audio": {
     "compressor": { "threshold": -12, "ratio": 4 },
@@ -49,7 +49,7 @@
   "toast": { "plainMs": 2800, "actionMs": 7000 },
   "tapTempo": { "resetMs": 2000, "minTaps": 3, "window": 6 },
   "editor": {
-    "keys": ["|", "/", "+", ".", "q", "e", "h", "s", "r", "D", "U", "chord: ", "tab: ", "lyric: ", "# "],
+    "keys": ["|", ".", "(", ")", "{", "}", "\"", "\\", ":", "r", ":4", ":8", "{d}", "{tu 3}", "{ch \"", "\\section \""],
     "previewScale": 0.95,
     "autosaveMs": 350
   },

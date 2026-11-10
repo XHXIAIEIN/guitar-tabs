@@ -21,7 +21,6 @@ export function renderScore(root, song, o) {
     chord: `600 ${15 * s}px ${fam}`,
     lyric: `400 ${15 * s}px ${fam}`,
     chartChord: `700 ${18 * s}px ${fam}`,
-    chartLyric: `400 ${16 * s}px ${fam}`,
   };
   const m = song.meter;
   const labels = o.show.tab && song.bars.some((b) => b.events.length) ? o.stringLabels ?? NO_LABELS : NO_LABELS;

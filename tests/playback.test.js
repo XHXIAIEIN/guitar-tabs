@@ -20,9 +20,7 @@ function play(text, o = {}) {
   return out;
 }
 
-const HAPPY = `time: 3/4
-pickup: 1
-tab: | e 2/1 2/1 q 2/3 2/1 1/1 h 1/0 | e 2/1 2/1 q 2/3 2/1 1/3 h 1/1 |`;
+const HAPPY = '\\ts 3 4 \\ac 1.2.8 1.2 | 3.2.4 1.2 1.1 | 0.1.2 1.2.8 1.2 | 3.2.4 1.2 3.1 | 1.1.2';
 
 test('a pickup starts on its beat after the count-in, and beat 1 falls on the first downbeat', () => {
   const out = play(HAPPY);
@@ -32,23 +30,21 @@ test('a pickup starts on its beat after the count-in, and beat 1 falls on the fi
   assert.deepEqual(beats.slice(0, 4), [['beat', 144, 0], ['beat', 192, 1], ['beat', 240, 2], ['beat', 288, 0]]);
   assert.deepEqual(out.find(([k]) => k === '0.0'), ['0.0', 240]);
   // 生 is the first note on beat 1
-  assert.deepEqual(out.find(([k]) => k === '0.2'), ['0.2', 288]);
+  assert.deepEqual(out.find(([k]) => k === '1.0'), ['1.0', 288]);
 });
 
-test('metronome accents follow the time signature across phrases that start inside a bar', () => {
+test('metronome accents follow the time signature after a pickup', () => {
   const out = play(HAPPY);
   const beats = out.filter(([k]) => k === 'beat');
   for (const [, t, k] of beats) assert.equal(k, ((t - 144) / 48) % 3, `beat at ${t}`);
-  // the second phrase starts on beat 3, right after the first one ends
-  assert.deepEqual(out.find(([k]) => k === '1.0'), ['1.0', 240 + 288]);
+  // the second phrase starts on beat 3 of the second measure
+  assert.deepEqual(out.find(([k]) => k === '2.1'), ['2.1', 240 + 288]);
   assert.deepEqual(beats.at(-1), ['beat', 768, 1]);
 });
 
-test('starting or looping on a phrase that begins off the downbeat waits for its beat', () => {
-  const out = play(HAPPY, { from: 1, countIn: 0, loop: [1, 1] });
+test('starting or looping on the pickup waits for its beat each time', () => {
+  const out = play(HAPPY, { from: 0, countIn: 0, loop: [0, 0] });
   assert.deepEqual(out.slice(0, 3), [['beat', 0, 0], ['beat', 48, 1], ['beat', 96, 2]]);
-  assert.deepEqual(out.find(([k]) => k === '1.0'), ['1.0', 96]);
-  // the phrase ends on beat 3, where it starts again
-  const starts = out.filter(([k]) => k === '1.0').map(([, t]) => t);
-  assert.deepEqual(starts.slice(0, 3), [96, 384, 672]);
+  const starts = out.filter(([k]) => k === '0.0').map(([, t]) => t);
+  assert.deepEqual(starts.slice(0, 3), [96, 240, 384]);
 });

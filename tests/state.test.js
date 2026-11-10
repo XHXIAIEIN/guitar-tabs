@@ -54,7 +54,7 @@ test('a backup round trip restores songs, setlist and records', () => {
 });
 
 test('song preferences start from the song and stay with their id', () => {
-  const song = parseSong('title: t\nbpm: 90\ncapo: 2');
+  const song = parseSong('\\title "t" \\tempo 90 \\capo 2');
   const prefs = prefsFor('some-id', song);
   assert.equal(prefs.bpm, 90);
   assert.equal(prefs.capo, 2);

@@ -6,14 +6,17 @@ import { state, save } from './store.js';
 /** Every built-in entry in list order. It is empty until boot. */
 export const BUILTIN = [];
 
-/** Fills BUILTIN from scores/index.json and the text files it names. Both readers take a path from the site root. */
+/**
+ * Fills BUILTIN from scores/index.json and the files it names: `.atex` (alphaTex), or `.cho` (ChordPro) when the entry
+ * says `"format": "cho"`. Both readers take a path from the site root.
+ */
 export async function loadScores(readJson, readText) {
-  const read = (entry, file) => readText(`scores/${entry.group}/${file}.txt`);
+  const read = (entry, file) => readText(`scores/${entry.group}/${file}.${entry.format ?? 'atex'}`);
   const catalog = await readJson('scores/index.json');
   const entries = await Promise.all(
     catalog.map(async (entry) =>
       entry.versions
-        ? { ...entry, versions: await Promise.all(entry.versions.map(async (id) => ({ id, text: await read(entry, `${entry.id}/${id}`) }))) }
+        ? { ...entry, versions: await Promise.all(entry.versions.map(async (v) => ({ ...v, text: await read(entry, `${entry.id}/${v.id}`) }))) }
         : { ...entry, text: await read(entry, entry.id) },
     ),
   );
@@ -36,7 +39,7 @@ export function parse(text) {
 function builtinEntry(b) {
   if (!b.versions) return { ...b, builtin: true, prefsId: b.id };
   const v = b.versions.find((x) => x.id === state.versions[b.id]) ?? b.versions[0];
-  return { ...b, builtin: true, text: v.text, version: v, prefsId: `${b.id}:${v.id}` };
+  return { ...b, builtin: true, text: v.text, level: v.level, version: v, prefsId: `${b.id}:${v.id}` };
 }
 
 export function allEntries() {

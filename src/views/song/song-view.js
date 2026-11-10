@@ -42,7 +42,7 @@ export function songView(root, id, opts = {}) {
   const prefs = prefsFor(entry.prefsId, song);
   const canTranspose = !song.hasEvents;
   if (!canTranspose) prefs.transpose = 0;
-  const hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
+  const hasLyrics = song.bars.some((b) => b.events.some((e) => e.lyric));
   if (perform) prefs.performShow ??= { tab: !hasLyrics || !song.chordsUsed.length, numbers: false, rhythm: false, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const seq = new Sequencer();
@@ -68,7 +68,7 @@ export function songView(root, id, opts = {}) {
   const chordName = (name) => transposeChord(name, prefs.transpose, shapeKey());
   const chordLabel = (name) => pretty(chordName(name));
   const shapeOf = (name) => chordShapes(chordName(name))[0]?.frets ?? null;
-  const tonic = numberTonic(song.melody, baseKey, meta.octave);
+  const tonic = numberTonic(song.melody, baseKey);
   const show = () => (perform ? prefs.performShow : settings.show);
   const zoom = () => {
     const { narrowBelow, narrow, wide } = config.song.zoom;

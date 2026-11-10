@@ -1,55 +1,37 @@
-// The vocabulary of the plain-text tab format: field, row and token names with their Chinese aliases, and cell splitting.
-// The aliases are part of the file format, not UI text, so they do not change with the UI language.
-
-export const META = new Map(Object.entries({
-  title: 'title', 标题: 'title', 歌名: 'title',
-  artist: 'artist', 作者: 'artist', 演唱: 'artist', 词曲: 'artist',
-  key: 'key', 调: 'key',
-  capo: 'capo', 变调夹: 'capo',
-  bpm: 'bpm', tempo: 'bpm', 速度: 'bpm',
-  time: 'time', 拍号: 'time',
-  strum: 'strum', 节奏型: 'strum',
-  pickup: 'pickup', 弱起: 'pickup',
-  octave: 'octave', 简谱八度: 'octave',
-  level: 'level', 难度: 'level',
-  note: 'note', 说明: 'note',
-}));
-export const ROWS = new Map(Object.entries({ chord: 'chord', 和弦: 'chord', tab: 'tab', 谱: 'tab', 六线谱: 'tab', lyric: 'lyric', 歌词: 'lyric' }));
-export const STRUMS = new Map(Object.entries({ D: 'D', 下: 'D', U: 'U', 上: 'U', X: 'X', 切: 'X' }));
-const CJK = /[㐀-鿿豈-﫿]/;
-
-/** Name and value of a `name: value` line; a Chinese colon also separates them. */
-export const splitField = (line) => /^([^:：|]+)[:：](.*)$/.exec(line);
-
-export const isRest = (tok) => tok === 'r' || tok === '休';
-export const stripKeySuffix = (value) => value.replace(/调$/, '');
-export const stripNumberSuffix = (value) => value.replace(/品|拍$/g, '');
+// Helpers shared by the alphaTex and ChordPro parsers.
+import { config } from '../../core/config.js';
+import { t } from '../../core/i18n.js';
+import { parseKey } from '../key.js';
+import { parseChord } from '../chord-name.js';
 
 /** Shortens a quoted piece of the user's text for a message. */
 export const clip = (s) => (s.length > 24 ? s.slice(0, 24) + '…' : s);
 
-/** Splits "| a | b |" into ['a', 'b']; inner empty cells stay. */
-export function splitBars(text) {
-  const cells = text.split('|').map((c) => c.trim());
-  if (cells.length > 1 && cells[0] === '') cells.shift();
-  if (cells.length > 1 && cells[cells.length - 1] === '') cells.pop();
-  return cells;
+/** A new empty bar; parsers fill in its length, chords and events. */
+export const newBar = (index, line) => ({ index, section: -1, line, ticks: 0, phase: 0, lineStart: false, chords: [], events: [], startChord: null });
+
+/** Chord name with ♯/♭ written as #/b, or null when it is not a chord. */
+export function chordName(name) {
+  const norm = name.replace(/♯/g, '#').replace(/♭/g, 'b');
+  return parseChord(norm) ? norm : null;
 }
 
-/** Splits lyrics into one syllable per note: each Han character, each word, "_" for a held note. */
-export function syllables(text) {
-  const out = [];
-  for (const word of text.split(/\s+/).filter(Boolean)) {
-    if (word === '_') out.push('');
-    else if (CJK.test(word)) {
-      for (const ch of word) {
-        if (ch === '_') out.push('');
-        else if (CJK.test(ch) || !out.length) out.push(ch);
-        else out[out.length - 1] += ch; // punctuation stays with the syllable before it
-      }
-    } else out.push(...word.split(/(?<=-)/));
+/** Stores a key, capo, bpm or time signature value in `meta`, or reports why it is wrong. `name` is the field as written. */
+export function setMeta(meta, field, value, name, report) {
+  if (field === 'key') {
+    const k = parseKey(value);
+    if (k) meta.key = k.name;
+    else report(t('parser.badKey', { value }));
+  } else if (field === 'time') {
+    const time = parseTime(value);
+    if (time) meta.time = time;
+    else report(t('parser.badTime', { value }));
+  } else {
+    const num = Number(value);
+    const [lo, hi] = config.format.limits[field];
+    if (value !== '' && Number.isInteger(num) && num >= lo && num <= hi) meta[field] = num;
+    else report(t('parser.outOfRange', { field: name, lo, hi }));
   }
-  return out;
 }
 
 /** Splits note text into strings and finger marks: "{T} 弹 {1}" → [{ finger: 'T' }, ' 弹 ', { finger: '1' }]. */
@@ -60,4 +42,49 @@ export function noteParts(text) {
 export function parseTime(v) {
   const m = /^(\d{1,2})\/(2|4|8)$/.exec(v);
   return m && +m[1] > 0 ? [+m[1], +m[2]] : null;
+}
+
+/**
+ * Splits alphaTex lyrics into one chunk per note, with the Guitar Pro rules alphaTab uses: a space or line break ends
+ * a syllable, a space that follows a break or another space is an empty syllable (a held note), "-" ends a syllable
+ * and stays with it, "+" joins syllables on one note, trailing "_" is dropped, and "[...]" is a comment.
+ */
+export function lyricChunks(text) {
+  const out = [];
+  const add = (s) => out.push(s.split('+').join(' ').replace(/_+$/, ''));
+  let state = 'start';
+  let start = 0;
+  let afterDash = false;
+  for (let p = 0; p < text.length; p++) {
+    const c = text[p];
+    if (state === 'gap') {
+      if (c === '\n' || c === '\r' || c === '\t' || (c === ' ' && afterDash)) continue;
+      afterDash = false;
+      state = 'start';
+    }
+    if (state === 'comment') {
+      if (c === ']') state = 'start';
+    } else if (state === 'start') {
+      if (c === '[') state = 'comment';
+      else {
+        start = p;
+        state = 'word';
+        p--;
+      }
+    } else if (state === 'word') {
+      if (c === '-') state = 'dash';
+      else if (c === ' ' || c === '\n' || c === '\r') {
+        add(text.slice(start, p));
+        state = 'gap';
+      }
+    } else if (c !== '-') {
+      // state 'dash': the syllable ends after its run of dashes
+      add(text.slice(start, p));
+      afterDash = true;
+      state = 'gap';
+      p--;
+    }
+  }
+  if (state === 'word' && start < text.length) add(text.slice(start));
+  return out;
 }

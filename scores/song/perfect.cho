@@ -1,0 +1,64 @@
+{title: Perfect}
+{artist: Ed Sheeran · 和弦谱}
+{key: G}
+{capo: 1}
+{tempo: 63}
+{time: 4/4}
+{meta: strum q D D D D}
+{meta: instructions 原曲是 12/8 拍，弹熟后把每拍改成「下 下 上」三连音更像原曲。}
+
+{start_of_grid: 前奏}
+| G . . . |
+{end_of_grid}
+
+{start_of_grid: 主歌 1}
+| G . . . | Em . . . | C . . . | D . . . |
+| G . . . | Em . . . | C . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 导歌 1}
+| G . . . | Em . . . | C . . . | G . D . |
+| G . . . | Em . . . | C . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 副歌 1}
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| G D/F# Em D | C . D . |
+{end_of_grid}
+
+{start_of_grid: 主歌 2}
+| G . . . | Em . . . | C . . . | D . . . |
+| G . . . | Em . . . | C . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 导歌 2}
+| G . . . | Em . . . | C . . . | G . D . |
+| G . . . | Em . . . | C . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 副歌 2}
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 间奏}
+| G . . . | G . . . | Em . . . | Em . . . |
+| C . . . | C . . . | D . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 副歌 3}
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+| Em . . . | C . . . | G . . . | D . . . |
+{end_of_grid}
+
+{start_of_grid: 尾奏}
+| G/B . . . | C . . . | Dsus4 . D . | G . . . |
+| G D/F# Em D | C . D . | G . . . |
+{end_of_grid}

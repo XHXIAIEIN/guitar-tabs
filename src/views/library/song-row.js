@@ -15,7 +15,7 @@ export function songRow(entry, onSetlistChange) {
     h('a', { class: 'song-link', href: `#/song/${entry.id}` },
       h('strong', null, meta.title),
       h('span', { class: 'song-sub' },
-        [meta.artist, entry.version && t(`version.${entry.version.id}`), key && t('common.key', { key: prettyKey(key) }), meta.time.join('/'), `♩${meta.bpm}`, meta.level].filter(Boolean).join(' · '),
+        [meta.artist, entry.version && t(`version.${entry.version.id}`), key && t('common.key', { key: prettyKey(key) }), meta.time.join('/'), `♩${meta.bpm}`, entry.level].filter(Boolean).join(' · '),
         song.errors.length ? h('em', { class: 'bad' }, ` · ${t('library.errorCount', { count: song.errors.length })}`) : null),
     ),
     h('button', { class: 'btn small ghost' + (added ? ' on' : ''), type: 'button', title: added ? t('library.setlistRemove') : t('library.setlistAdd'), onclick: () => { toggleSetlist(entry.id); onSetlistChange(); } },

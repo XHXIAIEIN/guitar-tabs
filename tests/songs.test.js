@@ -25,7 +25,7 @@ const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
 const degreesOnly = (digits) => digits.replace(/[',]/g, '');
 
 function melodyDigits(song) {
-  const tonic = numberTonic(song.melody, parseKey(song.meta.key), song.meta.octave);
+  const tonic = numberTonic(song.melody, parseKey(song.meta.key));
   return song.melody
     .map((m) => {
       const j = numberOf(m, tonic);
@@ -53,7 +53,7 @@ test('versions of one entry share a title and open as the simple version', () =>
     assert.equal(entry.versions[0].id, 'simple', entry.id);
     const titles = entry.versions.map((v) => parseSong(v.text).meta.title);
     assert.equal(new Set(titles).size, 1, `${entry.id} titles`);
-    assert.equal(parseSong(entry.versions[0].text).meta.level, '入门', `${entry.id} level`);
+    assert.equal(entry.versions[0].level, '入门', `${entry.id} level`);
   }
 });
 
@@ -87,20 +87,16 @@ test('game and anime music plays one string at a time on strings 1 to 3', () => 
 });
 
 test('only a rest that fills a metric bar is drawn as a whole rest without a dot', () => {
-  const song = (text) => parseSong(`time: 3/4
-
-tab: | ${text} |`);
-  const shown = (text, i) => {
-    const s = song(text);
-    return shownRest(s.bars[0].events[i], s.bars[0], s.meter);
+  const shown = (text, bar, i) => {
+    const s = parseSong(`\\ts 3 4 ${text}`);
+    return shownRest(s.bars[bar].events[i], s.bars[bar], s.meter);
   };
-  const whole = shown('h. r', 0);
+  const whole = shown('r.2{d}', 0, 0);
   assert.deepEqual([whole.base, whole.dotted], ['w', false]);
-  assert.equal(shown('h. r q 1/0', 0).base, 'w');
   // three beats of rest that start on beat 2 cross a bar line
-  assert.equal(shown('q 1/0 h. r', 1).base, 'h');
-  assert.equal(shown('h 1/0 q r', 1).base, 'q');
-  assert.equal(shown('h. 1/0', 0).base, 'h');
+  assert.equal(shown('0.1.4 r.2{d}', 0, 1).base, 'h');
+  assert.equal(shown('0.1.2 r.4', 0, 1).base, 'q');
+  assert.equal(shown('0.1.2{d}', 0, 0).base, 'h');
 });
 
 test('a song opens as its simple version until another version is chosen', () => {

@@ -20,7 +20,7 @@ test('the offline list names every source file and only files that exist', () =>
 test('the offline list and the score catalog each name every score file', () => {
   const files = filesUnder('scores/').sort();
   assert.deepEqual(listed.filter((f) => f.startsWith('scores/')).sort(), files);
-  const named = BUILTIN.flatMap((e) => (e.versions?.map((v) => `${e.id}/${v.id}`) ?? [e.id]).map((file) => `scores/${e.group}/${file}.txt`));
+  const named = BUILTIN.flatMap((e) => (e.versions?.map((v) => `${e.id}/${v.id}`) ?? [e.id]).map((file) => `scores/${e.group}/${file}.${e.format ?? 'atex'}`));
   assert.deepEqual(['scores/index.json', ...named].sort(), files);
 });
 

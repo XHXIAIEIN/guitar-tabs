@@ -55,8 +55,6 @@ test('number degrees and octave choice', () => {
   assert.equal(numberTonic([64, 65, 67, 60, 62], C), 60);
   // A minor uses the relative major: 简谱 "6" is the tonic A
   assert.equal(numberOf(57, numberTonic([57, 60, 64], parseKey('Am'))).deg, 6);
-  // a positive shift writes the notes an octave higher
-  assert.equal(numberOf(55, numberTonic([55, 57, 59], C, 1)).oct, 1);
 });
 
 test('midi of fretted notes', () => {

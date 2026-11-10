@@ -25,9 +25,8 @@ export function measureBar(bar, song, o, F) {
   const s = o.scale;
   if (!bar.events.length) {
     const chordW = bar.chords.reduce((w, c) => w + textWidth(o.chordLabel(c.name), F.chartChord) + 14 * s, 0);
-    const lyricW = o.show.lyrics && bar.lyric ? textWidth(bar.lyric, F.chartLyric) + 12 * s : 0;
     const beatW = (bar.ticks / song.meter.beatTicks) * (o.compact ? 14 : 22) * s;
-    return { natural: (PAD_L + PAD_R) * s + Math.max(beatW, chordW, lyricW, 36 * s), slots: null };
+    return { natural: (PAD_L + PAD_R) * s + Math.max(beatW, chordW, 36 * s), slots: null };
   }
   const k = o.compact ? 0.5 : 1;
   const slots = bar.events.map((e) => {

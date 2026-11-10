@@ -4,7 +4,7 @@ import './helpers/setup.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { songSource } from '../src/audio/song-source.js';
 
-const song = parseSong('time: 3/4\ntab: | q 1/0 1/0 1/0 | q 1/0 1/0 1/0 |');
+const song = parseSong('\\ts 3 4 0.1 0.1 0.1 | 0.1 0.1 0.1');
 const source = (countIn) => songSource(song, { from: 1, loop: null, countIn, bpm: 80, live: { metronome: true, guitar: true }, shapeOf: () => null, capo: 0 });
 const counts = (bar) => bar.items.map((item) => [item.tick, item.ui.count]);
 

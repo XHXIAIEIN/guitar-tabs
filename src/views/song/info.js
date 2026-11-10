@@ -96,9 +96,9 @@ export function renderSongInfo(el, o) {
       chip(o.keyText, o.openCapo),
       chip(meta.time.join('/')),
       chip(prefs.bpm !== meta.bpm ? t('song.tempoChipChanged', { bpm: prefs.bpm, original: meta.bpm }) : t('song.tempoChip', { bpm: prefs.bpm }), o.openTempo),
-      meta.level ? chip(meta.level) : null,
+      o.entry.level ? chip(o.entry.level) : null,
     ),
-    meta.note && !perform ? noteBlock(meta.note) : null,
+    meta.instructions && !perform ? noteBlock(meta.instructions) : null,
     song.chordsUsed.length && o.show.chords
       ? h('div', { class: 'chord-strip', role: 'list', 'aria-label': t('song.chordStrip') },
           song.chordsUsed.map((c) => {

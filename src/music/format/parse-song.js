@@ -1,184 +1,38 @@
-// Parser for the plain-text tab format. See README.md for the syntax.
+// Parses song text: alphaTex for scores with tab, ChordPro for chord charts. See README.md for the supported subset.
 import { config } from '../../core/config.js';
 import { t } from '../../core/i18n.js';
-import { parseKey } from '../key.js';
-import { parseChord } from '../chord-name.js';
 import { midiOf } from '../pitch.js';
 import { meter } from './meter.js';
-import { parseEvents } from './events.js';
-import { META, ROWS, clip, parseTime, splitBars, splitField, stripKeySuffix, stripNumberSuffix, syllables } from './syntax.js';
+import { parseAlphaTex } from './alphatex.js';
+import { parseChordPro } from './chordpro.js';
+
+/** ChordPro text starts with a directive; comments and blank lines before it do not count. */
+const isChordPro = (text) => /^\s*(?:#[^\n]*\n\s*)*\{/.test(text);
 
 /**
- * Chord slots are the beats a bar touches. A bar that starts between beats gets the part before the next beat as its
- * first slot, so a chord change on a beat lands on that beat.
- */
-function parseChords(cell, bar, m, report) {
-  const toks = cell.split(/\s+/).filter(Boolean);
-  if (!toks.length) return;
-  const lead = bar.phase % m.beatTicks;
-  const slots = Math.ceil((lead + bar.ticks) / m.beatTicks);
-  const slotAt = (i) => Math.max(0, i * m.beatTicks - lead);
-  const dot = (tok) => tok === '.' || tok === '·';
-  const add = (name, at) => {
-    const norm = name.replace(/♯/g, '#').replace(/♭/g, 'b');
-    if (!parseChord(norm)) report(t('parser.unknownChord', { name: clip(name) }));
-    else bar.chords.push({ at, name: norm });
-  };
-  if (toks.some(dot)) {
-    if (toks.length !== slots) report(t('parser.chordSlots', { cell: clip(cell), count: toks.length, slots }));
-    toks.forEach((tok, i) => i < slots && !dot(tok) && add(tok, slotAt(i)));
-  } else {
-    toks.forEach((tok, i) => add(tok, slotAt(Math.floor((i * slots) / toks.length))));
-  }
-}
-
-/**
- * Parses song text into meta data and a flat list of bars. A bar is one `|` cell: a phrase of any length when it
- * holds notes, one metric bar when it holds only chords. `phase` is where a bar starts inside the metric bar.
- * Problems never stop the parse: they are collected in `errors` (wrong music) and `warnings` (suspicious layout).
+ * Parses song text into meta data and a flat list of bars. Each bar is one measure; `phase` is where it starts inside
+ * the metric bar, which is not 0 only for a pickup. Problems never stop the parse: they are collected in `errors`
+ * (wrong music) and `warnings` (suspicious layout), each with its line number.
  */
 export function parseSong(text) {
   const song = {
-    meta: { ...config.format.defaultMeta, title: t('parser.untitled') },
+    meta: { ...config.format.defaultMeta, time: [...config.format.defaultMeta.time], title: t('parser.untitled') },
     sections: [],
     bars: [],
     strum: null,
     errors: [],
     warnings: [],
   };
-  const lines = text.split(/\r?\n/).map((l) => l.trim());
   const err = (line, message) => song.errors.push({ line, message });
   const warn = (line, message) => song.warnings.push({ line, message });
-
-  // Pass 1: meta data, because the time signature decides every bar length.
-  let strumLine = 0;
-  lines.forEach((line, i) => {
-    const m = !line.startsWith('//') && !line.startsWith('#') && splitField(line);
-    const field = m && META.get(m[1].trim().toLowerCase());
-    if (!field) return;
-    const v = m[2].trim();
-    const n = i + 1;
-    const meta = song.meta;
-    if (field === 'key') {
-      const k = parseKey(stripKeySuffix(v));
-      if (k) meta.key = k.name;
-      else err(n, t('parser.badKey', { value: v }));
-    } else if (field === 'capo' || field === 'bpm' || field === 'octave' || field === 'pickup') {
-      const num = Number(stripNumberSuffix(v));
-      const [lo, hi] = config.format.limits[field];
-      if (Number.isFinite(num) && num >= lo && num <= hi) meta[field] = num;
-      else err(n, t('parser.outOfRange', { field: m[1].trim(), lo, hi }));
-    } else if (field === 'time') {
-      const time = parseTime(v);
-      if (time) meta.time = time;
-      else err(n, t('parser.badTime', { value: v }));
-    } else if (field === 'strum') strumLine = n;
-    else meta[field] = v;
-  });
-
-  const m = meter(song.meta.time);
-  song.meter = m;
-
-  if (strumLine) {
-    const v = splitField(lines[strumLine - 1])[2].trim();
-    const { events, total } = parseEvents(v, { base: 'q' }, (msg) => err(strumLine, msg));
-    if (total !== m.barTicks) err(strumLine, t('parser.strumLength', { total: +(total / m.beatTicks).toFixed(2), bar: m.beats }));
-    else if (events.some((e) => e.kind === 'note')) err(strumLine, t('parser.strumNotes'));
-    else song.strum = events;
-  }
-
-  // Pass 2: sections and row blocks.
-  let block = [];
-  let section = -1;
-  const flush = () => {
-    if (block.length) buildBlock(song, block, section, m, err, warn);
-    block = [];
-  };
-  lines.forEach((line, i) => {
-    const n = i + 1;
-    if (!line) return flush();
-    if (line.startsWith('//')) return;
-    if (line.startsWith('#')) {
-      flush();
-      song.sections.push({ name: line.replace(/^#+/, '').trim(), start: song.bars.length });
-      section = song.sections.length - 1;
-      return;
-    }
-    const parts = splitField(line);
-    const name = parts?.[1].trim().toLowerCase();
-    if (parts && ROWS.has(name)) {
-      const type = ROWS.get(name);
-      if (block.some((r) => r.type === type)) flush();
-      block.push({ type, line: n, cells: splitBars(parts[2].trim()) });
-    } else if (!(parts && META.has(name))) {
-      err(n, parts ? t('parser.unknownRow', { name: clip(parts[1].trim()) }) : t('parser.unknownLine', { line: clip(line) }));
-    }
-  });
-  flush();
-
-  // Drop headings without bars and renumber the rest.
-  const headings = song.sections;
-  const renumber = new Map();
-  song.sections = [];
-  headings.forEach((s, i) => {
-    const first = song.bars.find((b) => b.section === i);
-    if (!first) return;
-    renumber.set(i, song.sections.length);
-    song.sections.push({ name: s.name, start: first.index });
-  });
-  for (const b of song.bars) b.section = renumber.get(b.section) ?? -1;
+  const parser = isChordPro(text) ? parseChordPro : parseAlphaTex;
+  parser(text, song, err, warn);
+  song.meter ??= meter(song.meta.time);
+  // a heading without bars after it is dropped
+  song.sections = song.sections.filter((s, i) => s.start < (song.sections[i + 1]?.start ?? song.bars.length));
+  song.bars.forEach((b) => (b.section = song.sections.findLastIndex((s) => s.start <= b.index)));
   finishBars(song);
   return song;
-}
-
-function buildBlock(song, rows, sectionIndex, m, err, warn) {
-  const n = Math.max(...rows.map((r) => r.cells.length));
-  for (const r of rows) {
-    if (r.type !== 'lyric' && r.cells.length !== n) warn(r.line, t('parser.rowLength', { count: r.cells.length, expected: n }));
-  }
-  const row = (type) => rows.find((r) => r.type === type);
-  const tab = row('tab');
-  const chord = row('chord');
-  const lyric = row('lyric');
-  const state = { base: 'q', dotted: false, tuplet: false };
-  for (let k = 0; k < n; k++) {
-    const index = song.bars.length;
-    const bar = {
-      index,
-      section: sectionIndex,
-      line: (tab ?? chord ?? lyric).line,
-      // a cell without notes lasts one metric bar, or the pickup when it opens the song
-      ticks: index === 0 && song.meta.pickup ? Math.round(song.meta.pickup * m.beatTicks) : m.barTicks,
-      // the first bar of a row block starts a new line on the page
-      lineStart: k === 0,
-      chords: [],
-      events: [],
-      lyric: '',
-      startChord: null,
-    };
-    const inBar = (message) => t('parser.inBar', { n: index + 1, message });
-    const cell = tab?.cells[k];
-    if (cell) {
-      const { events, total } = parseEvents(cell, state, (msg) => err(tab.line, inBar(msg)));
-      bar.events = events;
-      if (events.length) bar.ticks = total;
-    }
-    // where the bar starts inside the metric bar; the first downbeat comes after the pickup
-    const prev = song.bars[index - 1];
-    bar.phase = prev ? (prev.phase + prev.ticks) % m.barTicks : (m.barTicks - (Math.round(song.meta.pickup * m.beatTicks) % m.barTicks)) % m.barTicks;
-    if (chord?.cells[k]) parseChords(chord.cells[k], bar, m, (msg) => err(chord.line, inBar(msg)));
-    const text = lyric?.cells[k] ?? '';
-    const notes = bar.events.filter((e) => e.kind === 'note');
-    if (text && notes.length) {
-      const syl = syllables(text);
-      syl.slice(0, notes.length).forEach((s, i) => (notes[i].lyric = s));
-      if (syl.length > notes.length) {
-        warn(lyric.line, inBar(t('parser.extraLyrics', { count: syl.length, notes: notes.length })));
-        notes[notes.length - 1].lyric += syl.slice(notes.length).join('');
-      }
-    } else bar.lyric = text;
-    song.bars.push(bar);
-  }
 }
 
 function finishBars(song) {

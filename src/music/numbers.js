@@ -13,9 +13,9 @@ export function numberOf(midi, tonicMidi) {
 
 /**
  * Picks the MIDI pitch written as an undotted "1": the octave that leaves the fewest melody
- * notes dotted. Ties keep the lower tonic. `shift` writes every note that many octaves higher.
+ * notes dotted. Ties keep the lower tonic.
  */
-export function numberTonic(pitches, key, shift = 0) {
+export function numberTonic(pitches, key) {
   const pc = doPc(key);
   let best = 48 + mod12(pc);
   let bestOut = Infinity;
@@ -23,5 +23,5 @@ export function numberTonic(pitches, key, shift = 0) {
     const out = pitches.filter((p) => p < t || p >= t + 12).length;
     if (out < bestOut) [best, bestOut] = [t, out];
   }
-  return best - 12 * shift;
+  return best;
 }

@@ -89,7 +89,7 @@ export function editorView(root, id) {
     if (width) {
       renderScore(preview, song, {
         width, scale: config.editor.previewScale, show: state.settings.show, chordLabel: pretty,
-        tonic: numberTonic(song.melody, parseKey(song.meta.key), song.meta.octave),
+        tonic: numberTonic(song.melody, parseKey(song.meta.key)),
         stringLabels: state.settings.stringLabels, stringWidth: state.settings.stringWidth,
       });
     }

@@ -39,7 +39,6 @@
 .chord.chart { font-size: calc(18px * var(--s)); }
 .chord.dim { fill: var(--muted); font-weight: 600; }
 .lyr { font-size: calc(15px * var(--s)); fill: var(--ink); }
-.lyr.chart { font-size: calc(16px * var(--s)); }
 .number { font-size: calc(17px * var(--s)); font-weight: 600; fill: var(--ink); font-variant-numeric: tabular-nums; }
 .number-acc { font-size: calc(10px * var(--s)); fill: var(--ink); }
 .number-dot, .dot, .rest-dot { fill: var(--ink-2); }

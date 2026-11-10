@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v11';
+const CACHE = 'guitar-v12';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -59,6 +59,7 @@ const SHELL = [
   'scores/song/perfect.cho',
   'assets/icons/icon.svg',
   'assets/textures/tuner-wood.webp',
+  'assets/vendor/jetbrains-mono/jetbrains-mono-400.woff2',
   'src/app/main.js',
   'src/app/router.js',
   'src/app/shell.js',
@@ -85,7 +86,9 @@ const SHELL = [
   'src/music/format/pattern.js',
   'src/music/format/syntax.js',
   'src/music/import/load-score.js',
+  'src/music/import/text-tab.js',
   'src/music/import/to-alphatex.js',
+  'src/music/import/write-alphatex.js',
   'src/music/key.js',
   'src/music/numbers.js',
   'src/music/pitch.js',

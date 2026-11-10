@@ -18,3 +18,5 @@
 .setlist-items a { color: var(--ink); text-decoration: none; font-weight: 500; }
 .set-no { width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; font-size: 12px; color: var(--muted); flex: none; }
 .lib-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; }
+/* text tabs line up by column, so the paste box keeps every space and never wraps */
+.paste-tab { width: 100%; min-height: 14em; resize: vertical; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font: 13px/1.45 var(--mono); background: var(--surface-2); white-space: pre; overflow: auto; tab-size: 8; }

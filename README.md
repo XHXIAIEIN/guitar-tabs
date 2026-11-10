@@ -24,7 +24,7 @@
 - 跟拍测试：跟着节拍器点击，显示每一下偏早还是偏晚。可以先校准设备的点击延迟。
 - 工具：节拍器、调音器（用麦克风）、六根空弦的标准音。
 - 写曲谱：用 alphaTex 或 ChordPro 写，边写边预览，错误提示带行号。
-- 导入曲谱：把网上下载的 Guitar Pro、MusicXML、Capella 文件转成 alphaTex，存成自己的曲谱。
+- 导入曲谱：把网上下载的 Guitar Pro、MusicXML、Capella 文件，或者复制来的文本六线谱，转成 alphaTex，存成自己的曲谱。
 
 ## 在电脑上运行
 
@@ -153,14 +153,26 @@ lyric: | I found a love for | me / Darling, just | dive right in, / and follow m
 
 ### 导入曲谱
 
-曲谱页的「导入曲谱」读这些文件：
+曲谱页的「导入曲谱」打开一个面板，可以选文件，也可以把文本谱粘贴进去。能读这些文件：
 
 - Guitar Pro：`.gp` `.gp3` `.gp4` `.gp5` `.gpx` `.gp7`
 - MusicXML：`.xml` `.musicxml` `.mxl`
 - Capella：`.capx`
 - alphaTex 和 ChordPro 文本：`.atex` `.alphatex` `.cho` `.chordpro` `.chopro` `.crd`，原样存下
+- 文本六线谱：`.txt`，或者粘贴的文字
 
 前三种由 [alphaTab](https://alphatab.net/) 读取，再转成上面的 alphaTex 写法。文件有几条六弦音轨时，先选一条。导入的曲谱存成自己的曲谱，并打开编辑器。
+
+文本六线谱是吉他谱网站上常见的写法：六行连在一起，每行是一根弦，最高音的弦在上面，像 `e|---3---|`。读取规则：
+
+- 只读六行一组的谱，其他文字（歌词、技巧说明）跳过。
+- 一组谱正上方那行如果全是和弦名，和弦按列对到下面的音上。
+- 行首的弦名不是 E A D G B E 时，按弦名换算成标准调弦的品位。
+- `h` `p` `/` `\` `b` `~` 这些技巧记号去掉，只留音高。
+- 文本谱不记节奏，时值按字符间距估算：最常见的间距算八分音符，宽一倍算四分音符，以此类推。谱里的 `|` 结束一个小节，没有 `|` 的长行按 4/4 拍接着分小节。导入后要对照原曲改时值。
+- 标题取第一组谱前面形如「歌名 - 歌手」的行，变调夹取 `Capo: 2` 这样的写法，调号按第一个和弦。
+
+粘贴框、编辑器和代码用内置的等宽字体 JetBrains Mono，文本谱在所有设备上都按列对齐。这个字体只含拉丁字符，中文用系统字体显示。
 
 上面的写法装不下的内容会被改写或去掉，每一类改动在曲谱开头写一行注释：
 
@@ -172,14 +184,14 @@ lyric: | I found a love for | me / Darling, just | dive right in, / and follow m
 - 短于十六分音符、长于全音符、复附点和三连音以外的连音改成最接近的时值
 - 认不出的和弦名、对不上音符的歌词去掉
 
-alphaTab 放在 `assets/vendor/alphatab/`，只在第一次导入时加载。升级时改 `package.json` 里的版本，然后运行：
+alphaTab 放在 `assets/vendor/alphatab/`，只在第一次导入 Guitar Pro、MusicXML 或 Capella 文件时加载。字体放在 `assets/vendor/jetbrains-mono/`。两者的版本都写在 `package.json` 里，升级时改版本，然后运行：
 
 ```bash
 npm ci
 ```
 
 ```bash
-node scripts/vendor-alphatab.mjs
+node scripts/vendor.mjs
 ```
 
 ### 内置曲谱

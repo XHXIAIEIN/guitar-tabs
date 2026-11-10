@@ -1,4 +1,12 @@
 /* ---------- tokens ---------- */
+/* Bundled so that text tabs line up the same on every device. Latin only; Chinese falls back to the next fonts. */
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../assets/vendor/jetbrains-mono/jetbrains-mono-400.woff2") format("woff2");
+}
 :root {
   --paper: #f5f2ea;
   --surface: #fffdf8;
@@ -28,7 +36,7 @@
   --nav-w: 84px;
   --font: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --score-font: "Segoe UI", -apple-system, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-  --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Microsoft YaHei Mono", monospace;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Microsoft YaHei Mono", monospace;
   color-scheme: light;
 }
 :root[data-theme="dark"] {

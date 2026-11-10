@@ -125,12 +125,17 @@
   },
   "import": {
     "loading": "正在读取「{name}」…",
+    "chooseFile": "选择文件",
+    "fileTypes": "Guitar Pro、MusicXML、Capella、alphaTex、ChordPro 或 .txt 文本谱",
+    "pasteLabel": "粘贴文本谱",
+    "pastePlaceholder": "或者把网上的文本六线谱粘贴到这里，例如\n\n   Am\ne|-0-------0-----|\nB|---1-------1---|\nG|-----2-------2-|\nD|---------------|\nA|-0-------------|\nE|---------------|",
+    "convert": "转换",
     "pickTrack": "选择要导入的音轨",
     "track": "第 {index} 轨：{name}",
     "trackUnnamed": "第 {index} 轨",
     "done": "已导入「{title}」",
     "doneRemarks": "已导入「{title}」，{count} 处改动写在曲谱开头的注释里",
-    "unknownType": "不支持「{name}」这种文件。可以导入 Guitar Pro（.gp .gp3 .gp4 .gp5 .gpx）、MusicXML（.xml .musicxml .mxl）、Capella（.capx）、alphaTex（.atex）和 ChordPro（.cho .chordpro .crd）。",
+    "unknownType": "不支持「{name}」这种文件。可以导入 Guitar Pro（.gp .gp3 .gp4 .gp5 .gpx）、MusicXML（.xml .musicxml .mxl）、Capella（.capx）、alphaTex（.atex）、ChordPro（.cho .chordpro .crd）和文本谱（.txt）。",
     "unreadable": "读不了「{name}」：{reason}",
     "noGuitar": "「{name}」里没有六弦吉他的音轨",
     "from": "从 {name} 导入，第 {track} 轨",
@@ -149,7 +154,13 @@
     "technique": "{count} 个推弦、滑音、击勾弦、泛音、揉弦或颤音只保留了音高",
     "low": "{count} 个音比标准调弦的空弦还低，去掉了",
     "chords": "认不出这些和弦名，去掉了：{names}",
-    "lyrics": "歌词没法按音节对上音符，没有导入"
+    "lyrics": "歌词没法按音节对上音符，没有导入",
+    "fromText": "从 {name} 导入的文本六线谱",
+    "fromPaste": "从粘贴的文本六线谱导入",
+    "pastedTitle": "粘贴的曲谱",
+    "textRhythm": "文本谱不记节奏，时值是按字符间距估算的：最常见的间距算八分音符。请对照原曲改时值",
+    "otherStrings": "跳过了 {count} 组不是六根弦的谱",
+    "noTab": "没有找到六线谱。文本谱要有六行连在一起的弦，每行像 e|---3---|"
   },
   "editor": {
     "title": "编辑曲谱",

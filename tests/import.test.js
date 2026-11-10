@@ -7,7 +7,7 @@ import { ROOT } from './helpers/setup.js';
 import * as alphaTab from '@coderline/alphatab';
 import { BUILTIN } from '../src/state/songs.js';
 import { parseSong } from '../src/music/format/parse-song.js';
-import { readScoreFile } from '../src/music/import/load-score.js';
+import { readScoreFile, readText } from '../src/music/import/load-score.js';
 import { scoreToAlphaTex } from '../src/music/import/to-alphatex.js';
 
 const settings = () => new alphaTab.Settings();
@@ -64,8 +64,41 @@ test('a MusicXML tab in drop D is moved to standard tuning, and what is lost is 
 
 test('song text is passed on as it is, and other files are refused by name', async () => {
   const tex = '\\title "A"\n0.1 0.1 0.1 0.1';
-  assert.deepEqual(await readScoreFile(fileOf('a.ATEX', new TextEncoder().encode(tex))), { text: tex });
+  assert.deepEqual(await readScoreFile(fileOf('a.ATEX', new TextEncoder().encode(tex))), { text: tex, remarks: [] });
   await assert.rejects(readScoreFile(fileOf('song.pdf', new Uint8Array())), /song\.pdf/);
+  assert.throws(() => readText('Basically just alternate these two.', null), /e\|---3---\|/);
+});
+
+/** Frets and durations of a song's bars, as `fret.string:sixteenths` with chord names in brackets. */
+const bars = (song) => song.bars.map((b) => b.events.map((e) => {
+  const chord = b.chords.find((c) => c.at === e.at);
+  return (chord ? `[${chord.name}]` : '') + (e.kind === 'rest' ? 'r' : e.notes.map((n) => `${n.f < 0 ? 'x' : n.f}.${n.s}`).join('+')) + ':' + e.dur / 12;
+}).join(' '));
+
+test('a text tab gets its frets, chords and title, and durations from the spacing', async () => {
+  const { text, remarks } = await readScoreFile(fileOf('text-tab.txt', readFileSync(new URL('tests/fixtures/text-tab.txt', ROOT))));
+  const song = parseSong(text);
+  assert.deepEqual(song.errors, []);
+  assert.deepEqual(song.warnings, []);
+  assert.deepEqual([song.meta.title, song.meta.artist, song.meta.capo, song.meta.key], ['Morning Walk', 'Test Band', 2, 'Am']);
+  assert.equal(remarks.length, 2);
+  assert.deepEqual(bars(song), [
+    '[Am]0.1+0.5:2 1.2:2 2.3:4 0.1:2 1.2:2 2.3:2 r:2',
+    '[F]1.1+1.6:2 1.2:2 2.3:4 1.1:2 1.2:2 2.3:2 r:2',
+    '[C]0.1+1.2+0.3+2.4+3.5:4 3.1:2 5.1:2 3.1:6 r:2',
+    '[G]3.1+0.2+0.3+0.4+2.5+3.6:4 r:1 10.5:6 12.3:3 r:2',
+  ]);
+});
+
+test('a text tab in another tuning is moved to standard tuning, and a long line runs on into new bars', () => {
+  const tab = [...'eBGDA'.split('').map((l) => `${l}|---------------------|`), 'D|-0-2-2-2-2-2-2-2-2-2-|'].join('\n');
+  const { text, remarks } = readText(tab, null);
+  const song = parseSong(text);
+  assert.deepEqual(song.errors, []);
+  assert.match(remarks.join('\n'), /D A D G B E/);
+  // the open low D is below standard tuning and dropped; nine eighth notes run on into a second bar
+  assert.match(remarks.join('\n'), /1 个音比标准调弦的空弦还低/);
+  assert.deepEqual(bars(song), ['r:2 0.6:2 0.6:2 0.6:2 0.6:2 0.6:2 0.6:2 0.6:2', '0.6:2 0.6:2 r:12']);
 });
 
 for (const { id, text } of atex) {

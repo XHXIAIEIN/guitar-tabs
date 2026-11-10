@@ -47,12 +47,10 @@ export function libraryView(root) {
     });
     const group = (g) => {
       const items = entries.filter((e) => e.group === g);
-      if (!items.length && (query || g !== 'mine')) return null;
+      if (!items.length) return null;
       return h('section', { class: 'lib-group' },
         h('h2', null, t(`library.group.${g}`)),
-        items.length
-          ? h('ul', { class: 'song-list' }, items.map((entry) => songRow(entry, refreshAll)))
-          : h('p', { class: 'empty' }, t('library.emptyMine')));
+        h('ul', { class: 'song-list' }, items.map((entry) => songRow(entry, refreshAll))));
     };
     fill(listEl,
       group('mine'),

@@ -83,7 +83,6 @@
       "anime": "动漫",
       "song": "歌曲"
     },
-    "emptyMine": "还没有自己的曲谱。点「新建曲谱」写一首，或在任意曲谱里点「编辑」复制一份来改。",
     "noMatch": "没有找到「{query}」。",
     "errorCount": "{count} 处错误",
     "setlistRemove": "移出演出歌单",

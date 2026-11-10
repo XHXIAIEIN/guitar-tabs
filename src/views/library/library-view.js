@@ -1,4 +1,4 @@
-// Song list: search, the performance setlist, my songs, starter songs, built-in songs by playing style and group, and backup.
+// Song list: search, the performance setlist, my songs, built-in songs by playing style and group, and backup.
 import { t } from '../../core/i18n.js';
 import { h, fill } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
@@ -51,18 +51,17 @@ export function libraryView(root) {
     const group = (g) => {
       const items = entries.filter((e) => e.group === g);
       if (!items.length) return null;
-      // A group whose entries name a subgroup lists each subgroup under its own heading, in catalog order.
-      const subgroups = [...new Set(items.map((e) => e.subgroup))];
+      // Entries without a subgroup come first, straight under the group heading; each subgroup follows under its own
+      // heading, in catalog order.
+      const loose = items.filter((e) => !e.subgroup);
+      const subgroups = [...new Set(items.map((e) => e.subgroup).filter(Boolean))];
       return h('section', { class: 'lib-group' },
         h('h2', null, t(`library.group.${g}`)),
-        subgroups[0]
-          ? subgroups.map((s) => h('div', { class: 'lib-subgroup' }, h('h3', null, t(`library.subgroup.${s}`)), list(items.filter((e) => e.subgroup === s))))
-          : list(items));
+        loose.length ? list(loose) : null,
+        subgroups.map((s) => h('div', { class: 'lib-subgroup' }, h('h3', null, t(`library.subgroup.${s}`)), list(items.filter((e) => e.subgroup === s)))));
     };
     fill(listEl,
       group('mine'),
-      // The starter songs sit above the style choice, so a beginner sees them whichever style is chosen.
-      group('starter'),
       query ? null : styleSeg,
       // A search looks through both styles, so the style choice cannot hide a match.
       ...(query ? Object.values(STYLES).flat() : STYLES[state.settings.libraryStyle]).map(group),

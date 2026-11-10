@@ -33,7 +33,7 @@
   {"id":"pac-man","group":"game","level":"入门"},
   {"id":"crayon-shin-chan","group":"anime","level":"入门"},
   {"id":"doraemon","group":"anime","level":"入门"},
-  {"id":"totoro","group":"anime","level":"入门"},
+  {"id":"totoro","group":"anime","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"huluwa","group":"anime","level":"入门"},
   {"id":"conan","group":"anime","level":"入门"},
   {"id":"inuyasha","group":"anime","level":"入门"},

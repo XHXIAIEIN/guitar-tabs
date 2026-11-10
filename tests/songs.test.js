@@ -101,7 +101,10 @@ test('simple songs keep the melody and stay on the top strings', () => {
 });
 
 test('game and anime music plays one string at a time on strings 1 to 3', () => {
-  for (const entry of BUILTIN.filter((e) => e.group === 'game' || e.group === 'anime')) {
+  const scores = BUILTIN.filter((e) => e.group === 'game' || e.group === 'anime').flatMap((e) =>
+    e.versions ? e.versions.map((v) => ({ ...e, id: `${e.id}/${v.id}`, text: v.text })) : [e],
+  );
+  for (const entry of scores) {
     const song = parseSong(entry.text);
     if (entry.group === 'game') assert.ok(song.chordsUsed.length, `${entry.id} chords`);
     // Butter-Fly keeps its range of 19 semitones on strings 1 and 2, so it climbs string 1

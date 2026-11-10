@@ -1,10 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { ROOT } from './helpers/setup.js';
+import './helpers/setup.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { midiOf } from '../src/music/pitch.js';
-import { arrange, arrangements } from '../scripts/arrange.mjs';
+import { arrange, arrangements, readText } from '../scripts/arrange.mjs';
 
 const pitches = (text) => parseSong(text).bars.flatMap((b) => b.events).map((e) => e.notes.map((n) => midiOf(n.s, n.f)).sort((a, b) => a - b));
 
@@ -37,6 +36,6 @@ test('a note out of reach names its line', () => {
 
 test('every arranged score matches its source', () => {
   for (const [source, score, text] of arrangements()) {
-    assert.equal(readFileSync(new URL(score, ROOT), 'utf8'), text, `${score} is out of date with ${source}: run npm run arrange`);
+    assert.equal(readText(score), text, `${score} is out of date with ${source}: run npm run arrange`);
   }
 });

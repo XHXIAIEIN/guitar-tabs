@@ -8,6 +8,8 @@ import { TUNING, mod12 } from '../src/music/pitch.js';
 import { keyFromPc, parseKey } from '../src/music/key.js';
 
 const ROOT = new URL('../', import.meta.url);
+// git may check text files out with CRLF line ends
+export const readText = (path) => readFileSync(new URL(path, ROOT), 'utf8').replaceAll('\r\n', '\n');
 
 const LETTERS = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const ACCIDENTALS = { '': null, n: 0, '#': 1, '##': 2, b: -1, bb: -2 };
@@ -188,7 +190,7 @@ export function arrangements() {
       const score = `scores/${p.replace(/\.txt$/, '.atex')}`;
       let text;
       try {
-        text = arrange(readFileSync(new URL(source, ROOT), 'utf8'));
+        text = arrange(readText(source));
       } catch (e) {
         throw new Error(`${source}: ${e.message}`);
       }

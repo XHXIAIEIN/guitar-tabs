@@ -7,7 +7,7 @@ import { songSource } from '../src/audio/song-source.js';
 /** Plays `text` and lists [kind, tick from the start] with the metronome beat number or the event index. */
 function play(text, o = {}) {
   const song = parseSong(text);
-  const src = songSource(song, { from: 0, loop: null, countIn: 1, bpm: 80, live: { metronome: true, guitar: true }, shapeOf: () => null, capo: 0, ...o });
+  const src = songSource(song, { from: 0, loop: null, countIn: 3, bpm: 80, live: { metronome: true, guitar: true }, shapeOf: () => null, capo: 0, ...o });
   const out = [];
   let start = 0;
   for (let plan, n = 0; (plan = src.next()) && n < 20; start += plan.ticks, n++) {

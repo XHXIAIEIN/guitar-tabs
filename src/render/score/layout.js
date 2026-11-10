@@ -4,7 +4,7 @@ export function breakLines(song, metrics, avail) {
   const lines = [];
   const bars = song.bars;
   const fits = (start, count) => count === 1 || metrics.slice(start, start + count).reduce((w, b) => w + b.natural, 0) <= avail;
-  // A phrase that is too wide for one line splits in halves, so the halves line up with each other.
+  // A row block that is too wide for one line splits in halves, so the halves line up with each other.
   const place = (start, count, sectionStart) => {
     if (fits(start, count)) return lines.push({ start, count, sectionStart });
     const half = Math.ceil(count / 2);
@@ -14,7 +14,7 @@ export function breakLines(song, metrics, avail) {
   let i = 0;
   while (i < bars.length) {
     let end = i + 1;
-    while (end < bars.length && !bars[end].phrase) end++;
+    while (end < bars.length && !bars[end].lineStart) end++;
     place(i, end - i, bars[i].section !== bars[i - 1]?.section);
     i = end;
   }

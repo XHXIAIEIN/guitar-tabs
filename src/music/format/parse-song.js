@@ -26,10 +26,9 @@ function parseChords(cell, bar, m, report) {
   }
 }
 
-const fmtBeats = (ticks, m) => `${+(ticks / m.beatTicks).toFixed(2)}`;
-
 /**
- * Parses song text into meta data and a flat list of bars.
+ * Parses song text into meta data and a flat list of bars. A bar is one `|` cell: a phrase of any length when it
+ * holds notes, one metric bar when it holds only chords. `phase` is where a bar starts inside the metric bar.
  * Problems never stop the parse: they are collected in `errors` (wrong music) and `warnings` (suspicious layout).
  */
 export function parseSong(text) {
@@ -77,7 +76,7 @@ export function parseSong(text) {
   if (strumLine) {
     const v = splitField(lines[strumLine - 1])[2].trim();
     const { events, total } = parseEvents(v, { base: 'q' }, (msg) => err(strumLine, msg));
-    if (total !== m.barTicks) err(strumLine, t('parser.strumLength', { total: fmtBeats(total, m), bar: fmtBeats(m.barTicks, m) }));
+    if (total !== m.barTicks) err(strumLine, t('parser.strumLength', { total: +(total / m.beatTicks).toFixed(2), bar: m.beats }));
     else if (events.some((e) => e.kind === 'note')) err(strumLine, t('parser.strumNotes'));
     else song.strum = events;
   }
@@ -142,10 +141,11 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
       index,
       section: sectionIndex,
       line: (tab ?? chord ?? lyric).line,
-      ticks: m.barTicks,
-      pickup: false,
-      // the first bar of a row block: a block is one phrase and starts a new line on the page
-      phrase: k === 0,
+      // a cell without notes lasts one metric bar, or the pickup when it opens the song
+      ticks: index === 0 && song.meta.pickup ? Math.round(song.meta.pickup * m.beatTicks) : m.barTicks,
+      phase: 0,
+      // the first bar of a row block starts a new line on the page
+      lineStart: k === 0,
       chords: [],
       events: [],
       lyric: '',
@@ -156,16 +156,7 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
     if (cell) {
       const { events, total } = parseEvents(cell, state, (msg) => err(tab.line, inBar(msg)));
       bar.events = events;
-      if (index === 0 && total > 0 && total < m.barTicks) {
-        bar.ticks = total;
-        bar.pickup = true;
-      } else if (events.length && total !== m.barTicks) {
-        err(tab.line, inBar(t('parser.barLength', { total: fmtBeats(total, m), time: song.meta.time.join('/'), bar: fmtBeats(m.barTicks, m) })));
-        bar.ticks = Math.max(total, m.barTicks);
-      }
-    } else if (index === 0 && song.meta.pickup) {
-      bar.ticks = Math.round(song.meta.pickup * m.beatTicks);
-      bar.pickup = bar.ticks < m.barTicks;
+      if (events.length) bar.ticks = total;
     }
     if (chord?.cells[k]) parseChords(chord.cells[k], bar, m, (msg) => err(chord.line, inBar(msg)));
     const text = lyric?.cells[k] ?? '';
@@ -183,10 +174,15 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
 }
 
 function finishBars(song) {
+  const m = song.meter;
+  // the first downbeat comes after the pickup beats
+  let start = -Math.round(song.meta.pickup * m.beatTicks);
   let current = null;
   const used = [];
   const pitches = [];
   for (const bar of song.bars) {
+    bar.phase = ((start % m.barTicks) + m.barTicks) % m.barTicks;
+    start += bar.ticks;
     bar.startChord = bar.chords[0]?.at === 0 ? bar.chords[0].name : current;
     for (const c of bar.chords) {
       current = c.name;

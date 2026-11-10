@@ -3,6 +3,7 @@ artist: 美国民歌
 key: F
 bpm: 90
 time: 3/4
+pickup: 1
 level: 入门
 note: 从第 3 拍弱起，高音顺着 1 弦往上移。
 

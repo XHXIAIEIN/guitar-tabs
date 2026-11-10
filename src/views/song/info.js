@@ -41,11 +41,11 @@ function restIcon(e) {
 }
 
 /** One legend item for each distinct rest in the song, longest first. */
-function restItems(events, { beatTicks, barTicks }) {
-  const rests = new Map(events.filter((e) => e.kind === 'rest').map((e) => [e.dur, e]));
+function restItems(song) {
+  const rests = new Map(song.bars.flatMap((b) => b.events.filter((e) => e.kind === 'rest').map((e) => [e.dur, shownRest(e, b, song.meter)])));
   return [...rests.values()].sort((a, b) => b.dur - a.dur).map((e) => {
-    const beats = Math.round((e.dur / beatTicks) * 100) / 100;
-    return [restIcon(shownRest(e, barTicks)), t('legend.rest', { beats: BEAT_FRACTIONS[beats] ?? beats })];
+    const beats = Math.round((e.dur / song.meter.beatTicks) * 100) / 100;
+    return [restIcon(e), t('legend.rest', { beats: BEAT_FRACTIONS[beats] ?? beats })];
   });
 }
 
@@ -59,7 +59,7 @@ function symbolLegend(song, show) {
     show.tab && hasNotes && t('legend.strings'),
     show.tab && hasNotes && t('legend.frets'),
     show.tab && has((e) => e.notes.some((n) => n.f < 0)) && t('legend.muted'),
-    ...(show.tab || show.rhythm ? restItems(events, song.meter) : []),
+    ...(show.tab || show.rhythm ? restItems(song) : []),
     ...(show.tab
       ? STRUM_DIRS.filter((dir) => has((e) => e.kind === 'strum' && e.dir === dir)).map((dir) => [symbolIcon(strumArrow(dir, 0, -6.5, 1)), t(`legend.strum.${dir}`)])
       : []),

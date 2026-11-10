@@ -64,7 +64,6 @@
     "unknownLine": "无法识别这一行：「{line}」",
     "rowLength": "这一行有 {count} 个小节，同组的其他行有 {expected} 个",
     "inBar": "第 {n} 小节：{message}",
-    "barLength": "时值合计 {total} 拍，{time} 拍每小节应为 {bar} 拍",
     "extraLyrics": "歌词有 {count} 个字，音符只有 {notes} 个，多出的字接在最后一个音上"
   },
   "library": {

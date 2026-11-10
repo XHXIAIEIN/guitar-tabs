@@ -12,8 +12,8 @@ function restShape(base, x, y, s) {
   return base === 'e' ? p(hook) + dot(x - 2.6 * s, y - 5.2 * s, 1.6 * s, 'rest-dot') : p(hook) + p('M-4.5 -0.5 C-3 2.5 0 2 2 -0.5') + dot(x - 2.6 * s, y - 5.2 * s, 1.6 * s, 'rest-dot') + dot(x - 3.6 * s, y - 0.2 * s, 1.6 * s, 'rest-dot');
 }
 
-/** The event to draw: a rest that fills its bar is written as a whole rest in every meter, without a dot. */
-export const shownRest = (e, barTicks) => (e.kind === 'rest' && e.dur === barTicks ? { ...e, base: 'w', dotted: false } : e);
+/** The event to draw: a rest that fills a metric bar is written as a whole rest in every meter, without a dot. */
+export const shownRest = (e, bar, m) => (e.kind === 'rest' && e.dur === m.barTicks && (bar.phase + e.at) % m.barTicks === 0 ? { ...e, base: 'w', dotted: false } : e);
 
 export const restGlyph = (e, x, y, s) => restShape(e.base, x, y, s) + (e.dotted ? dot(x + 7 * s, y - s, 1.4 * s, 'rest-dot') : '');
 

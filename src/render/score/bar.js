@@ -15,8 +15,11 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
 
   const inner0 = bx + PAD_L * s;
   const innerW = bw - (PAD_L + PAD_R) * s;
-  const offset = bar.pickup ? m.barTicks - bar.ticks : 0;
-  const groupOf = (e) => Math.floor((e.at + offset) / m.groupTicks);
+  // beams never cross a metric bar line, even inside one bar of the score
+  const groupOf = (e) => {
+    const at = bar.phase + e.at;
+    return Math.floor(at / m.barTicks) * m.barTicks + Math.floor((at % m.barTicks) / m.groupTicks);
+  };
 
   if (!bar.events.length) {
     const xOf = (tick) => inner0 + (tick / bar.ticks) * innerW;
@@ -26,7 +29,7 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
     }
     if (g.beats !== undefined) {
       const beats = Math.round(bar.ticks / m.beatTicks);
-      for (let k = 0; k < beats; k++) out += line(xOf(k * m.beatTicks) + 2 * s, g.beats, xOf(k * m.beatTicks) + 2 * s, g.beats + 5 * s, k + (offset / m.beatTicks) === 0 ? 'beat strong' : 'beat');
+      for (let k = 0; k < beats; k++) out += line(xOf(k * m.beatTicks) + 2 * s, g.beats, xOf(k * m.beatTicks) + 2 * s, g.beats + 5 * s, (bar.phase + k * m.beatTicks) % m.barTicks === 0 ? 'beat strong' : 'beat');
     }
     if (g.lyric !== undefined && bar.lyric) out += text(inner0, g.lyric, bar.lyric, 'lyr chart', 'start');
   } else {
@@ -56,7 +59,7 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
     if (g.numbers !== undefined) out += numberMarks(bar, xs, g, s, o, xAt, groupOf);
     bar.events.forEach((e, i) => {
       let ev = `<g class="ev" data-ev="${i}">`;
-      const drawn = shownRest(e, m.barTicks);
+      const drawn = shownRest(e, bar, m);
       // A whole-bar rest stands in the middle of its bar.
       const ex = drawn === e ? xs[i] : bx + bw / 2;
       if (o.notation === 'slash') ev += slashMark(drawn, ex, g, s);

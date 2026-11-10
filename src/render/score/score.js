@@ -1,5 +1,5 @@
 // SVG score: chord names, 简谱, strum arrows, rhythm notes, TAB staff, lyrics.
-// Each row block of the source is one phrase and one line; a phrase too wide for the page splits in halves.
+// Each row block of the source is one line; a block too wide for the page splits in halves.
 import { esc, r1 } from '../svg.js';
 import { renderBar } from './bar.js';
 import { breakLines, lineGeometry } from './layout.js';

@@ -86,14 +86,21 @@ test('game and anime music plays one string at a time on strings 1 to 3', () => 
   }
 });
 
-test('only a rest that fills its bar is drawn as a whole rest without a dot', () => {
-  const rests = (text) => parseSong(`time: 3/4\n\ntab: | ${text} |`).bars[0].events;
-  const [whole] = rests('h. r').map((e) => shownRest(e, 144));
+test('only a rest that fills a metric bar is drawn as a whole rest without a dot', () => {
+  const song = (text) => parseSong(`time: 3/4
+
+tab: | ${text} |`);
+  const shown = (text, i) => {
+    const s = song(text);
+    return shownRest(s.bars[0].events[i], s.bars[0], s.meter);
+  };
+  const whole = shown('h. r', 0);
   assert.deepEqual([whole.base, whole.dotted], ['w', false]);
-  const short = rests('h 1/0 q r')[1];
-  assert.equal(shownRest(short, 144), short);
-  const note = rests('h. 1/0')[0];
-  assert.equal(shownRest(note, 144), note);
+  assert.equal(shown('h. r q 1/0', 0).base, 'w');
+  // three beats of rest that start on beat 2 cross a bar line
+  assert.equal(shown('q 1/0 h. r', 1).base, 'h');
+  assert.equal(shown('h 1/0 q r', 1).base, 'q');
+  assert.equal(shown('h. 1/0', 0).base, 'h');
 });
 
 test('a song opens as its simple version until another version is chosen', () => {

@@ -3,6 +3,7 @@ artist: 美国民歌
 key: C
 bpm: 100
 time: 3/4
+pickup: 1
 level: 入门
 note: 从第 3 拍弱起，「祝你」前长后短。
 

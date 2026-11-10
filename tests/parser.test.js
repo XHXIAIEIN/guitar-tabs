@@ -17,23 +17,23 @@ test('syllables', () => {
   assert.deepEqual(syllables('A- maz-ing grace'), ['A-', 'maz-', 'ing', 'grace']);
 });
 
-test('parser reports wrong bar lengths with the line number', () => {
-  const s = parseSong('time: 4/4\ntab: | q 1/0 1/0 1/0 1/0 | q 1/0 1/0 1/0 |');
-  assert.equal(s.errors.length, 1);
-  assert.equal(s.errors[0].line, 2);
-  assert.match(s.errors[0].message, /第 2 小节.*3 拍/);
+test('a cell holds a phrase of any length, and phase counts from the first downbeat after the pickup', () => {
+  const s = parseSong(`time: 3/4
+pickup: 1
+chord: | . C . . G7 . | C |
+tab: | e 1/0 1/0 q 1/0 2/1 1/3 h 1/0 | q 1/0 e 2/1 |`);
+  assert.deepEqual(s.errors, []);
+  assert.deepEqual(s.bars.map((b) => [b.ticks, b.phase]), [[288, 96], [72, 96]]);
+  assert.equal(chordAt(s.bars[0], 48), 'C');
+  assert.equal(chordAt(s.bars[0], 192), 'G7');
+  assert.deepEqual(s.bars[1].events.map((e) => e.dur), [48, 24]);
 });
 
-test('parser handles pickups, sticky durations, chord slots and chord carry-over', () => {
-  const s = parseSong(`time: 3/4
-chord: | | C | . . G |
-tab: | e 1/0 1/0 | q 1/0 2/1 1/3 | h 1/0 q 1/1 |`);
-  assert.deepEqual(s.errors, []);
-  assert.equal(s.bars[0].pickup, true);
-  assert.equal(s.bars[0].ticks, 48);
-  assert.equal(chordAt(s.bars[2], 0), 'C');
-  assert.equal(chordAt(s.bars[2], 96), 'G');
-  assert.deepEqual(s.bars[1].events.map((e) => e.dur), [48, 48, 48]);
+test('chord-only cells last one metric bar, the first one the pickup', () => {
+  const s = parseSong(`time: 4/4
+pickup: 1
+chord: | G | C | D |`);
+  assert.deepEqual(s.bars.map((b) => [b.ticks, b.phase]), [[48, 144], [192, 0], [192, 0]]);
 });
 
 test('each row block is one line, and a block too wide for the page splits in halves', () => {

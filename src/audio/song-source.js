@@ -32,7 +32,20 @@ export function songSource(song, o) {
   let wrapped = false;
   const defaultStrum = Array.from({ length: m.beats }, (_, k) => ({ at: k * m.beatTicks, kind: 'strum', dir: 'D' }));
 
-  const eventSound = (bar, e, offset) => {
+  // metric position of the next tick inside the bar; the count-in ends on a downbeat
+  let pos = 0;
+
+  /** Click items for the beats in the `ticks` that start at metric position `from`. */
+  const clicks = (from, ticks) => {
+    const items = [];
+    for (let tick = (m.beatTicks - (from % m.beatTicks)) % m.beatTicks; tick < ticks; tick += m.beatTicks) {
+      const k = ((from + tick) % m.barTicks) / m.beatTicks;
+      items.push({ tick, sound: (t) => o.live.metronome && click(t, beatAccent(k, m)), ui: { beat: k } });
+    }
+    return items;
+  };
+
+  const eventSound = (bar, e, accent) => {
     if (e.kind === 'rest') return (t) => o.live.guitar && dampAll(t);
     if (e.kind === 'note') {
       return (t) => {
@@ -47,7 +60,7 @@ export function songSource(song, o) {
       if (!o.live.guitar) return;
       const name = chordAt(bar, e.at);
       const frets = (name && o.shapeOf(name)) || MUTED;
-      strum(t, frets, o.capo, name ? e.dir : 'X', e.at + offset === 0);
+      strum(t, frets, o.capo, name ? e.dir : 'X', accent);
     };
   };
 
@@ -69,20 +82,26 @@ export function songSource(song, o) {
       if (o.loop && i === o.loop[1]) next = o.loop[0];
       else next = i < last ? i + 1 : null;
 
-      const plan = { ticks: m.barTicks, beatTicks: m.beatTicks, items: beatItems(m, o.live) };
+      // A bar that does not start where the previous one ended (the first one played, or a loop restart)
+      // waits with metronome beats until its own beat comes round.
+      const lead = (bar.phase - pos + m.barTicks) % m.barTicks;
+      const plan = { ticks: lead + bar.ticks, beatTicks: m.beatTicks, items: clicks(pos, lead + bar.ticks) };
+      pos = (bar.phase + bar.ticks) % m.barTicks;
       if (wrapped && o.trainer) {
         bpm = Math.min(o.trainer.max, bpm + o.trainer.step);
         plan.bpm = bpm;
       }
       wrapped = !!o.loop && i === o.loop[1];
-      // a pickup bar plays as the end of a full bar, so the beats before it are counted
-      const offset = m.barTicks - bar.ticks;
       plan.items.push({ tick: 0, ui: { bar: i, ev: -1 } });
       if (bar.events.length) {
-        bar.events.forEach((e, j) => plan.items.push({ tick: e.at + offset, sound: eventSound(bar, e, offset), ui: { bar: i, ev: j } }));
+        bar.events.forEach((e, j) => plan.items.push({ tick: lead + e.at, sound: eventSound(bar, e), ui: { bar: i, ev: j } }));
       } else {
-        for (const e of song.strum ?? defaultStrum) {
-          if (e.kind === 'strum' && e.at >= offset) plan.items.push({ tick: e.at, sound: eventSound(bar, { ...e, at: e.at - offset }, offset) });
+        // the strum pattern repeats every metric bar
+        for (let base = -bar.phase; base < bar.ticks; base += m.barTicks) {
+          for (const e of song.strum ?? defaultStrum) {
+            const at = base + e.at;
+            if (e.kind === 'strum' && at >= 0 && at < bar.ticks) plan.items.push({ tick: lead + at, sound: eventSound(bar, { ...e, at }, e.at === 0) });
+          }
         }
       }
       plan.items.sort((a, b) => a.tick - b.tick);

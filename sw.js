@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v15';
+const CACHE = 'guitar-v16';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -44,6 +44,7 @@ const SHELL = [
   'scores/practice/folk/red-river-valley/simple.atex',
   'scores/practice/folk/saints/full.atex',
   'scores/practice/folk/saints/simple.atex',
+  'scores/practice/folk/santa-lucia.atex',
   'scores/practice/instrumental/castle-in-the-sky/full.atex',
   'scores/practice/instrumental/castle-in-the-sky/simple.atex',
   'scores/practice/instrumental/merry-christmas.atex',
@@ -54,14 +55,14 @@ const SHELL = [
   'scores/practice/instrumental/summer.atex',
   'scores/practice/nursery/find-friends/full.atex',
   'scores/practice/nursery/find-friends/simple.atex',
-  'scores/practice/nursery/happy-birthday/full.atex',
-  'scores/practice/nursery/happy-birthday/simple.atex',
   'scores/practice/nursery/jingle-bells/full.atex',
   'scores/practice/nursery/jingle-bells/simple.atex',
   'scores/practice/nursery/little-bee/full.atex',
   'scores/practice/nursery/little-bee/simple.atex',
   'scores/practice/nursery/little-bird/full.atex',
   'scores/practice/nursery/little-bird/simple.atex',
+  'scores/practice/nursery/little-donkey/full.atex',
+  'scores/practice/nursery/little-donkey/simple.atex',
   'scores/practice/nursery/mary-lamb.atex',
   'scores/practice/nursery/new-year/full.atex',
   'scores/practice/nursery/new-year/simple.atex',
@@ -74,6 +75,8 @@ const SHELL = [
   'scores/practice/nursery/two-tigers/full.atex',
   'scores/practice/nursery/two-tigers/simple.atex',
   'scores/song/perfect.cho',
+  'scores/starter/happy-birthday/full.atex',
+  'scores/starter/happy-birthday/simple.atex',
   'assets/icons/icon.svg',
   'assets/textures/tuner-wood.webp',
   'assets/vendor/jetbrains-mono/jetbrains-mono-400.woff2',

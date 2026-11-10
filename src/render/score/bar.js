@@ -60,8 +60,8 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
     bar.events.forEach((e, i) => {
       let ev = `<g class="ev" data-ev="${i}">`;
       const drawn = shownRest(e, bar, m);
-      // A whole-bar rest stands in the middle of its bar.
-      const ex = drawn === e ? xs[i] : bx + bw / 2;
+      // A whole-bar rest alone in its bar stands in the middle of it.
+      const ex = drawn === e || bar.events.length > 1 ? xs[i] : bx + bw / 2;
       if (o.notation === 'slash') ev += slashMark(drawn, ex, g, s);
       else if (g.staff !== undefined) {
         const mid = g.staff + 2.5 * g.gap;

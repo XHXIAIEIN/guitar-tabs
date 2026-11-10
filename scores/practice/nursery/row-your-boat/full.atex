@@ -1,12 +1,12 @@
 \title "Row, Row, Row Your Boat"
 \artist "美国童谣"
-\tempo 144
+\tempo 180
 \ts 6 8
 \ks C
 \systemsLayout (4 4)
 \lyrics "Row row row your boat gent-ly down the stream
 mer-ri-ly mer-ri-ly mer-ri-ly mer-ri-ly life is but a dream"
-\instructions "6/8 拍按两大拍数，每大拍三个八分音符。和弦只用 C 和 G7。"
+\instructions "6/8 拍按两大拍数，每大拍三个八分音符。速度数的是八分音符，180 相当于每大拍 60。和弦只用 C 和 G7。"
 
 \section "全曲" 3.5{d ch "C"} 3.5{d} | 3.5 0.4.8 2.4.4{d} | 2.4 0.4.8 2.4.4 3.4.8 | 0.3.2{d} |
 1.2.8 1.2 1.2 0.3 0.3 0.3 | 2.4 2.4 2.4 3.5 3.5 3.5 | 0.3.4{ch "G7"} 3.4.8 2.4.4 0.4.8 | 3.5.2{d ch "C"}

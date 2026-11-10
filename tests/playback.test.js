@@ -42,6 +42,13 @@ test('metronome accents follow the time signature after a pickup', () => {
   assert.deepEqual(beats.at(-1), ['beat', 768, 1]);
 });
 
+test('a bar in 2/4 clicks two beats and the next 4/4 bar starts on beat 1', () => {
+  const out = play('0.1.1 | \\ts 2 4 0.1.2 | \\ts 4 4 0.1.1', { countIn: 0 });
+  const beats = out.filter(([k]) => k === 'beat').map(([, t, k]) => [t, k]);
+  assert.deepEqual(beats.slice(4), [[192, 0], [240, 1], [288, 0], [336, 1], [384, 2], [432, 3]]);
+  assert.deepEqual(out.find(([k]) => k === '2.0'), ['2.0', 288]);
+});
+
 test('starting or looping on the pickup waits for its beat each time', () => {
   const out = play(HAPPY, { from: 0, countIn: 0, loop: [0, 0] });
   assert.deepEqual(out.slice(0, 3), [['beat', 0, 0], ['beat', 48, 1], ['beat', 96, 2]]);

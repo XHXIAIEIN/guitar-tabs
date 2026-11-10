@@ -21,11 +21,11 @@ function slotX(bar, slots, tick) {
   return x;
 }
 
-export function measureBar(bar, song, o, F) {
+export function measureBar(bar, o, F) {
   const s = o.scale;
   if (!bar.events.length) {
     const chordW = bar.chords.reduce((w, c) => w + textWidth(o.chordLabel(c.name), F.chartChord) + 14 * s, 0);
-    const beatW = (bar.ticks / song.meter.beatTicks) * (o.compact ? 14 : 22) * s;
+    const beatW = (bar.ticks / bar.meter.beatTicks) * (o.compact ? 14 : 22) * s;
     const lyricW = o.show.lyrics && bar.lyric ? textWidth(bar.lyric, F.lyric) : 0;
     return { natural: (PAD_L + PAD_R) * s + Math.max(beatW, chordW, lyricW, 36 * s), slots: null };
   }

@@ -29,6 +29,7 @@ const MELODIES = {
   'jasmine-flower': "3 3 5 6 1' 1' 6 5 5 6 5 3 3 5 6 1' 1' 6 5 5 6 5 5 5 5 3 5 6 6 5 3 2 3 5 3 2 1 1 2 1",
   'red-river-valley': '5, 1 3 3 3 2 3 2 1 1 5, 1 3 1 3 5 4 3 2 5 4 3 3 3 2 1 2 3 5 4 2 1 7, 2 2 3 2 1',
   'castle-in-the-sky': "6 7 1' 7 1' 3' 7 3 3 6 5 6 1' 5 3 4 3 4 1' 3 1' 7 ♯4 4 7 7 6 7",
+  'really-love-you': '5 1 2 3 3 2 1 2 2 3 2 1 7 1 7 6 1 2',
 };
 
 const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
@@ -83,8 +84,8 @@ test('simple songs keep the melody and stay on the top strings', () => {
   }
 });
 
-test('game and anime music plays one string at a time on strings 1 to 3', () => {
-  for (const entry of BUILTIN.filter((e) => e.group === 'game' || e.group === 'anime')) {
+test('game, anime and pop music plays one string at a time on strings 1 to 3', () => {
+  for (const entry of BUILTIN.filter((e) => ['game', 'anime', 'pop'].includes(e.group))) {
     const song = parseSong(entry.text);
     if (entry.group === 'game') assert.ok(song.chordsUsed.length, `${entry.id} chords`);
     for (const e of song.bars.flatMap((b) => b.events)) {

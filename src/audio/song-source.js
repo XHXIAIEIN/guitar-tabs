@@ -24,7 +24,7 @@ export function beatItems(m, live, force = false, ui = (k) => ({ beat: k })) {
  *          trainer: { step, max } raises the tempo each time the loop restarts
  */
 export function songSource(song, o) {
-  const m = song.meter;
+  const m = song.bars[o.from]?.meter ?? song.meter;
   const last = song.bars.length - 1;
   let countLeft = o.countIn;
   let next = o.from;
@@ -35,8 +35,8 @@ export function songSource(song, o) {
   // metric position of the next tick inside the bar; the count-in ends on a downbeat
   let pos = 0;
 
-  /** Click items for the beats in the `ticks` that start at metric position `from`. */
-  const clicks = (from, ticks) => {
+  /** Click items in meter `m` for the beats in the `ticks` that start at metric position `from`. */
+  const clicks = (m, from, ticks) => {
     const items = [];
     for (let tick = (m.beatTicks - (from % m.beatTicks)) % m.beatTicks; tick < ticks; tick += m.beatTicks) {
       const k = ((from + tick) % m.barTicks) / m.beatTicks;
@@ -84,9 +84,10 @@ export function songSource(song, o) {
 
       // A bar that does not start where the previous one ended (the first one played, or a loop restart)
       // waits with metronome beats until its own beat comes round.
-      const lead = (bar.phase - pos + m.barTicks) % m.barTicks;
-      const plan = { ticks: lead + bar.ticks, beatTicks: m.beatTicks, items: clicks(pos, lead + bar.ticks) };
-      pos = (bar.phase + bar.ticks) % m.barTicks;
+      const bm = bar.meter;
+      const lead = (bar.phase - pos + bm.barTicks) % bm.barTicks;
+      const plan = { ticks: lead + bar.ticks, beatTicks: bm.beatTicks, items: clicks(bm, pos, lead + bar.ticks) };
+      pos = (bar.phase + bar.ticks) % bm.barTicks;
       if (wrapped && o.trainer) {
         bpm = Math.min(o.trainer.max, bpm + o.trainer.step);
         plan.bpm = bpm;
@@ -97,7 +98,7 @@ export function songSource(song, o) {
         bar.events.forEach((e, j) => plan.items.push({ tick: lead + e.at, sound: eventSound(bar, e), ui: { bar: i, ev: j } }));
       } else {
         // the strum pattern repeats every metric bar
-        for (let base = -bar.phase; base < bar.ticks; base += m.barTicks) {
+        for (let base = -bar.phase; base < bar.ticks; base += bm.barTicks) {
           for (const e of song.strum ?? defaultStrum) {
             const at = base + e.at;
             if (e.kind === 'strum' && at >= 0 && at < bar.ticks) plan.items.push({ tick: lead + at, sound: eventSound(bar, { ...e, at }, e.at === 0) });

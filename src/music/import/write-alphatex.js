@@ -23,8 +23,9 @@ export function restsFor(ticks) {
 
 /**
  * Song text for `song`: { comments, title, artist, tempo, time: [beats, unit], key (a \ks value), capo, lyrics, bars }.
- * A bar is { section, pickup, beats }; a beat is { notes: ['3.5', 'x.2'], dur: 1 | 2 | 4 | 8 | 16, dotted, triplet,
- * chord }, a rest when `notes` is empty. A bar without beats is filled with rests.
+ * A bar is { section, pickup, time, beats }; `time` is set on a bar that changes the time signature. A beat is
+ * { notes: ['3.5', 'x.2'], dur: 1 | 2 | 4 | 8 | 16, dotted, triplet, chord }, a rest when `notes` is empty.
+ * A bar without beats is filled with rests.
  */
 export function writeAlphaTex(song) {
   let dur = 4;
@@ -35,10 +36,11 @@ export function writeAlphaTex(song) {
     dur = b.dur;
     return body + ds + (props.length ? `{${props.join(' ')}}` : '');
   };
-  const barTicks = (song.time[0] * TICKS[1]) / song.time[1];
+  let time = song.time;
   const bars = song.bars.map((bar) => {
-    const beats = bar.beats.length ? bar.beats : restsFor(barTicks);
-    const head = [bar.section && `\\section ${quote(bar.section)}`, bar.pickup && '\\ac'].filter(Boolean);
+    time = bar.time ?? time;
+    const beats = bar.beats.length ? bar.beats : restsFor((time[0] * TICKS[1]) / time[1]);
+    const head = [bar.section && `\\section ${quote(bar.section)}`, bar.time && `\\ts ${bar.time.join(' ')}`, bar.pickup && '\\ac'].filter(Boolean);
     return { text: [...head, ...beats.map(beatText)].join(' '), section: !!bar.section };
   });
 

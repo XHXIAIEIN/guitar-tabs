@@ -2,15 +2,15 @@
 import { t } from '../../core/i18n.js';
 import { meter } from './meter.js';
 import { BASE } from './events.js';
-import { chordName, clip, lyricChunks, newBar, setMeta } from './syntax.js';
+import { chordName, clip, lyricChunks, newBar, parseTime, setMeta } from './syntax.js';
 
 const BASE_OF = { 1: 'w', 2: 'h', 4: 'q', 8: 'e', 16: 's' };
 const MAX_FRET = 24;
 const NOTE = /^(\d{1,2}|x)\.([1-6])$/;
 const BEAT = /^(\d{1,2}|x)\.([1-6])(?:\.(\d+))?$/;
 const REST = /^r(?:\.(\d+))?$/;
-// tags that describe the whole song, so they belong before the first beat
-const HEADER = new Set(['title', 'artist', 'instructions', 'tempo', 'ts', 'ks', 'capo', 'lyrics', 'systemslayout']);
+// tags that describe the whole song, so they belong before the first beat; 	s may also start a later bar
+const HEADER = new Set(['title', 'artist', 'instructions', 'tempo', 'ks', 'capo', 'lyrics', 'systemslayout']);
 
 /** Splits text into tags, strings, punctuation, `:N` durations and words, each with its line number. */
 function tokenize(text, err) {
@@ -112,7 +112,10 @@ export function parseAlphaTex(text, song, err, warn) {
     } else if (name === 'ts') {
       const a = args(toks[i]?.value === 'common' ? 1 : 2).map(value);
       const time = a[0] === 'common' ? '4/4' : a.join('/');
-      setMeta(meta, 'time', time, tok.raw, (m) => err(tok.line, m));
+      if (!song.bars.length && !cur) setMeta(meta, 'time', time, tok.raw, (m) => err(tok.line, m));
+      else if (cur?.events.length) err(tok.line, t('parser.barStart', { tag: tok.raw }));
+      else if (parseTime(time)) open(tok.line).time = parseTime(time);
+      else err(tok.line, t('parser.badTime', { value: time }));
     } else if (name === 'ks') {
       const v = value(args(1)[0]);
       if (v === null) bad();
@@ -224,9 +227,12 @@ export function parseAlphaTex(text, song, err, warn) {
   }
   if (cur?.events.length) song.bars.push(cur);
 
-  const m = meter(meta.time);
-  song.meter = m;
+  song.meter = meter(meta.time);
+  // a bar that opens with 	s sets the meter for itself and the bars after it
+  let m = song.meter;
   song.bars.forEach((bar, k) => {
+    if (bar.time) m = meter(bar.time);
+    bar.meter = m;
     const last = k === song.bars.length - 1;
     if (bar === anacrusis) bar.phase = (m.barTicks - (bar.ticks % m.barTicks)) % m.barTicks;
     else if (bar.ticks > m.barTicks || (bar.ticks < m.barTicks && !last)) {

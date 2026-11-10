@@ -8,7 +8,7 @@ import { parseChord } from '../chord-name.js';
 export const clip = (s) => (s.length > 24 ? s.slice(0, 24) + '…' : s);
 
 /** A new empty bar; parsers fill in its length, chords and events. */
-export const newBar = (index, line) => ({ index, section: -1, line, ticks: 0, phase: 0, lineStart: false, chords: [], events: [], lyric: '', startChord: null });
+export const newBar = (index, line) => ({ index, section: -1, line, ticks: 0, phase: 0, time: null, lineStart: false, chords: [], events: [], lyric: '', startChord: null });
 
 /** Chord name with ♯/♭ written as #/b, or null when it is not a chord. */
 export function chordName(name) {

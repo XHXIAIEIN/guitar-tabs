@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import './helpers/setup.js';
+import { t } from '../src/core/i18n.js';
 import { parseSong } from '../src/music/format/parse-song.js';
 import { chordAt } from '../src/music/format/pattern.js';
 import { lyricChunks, noteParts } from '../src/music/format/syntax.js';
@@ -40,6 +41,17 @@ test('a pickup bar starts inside the metric bar, and lyrics skip rests', () => {
   assert.deepEqual(s.warnings, []);
   assert.deepEqual(s.bars.map((b) => [b.ticks, b.phase]), [[48, 96], [144, 0]]);
   assert.deepEqual(s.bars.flatMap((b) => b.events.map((e) => e.lyric)), ['祝', '你', '', '', '生']);
+});
+
+test('\\ts at the start of a bar changes the meter from that bar on', () => {
+  const s = parseSong(`\\ts 4 4 0.1.1 | \\ts 2 4 0.1.2 | 0.1.2 | \\ts 4 4 0.1.1`);
+  assert.deepEqual(s.errors, []);
+  assert.deepEqual(s.warnings, []);
+  assert.deepEqual(s.bars.map((b) => b.meter.beats), [4, 2, 2, 4]);
+  assert.deepEqual(s.bars.map((b) => b.time), [null, [2, 4], null, [4, 4]]);
+  assert.equal(s.meter.beats, 4);
+  const late = parseSong('0.1.2 \\ts 2 4 0.1.2 | 0.1.1');
+  assert.deepEqual(late.errors.map((e) => e.message), [t('parser.barStart', { tag: '\\ts' })]);
 });
 
 test('alphaTex problems name their line', () => {

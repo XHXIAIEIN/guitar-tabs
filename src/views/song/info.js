@@ -42,7 +42,7 @@ function restIcon(e) {
 
 /** One legend item for each distinct rest in the song, longest first. */
 function restItems(song) {
-  const rests = new Map(song.bars.flatMap((b) => b.events.filter((e) => e.kind === 'rest').map((e) => [e.dur, shownRest(e, b, song.meter)])));
+  const rests = new Map(song.bars.flatMap((b) => b.events.filter((e) => e.kind === 'rest').map((e) => [e.dur, shownRest(e, b, b.meter)])));
   return [...rests.values()].sort((a, b) => b.dur - a.dur).map((e) => {
     const beats = Math.round((e.dur / song.meter.beatTicks) * 100) / 100;
     return [restIcon(e), t('legend.rest', { beats: BEAT_FRACTIONS[beats] ?? beats })];

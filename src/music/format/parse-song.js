@@ -28,6 +28,7 @@ export function parseSong(text) {
   const parser = isChordPro(text) ? parseChordPro : parseAlphaTex;
   parser(text, song, err, warn);
   song.meter ??= meter(song.meta.time);
+  for (const b of song.bars) b.meter ??= song.meter;
   // a heading without bars after it is dropped
   song.sections = song.sections.filter((s, i) => s.start < (song.sections[i + 1]?.start ?? song.bars.length));
   song.bars.forEach((b) => (b.section = song.sections.findLastIndex((s) => s.start <= b.index)));

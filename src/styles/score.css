@@ -23,6 +23,7 @@
 .barline.faint { stroke: var(--line); }
 .barline-end { fill: var(--ink-2); }
 .bar-no { font-size: calc(9.5px * var(--s)); fill: var(--muted); }
+.bar-time { font-weight: 700; fill: var(--ink-2); }
 .fret {
   font-size: calc(12.5px * var(--s));
   font-weight: 700;

@@ -40,10 +40,12 @@ test('alphaTab reads every alphaTex score and finds the same notes, chords, lyri
     assert.equal(staff.capo, song.meta.capo, `${id} capo`);
     assert.equal(score.instructions, song.meta.instructions, `${id} instructions`);
     assert.equal(staff.bars.length, song.bars.length, `${id} bars`);
+    let time = song.meta.time;
     staff.bars.forEach((bar, k) => {
       const ours = song.bars[k];
       const master = bar.masterBar;
-      assert.deepEqual([master.timeSignatureNumerator, master.timeSignatureDenominator], song.meta.time, `${id} bar ${k + 1} time`);
+      time = ours.time ?? time;
+      assert.deepEqual([master.timeSignatureNumerator, master.timeSignatureDenominator], time, `${id} bar ${k + 1} time`);
       assert.equal(master.isAnacrusis, k === 0 && ours.phase > 0, `${id} bar ${k + 1} pickup`);
       assert.equal(master.section?.text ?? null, song.sections.find((s) => s.start === k)?.name ?? null, `${id} bar ${k + 1} section`);
       const beats = bar.voices[0].beats.map((b) => ({

@@ -26,8 +26,6 @@ export function scoreToAlphaTex(score, trackIndex, source) {
 
   const first = score.masterBars[0];
   const time = [first.timeSignatureNumerator, first.timeSignatureDenominator];
-  const changedTime = score.masterBars.filter((mb) => mb.timeSignatureNumerator !== time[0] || mb.timeSignatureDenominator !== time[1]);
-  if (changedTime.length) remarks.push(t('import.timeChange', { count: changedTime.length, bar: changedTime[0].index + 1, time: time.join('/') }));
   if (score.masterBars.some((mb) => mb.tempoAutomations.some((a) => a.value !== score.tempo))) remarks.push(t('import.tempoChange', { bpm: score.tempo }));
   if (score.masterBars.some((mb) => mb.isRepeatStart || mb.repeatCount > 0 || mb.alternateEndings)) remarks.push(t('import.repeats'));
   if (staff.bars.some((bar) => bar.voices.slice(1).some((v) => v.beats.some((b) => !b.isEmpty)))) remarks.push(t('import.voices'));
@@ -70,7 +68,9 @@ export function scoreToAlphaTex(score, trackIndex, source) {
       if (notes.length) lyrics.push((beat.lyrics?.[0] ?? '').replace(/ /g, '+'));
       beats.push({ notes, dur, dotted: beat.dots > 0, triplet, chord });
     }
-    return { section: mb.section?.text, pickup: mb.index === 0 && mb.isAnacrusis, beats };
+    const prev = mb.index ? score.masterBars[mb.index - 1] : mb;
+    const changed = mb.timeSignatureNumerator !== prev.timeSignatureNumerator || mb.timeSignatureDenominator !== prev.timeSignatureDenominator;
+    return { section: mb.section?.text, pickup: mb.index === 0 && mb.isAnacrusis, time: changed ? [mb.timeSignatureNumerator, mb.timeSignatureDenominator] : null, beats };
   });
 
   for (const [key, n] of counts) remarks.push(t(`import.${key}`, { count: n }));

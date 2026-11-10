@@ -5,7 +5,7 @@ import { meter } from './meter.js';
 /** A one-bar song holding `events`, for showing a rhythm pattern with the score renderer. */
 export function patternSong(events, time) {
   const m = meter(time);
-  const bar = { index: 0, section: -1, line: 0, ticks: m.barTicks, phase: 0, lineStart: true, chords: [], events, startChord: null };
+  const bar = { index: 0, section: -1, line: 0, ticks: m.barTicks, meter: m, phase: 0, lineStart: true, chords: [], events, startChord: null };
   return { meta: { time }, meter: m, sections: [], bars: [bar], strum: null, errors: [], warnings: [], melody: [], chordsUsed: [] };
 }
 

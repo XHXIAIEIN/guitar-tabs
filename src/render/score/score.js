@@ -22,11 +22,10 @@ export function renderScore(root, song, o) {
     lyric: `400 ${15 * s}px ${fam}`,
     chartChord: `700 ${18 * s}px ${fam}`,
   };
-  const m = song.meter;
   const labels = o.show.tab && song.bars.some((b) => b.events.length) ? o.stringLabels ?? NO_LABELS : NO_LABELS;
   const gutterL = gutterWidth(labels.left, s);
   const avail = o.width - gutterL - gutterWidth(labels.right, s);
-  const metrics = song.bars.map((b) => measureBar(b, song, o, F));
+  const metrics = song.bars.map((b) => measureBar(b, o, F));
   const lines = breakLines(song, metrics, avail);
 
   let html = '';
@@ -46,7 +45,7 @@ export function renderScore(root, song, o) {
     let svg = '';
     bars.forEach((bar, i) => {
       const bw = metrics[bar.index].natural * k;
-      svg += renderBar(bar, x, bw, { slots: metrics[bar.index].slots, k }, m, o, g, F, i === 0, bar.index === song.bars.length - 1);
+      svg += renderBar(bar, x, bw, { slots: metrics[bar.index].slots, k }, bar.meter, o, g, F, i === 0, bar.index === song.bars.length - 1);
       x += bw;
     });
     if (g.staff !== undefined) svg += stringLabelMarks(labels.left, gutterL, -1, g, s) + stringLabelMarks(labels.right, x, 1, g, s);

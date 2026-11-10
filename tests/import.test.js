@@ -28,6 +28,7 @@ function music(song) {
     bars: song.bars.map((b) => ({
       section: song.sections[b.section]?.name,
       phase: b.phase,
+      time: b.time,
       chords: b.chords,
       events: b.events.map(({ at, dur, kind, notes, lyric }) => ({ at, dur, kind, notes, lyric })),
     })),

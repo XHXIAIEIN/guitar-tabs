@@ -12,6 +12,7 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
   out += `<rect class="loop-mark" x="${r1(bx + 2 * s)}" y="0" width="${r1(bw - 4 * s)}" height="${r1(3 * s)}" rx="${r1(1.5 * s)}"/>`;
   out += `<rect class="cursor-mark" x="${r1(bx)}" y="${r1(3 * s)}" width="${r1(3 * s)}" height="${r1(h - 6 * s)}" rx="${r1(1.5 * s)}"/>`;
   if (o.barNumbers !== false) out += text(bx + 4 * s, g.barNo, bar.index + 1, 'bar-no', 'start');
+  if (bar.time) out += text(bx + bw - 4 * s, g.barNo, bar.time.join('/'), 'bar-no bar-time', 'end');
 
   const inner0 = bx + PAD_L * s;
   const innerW = bw - (PAD_L + PAD_R) * s;

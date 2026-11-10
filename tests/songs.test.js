@@ -32,7 +32,6 @@ const MELODIES = {
   'red-river-valley': '5, 1 3 3 3 2 3 2 1 1 5, 1 3 1 3 5 4 3 2 5 4 3 3 3 2 1 2 3 5 4 2 1 7, 2 2 3 2 1',
   'castle-in-the-sky': "6 7 1' 7 1' 3' 7 3 3 6 5 6 1' 5 3 4 3 4 1' 3 1' 7 ♯4 4 7 7 6 7",
   rainbow: '3 5 1 4 6 1 5 5 1 4 6 1 6 3 5 1 4 6 1 2 1 7',
-  'under-mount-fuji': '5 6 1 2 1 2 3 3 3 2 1 2 3 3 3 2 1 2 1 6 1 2 3 3 5 6 1 2 1',
   'chrysanthemum-terrace': '3 3 2 3 3 5 3 2 3 1 1 2 3 5 3 2 2 1 2 3 5 3 6 5',
   'really-love-you': '5 1 2 3 3 2 1 2 2 3 2 1 7 1 7 6 1 2',
   encounter:

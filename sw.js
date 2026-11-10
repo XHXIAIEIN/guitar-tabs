@@ -41,7 +41,6 @@ const SHELL = [
   'scores/pop/really-love-you.atex',
   'scores/pop/sunny-day/original.atex',
   'scores/pop/sunny-day/simple.atex',
-  'scores/pop/under-mount-fuji.atex',
   'scores/practice/folk/amazing-grace/full.atex',
   'scores/practice/folk/amazing-grace/simple.atex',
   'scores/practice/folk/farewell/full.atex',

@@ -1,0 +1,18 @@
+\transpose -12
+\title "致爱丽丝"
+\artist "贝多芬"
+\tempo 100
+\ts 3 4
+\ks Aminor
+\systemsLayout (4 4 4 4 4 4)
+\instructions "旋律在 1 到 3 弦，低音只在长音的开头弹一下，让它一直响。"
+
+\section "主题" E5.8 D#5 E5 D#5 E5 B4 | D5.8 C5 (A4 A3).2 | E4.8 A4 (B4 E3).2 | E4.8 B4 (C5 A3).2 |
+E5.8 D#5 E5 D#5 E5 B4 | D5.8 C5 (A4 A3).2 | E4.8 A4 (B4 E3).2 | C5.8 B4 (A4 A3).2 |
+
+\section "主题再现" E5.8 D#5 E5 D#5 E5 B4 | D5.8 C5 (A4 A3).2 | E4.8 A4 (B4 E3).2 | E4.8 B4 (C5 A3).2 |
+E5.8 D#5 E5 D#5 E5 B4 | D5.8 C5 (A4 A3).2 | E4.8 A4 (B4 E3).2 | C5.8 B4 (A4 A3).4{d} B4.8 |
+
+\section "中段" C5.8 D5 (E5 C4).4{d} G4.8 | F5.8 E5 (D5 G3).4{d} F4.8 | E5.8 D5 (C5 A3).4{d} E4.8 | D5.8 C5 (B4 E3).4 E4.8 E4 |
+
+\section "回到主题" E5.8 D#5 E5 D#5 E5 B4 | D5.8 C5 (A4 A3).2 | E4.8 A4 (B4 E3).2 | C5.8 B4 (A4 A3).2

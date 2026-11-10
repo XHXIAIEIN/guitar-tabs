@@ -1,0 +1,18 @@
+\transpose -12
+\title "G 大调小步舞曲"
+\artist "巴赫 BWV Anh. 114"
+\tempo 100
+\ts 3 4
+\ks G
+\systemsLayout (4 4 4 4 4 4 4 4)
+\instructions "旋律在 1 到 3 弦，和旋律一起弹的低音用拇指 {T} 弹 4 到 6 弦。原曲两段各反复一遍。"
+
+\section "A 段" (D5 G3).4 G4.8 A4 (B4 A3).8 C5 | (D5 B3).4 G4 G4 | (E5 C4).4 C5.8 D5 E5 F5 | (G5 B3).4 G4 G4 |
+(C5 A3).4 D5.8 C5 B4 A4 | (B4 G3).4 C5.8 B4 A4 G4 | (F4 D4).4 (G4 B3).8 A4 (B4 G3).8 G4 | (A4 D4).2{d} |
+(D5 B3).4 G4.8 A4 (B4 A3).8 C5 | (D5 G3).4 (G4 B3).4 (G4 G3).4 | (E5 C4).4 C5.8 D5 E5 F5 | (G5 B3).4 (G4 C4).4 (G4 A3).4 |
+(C5 A3).4 D5.8 C5 (B4 F3).8 A4 | (B4 G3).4 C5.8 B4 (A4 B3).8 G4 | (A4 C4).4 (B4 D4).8 A4 (G4 D4).8 F4 | (G4 G3).2{d} |
+
+\section "B 段" (B5 G4).4 G5.8 A5 B5 G5 | (A5 F4).4 D5.8 E5 F5 D5 | (G5 E3).4 E5.8 F5 (G5 E3).8 D5 | (C#5 A3).4 B4.8 C#5 (A4 A3).4 |
+(A4 A3).8 B4 C#5 D5 E5 F5 | (G5 B3).4 (F5 D4).4 (E5 C#4).4 | (F5 D4).4 (A4 F3).4 (C#5 A3).4 | (D5 D4).2{d} |
+(D5 B3).4 G4.8 F4 G4.4 | (E5 C4).4 G4.8 F4 G4.4 | (D5 B3).4 (C5 A3).4 (B4 G3).4 | (A4 D4).8 G4 F4 G4 A4.4 |
+D4.8 E4 F4 G4 A4 B4 | (C5 E3).4 (B4 G3).4 (A4 F3).4 | (B4 G3).8 D5 (G4 B3).4 (F4 D4).4 | (G4 G3).2{d}

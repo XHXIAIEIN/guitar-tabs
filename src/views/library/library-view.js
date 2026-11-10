@@ -11,7 +11,7 @@ import { backupControls } from './backup-controls.js';
 import { importScoreButton } from './import-score.js';
 
 // Built-in groups under each playing style, in list order.
-const STYLES = { fingerstyle: ['practice', 'game', 'anime', 'pop'], strum: ['song'] };
+const STYLES = { fingerstyle: ['practice', 'game', 'anime', 'pop', 'classical'], strum: ['song'] };
 
 export function libraryView(root) {
   let query = '';

@@ -1,0 +1,17 @@
+\transpose -24
+\title "破茧"
+\artist "动画《斗罗大陆》"
+\tempo 90
+\ts 4 4
+\ks Aminor
+\systemsLayout (2 2 2 2 2 2 2 2)
+\instructions "预副歌和副歌，原曲是 G 小调，这里移到 A 小调，全在一把位。十六分音符多，先降到 60 数清楚。"
+
+\section "预副歌" A4.8{d} B4.8{d} C5.4{d} r.4 | C5.8{d} D5.8{d} E5.4{d} r.8 C5 |
+C5.8 A5.16 G5 -.G5.4{d} C5.8 D5.4 | D5.2 r.8 E5 D5.16 C5 A4.8 |
+A4.8{d} B4.8{d} C5.4{d} r.4 | C5.8{d} D5.8{d} E5.4{d} r.8 C5 |
+C5.8 A5 G5.4{d} C5.8 C6.16 B5 -.B5.8 | B5.2 r.8 E5 G5.16 E5 A5.8 |
+\section "副歌" r.8 C6 A5.4 C6.8 A5.16 C6 r E5 A5.8 | r.8 C6 A5.4 C6.8 A5.16 C6 r E5 A5.8 |
+G5.8 E6.16 E6 E6.4 r.8 D6.16 C6 -.C6.8 B5 | G5.8 D6.16 D6 -.D6.4 D6.8 C6.16 B5.8 C6.16 A5.8 |
+r.8 C6 A5.4 C6.8 A5.16 C6 r E5 A5.8 | r.8 C6 A5.4 C6.8 A5.16 C6 r E5 A5.8 |
+G5.8 E6.16 E6 E6.4 r.8 D6.16 C6 -.C6.8 B5 | G5.8 D6.16 D6 -.D6.4 D6.8 C6.16 B5.8 C6.16 A5.8

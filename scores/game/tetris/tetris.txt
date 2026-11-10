@@ -4,7 +4,7 @@ key: Am
 bpm: 110
 time: 4/4
 level: 进阶
-note: Game Boy 版《俄罗斯方块》（1989）Type A 的全曲，两段各弹两遍。A 小调，只弹旋律，全在 1 到 3 弦的第一把位，最高到 1 弦 5 品。
+note: Game Boy《俄罗斯方块》Type A 全曲，全在第一把位。
 
 # 第一段
 chord: | Am | Am | E | Am |

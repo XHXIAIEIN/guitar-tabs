@@ -63,13 +63,12 @@ function symbolLegend(song, show) {
     ...(show.tab
       ? STRUM_DIRS.filter((dir) => has((e) => e.kind === 'strum' && e.dir === dir)).map((dir) => [symbolIcon(strumArrow(dir, 0, -6.5, 1)), t(`legend.strum.${dir}`)])
       : []),
-    t('legend.bars'),
     show.rhythm && t('legend.notes'),
     (show.rhythm || show.numbers) && has((e) => e.tuplet) && t('legend.tuplet'),
     show.numbers && t('legend.numbers'),
-    show.tab && !show.rhythm && hasNotes && t('legend.rhythmHint', { panel: t('song.display'), toggle: t('display.rhythm') }),
-  ];
-  return h('p', { class: 'symbol-legend', role: 'note', 'aria-label': t('legend.title') }, items.filter(Boolean).map((item) => h('span', null, item)));
+  ].filter(Boolean);
+  if (!items.length) return null;
+  return h('p', { class: 'symbol-legend', role: 'note', 'aria-label': t('legend.title') }, items.map((item) => h('span', null, item)));
 }
 
 function strumBox(song, tonic) {

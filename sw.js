@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v14';
+const CACHE = 'guitar-v15';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -13,13 +13,11 @@ const SHELL = [
   'scores/anime/huluwa.atex',
   'scores/anime/totoro.atex',
   'scores/classical/bach-minuet.atex',
+  'scores/classical/canon.atex',
   'scores/classical/chopin-nocturne.atex',
   'scores/classical/chopin-waltz.atex',
   'scores/classical/fur-elise.atex',
-  'scores/classical/merry-christmas.atex',
   'scores/classical/moonlight.atex',
-  'scores/classical/night-piano-5.atex',
-  'scores/classical/summer.atex',
   'scores/classical/turkish-march.atex',
   'scores/game/mario-bros.atex',
   'scores/game/pac-man.atex',
@@ -46,9 +44,12 @@ const SHELL = [
   'scores/practice/folk/saints/simple.atex',
   'scores/practice/instrumental/castle-in-the-sky/full.atex',
   'scores/practice/instrumental/castle-in-the-sky/simple.atex',
+  'scores/practice/instrumental/merry-christmas.atex',
+  'scores/practice/instrumental/night-piano-5.atex',
   'scores/practice/instrumental/nokia-tune.atex',
   'scores/practice/instrumental/ode-to-joy/full.atex',
   'scores/practice/instrumental/ode-to-joy/simple.atex',
+  'scores/practice/instrumental/summer.atex',
   'scores/practice/nursery/find-friends/full.atex',
   'scores/practice/nursery/find-friends/simple.atex',
   'scores/practice/nursery/happy-birthday/full.atex',

@@ -18,6 +18,9 @@
   {"id":"ode-to-joy","group":"practice","subgroup":"instrumental","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
   {"id":"nokia-tune","group":"practice","subgroup":"instrumental","level":"入门"},
   {"id":"castle-in-the-sky","group":"practice","subgroup":"instrumental","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"进阶"}]},
+  {"id":"merry-christmas","group":"practice","subgroup":"instrumental","level":"进阶"},
+  {"id":"summer","group":"practice","subgroup":"instrumental","level":"进阶"},
+  {"id":"night-piano-5","group":"practice","subgroup":"instrumental","level":"进阶"},
   {"id":"zelda-overworld","group":"game","level":"进阶"},
   {"id":"zelda-lullaby","group":"game","level":"进阶"},
   {"id":"zelda-sarias-song","group":"game","level":"进阶"},
@@ -38,12 +41,10 @@
   {"id":"chrysanthemum-terrace","group":"pop","level":"进阶"},
   {"id":"fur-elise","group":"classical","level":"进阶"},
   {"id":"bach-minuet","group":"classical","level":"进阶"},
+  {"id":"canon","group":"classical","level":"进阶"},
   {"id":"chopin-waltz","group":"classical","level":"进阶"},
   {"id":"turkish-march","group":"classical","level":"进阶"},
   {"id":"moonlight","group":"classical","level":"进阶"},
   {"id":"chopin-nocturne","group":"classical","level":"进阶"},
-  {"id":"merry-christmas","group":"classical","level":"进阶"},
-  {"id":"summer","group":"classical","level":"进阶"},
-  {"id":"night-piano-5","group":"classical","level":"进阶"},
   {"id":"perfect","group":"song","format":"cho","level":"进阶"}
 ]

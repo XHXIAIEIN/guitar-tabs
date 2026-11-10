@@ -34,6 +34,8 @@
   {"id":"encounter","group":"pop","level":"进阶"},
   {"id":"dandelion-promise","group":"pop","level":"入门"},
   {"id":"rainbow","group":"pop","level":"入门"},
+  {"id":"under-mount-fuji","group":"pop","level":"进阶"},
+  {"id":"chrysanthemum-terrace","group":"pop","level":"进阶"},
   {"id":"fur-elise","group":"classical","level":"进阶"},
   {"id":"bach-minuet","group":"classical","level":"进阶"},
   {"id":"chopin-waltz","group":"classical","level":"进阶"},

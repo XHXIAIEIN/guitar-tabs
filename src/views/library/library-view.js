@@ -1,4 +1,4 @@
-// Song list: search, the performance setlist, my songs, built-in songs by playing style and group, and backup.
+// Song list: search, the performance setlist, my songs, starter songs, built-in songs by playing style and group, and backup.
 import { t } from '../../core/i18n.js';
 import { h, fill } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
@@ -61,6 +61,8 @@ export function libraryView(root) {
     };
     fill(listEl,
       group('mine'),
+      // The starter songs sit above the style choice, so a beginner sees them whichever style is chosen.
+      group('starter'),
       query ? null : styleSeg,
       // A search looks through both styles, so the style choice cannot hide a match.
       ...(query ? Object.values(STYLES).flat() : STYLES[state.settings.libraryStyle]).map(group),

@@ -34,6 +34,7 @@ const MELODIES = {
   encounter:
     "5 3 5 2 3 2 1 1 7, 6, 7, 1 7, 1 2 3 5 3 5 2' 1' 7 1' 1 7, 6, 7, 1 7, 1 2 1 5 6 7 1' 7 1' 7 6 5 6 5 1 2 3 " +
     "4 3 4 5 1 2 3 3 5 6 7 1' 7 1' 2' 1' 2' 3' 5 1 2 3 4 3 4 3 2 1 7, 1",
+  'dandelion-promise': "3, 5, 1 3 3 5 2 2 5 7, 1 3 4 5 1 1 2 3 3, 5, 1 3 3 4 2 2 5 7, 1 3 4 5 1 1 2 1 3,",
 };
 
 const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];

@@ -1,0 +1,14 @@
+\title "Red River Valley"
+\artist "加拿大民歌"
+\tempo 80
+\ts 4 4
+\ks C
+\systemsLayout (3 3 3)
+\lyrics "From this val-ley they say you are go-ing we will
+miss your bright eyes and sweet smile for they say you are tak-ing
+the sun-shine that has bright-ened our path-way a while"
+\instructions "左手 {1} 按 1 品，{3} 按 3 品。从第 4 拍弱起。附点四分音符占一拍半，后面的八分音符只占半拍。"
+
+\section "全曲" \ac 0.3.8 1.2 | 0.1.4{d} 0.1.8 0.1.4 3.2.8 0.1 | 3.2.4{d} 1.2.8 1.2.4 0.3.8 1.2 |
+0.1.4 1.2.8 0.1 3.1.4 1.1.8 0.1 | 3.2.2{d} 3.1.8 1.1 | 0.1.4{d} 0.1.8 0.1.4 3.2.8 1.2 |
+3.2.4{d} 0.1.8 3.1.4 1.1.8 3.2 | 1.2.4 0.2.8 3.2 3.2.4 0.1.8 3.2 | 1.2.2{d}

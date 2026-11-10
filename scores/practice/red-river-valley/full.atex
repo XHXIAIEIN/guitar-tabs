@@ -1,0 +1,14 @@
+\title "Red River Valley"
+\artist "加拿大民歌"
+\tempo 90
+\ts 4 4
+\ks C
+\systemsLayout (3 3 3)
+\lyrics "From this val-ley they say you are go-ing we will
+miss your bright eyes and sweet smile for they say you are tak-ing
+the sun-shine that has bright-ened our path-way a while"
+\instructions "从第 4 拍弱起。和弦只有 C 和 G7，弹熟后用民谣节奏边弹边唱。"
+
+\section "全曲" \ac 3.6.8 3.5 | 2.4.4{d ch "C"} 2.4.8 2.4.4 0.4.8 2.4 | 0.4.4{d} 3.5.8 3.5.4 3.6.8 3.5 |
+2.4.4 3.5.8 2.4 0.3.4 3.4.8 2.4 | 0.4.2{d ch "G7"} 0.3.8 3.4 | 2.4.4{d ch "C"} 2.4.8 2.4.4 0.4.8 3.5 |
+0.4.4{d ch "G7"} 2.4.8 0.3.4 3.4.8 0.4 | 3.5.4{ch "C"} 2.5.8{ch "G7"} 0.4 0.4.4 2.4.8 0.4 | 3.5.2{d ch "C"}

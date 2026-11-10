@@ -21,6 +21,7 @@ const SHELL = [
   'scores/game/zelda-sarias-song.atex',
   'scores/game/zelda-song-of-storms.atex',
   'scores/pop/encounter.atex',
+  'scores/pop/rainbow.atex',
   'scores/pop/really-love-you.atex',
   'scores/practice/amazing-grace/full.atex',
   'scores/practice/amazing-grace/simple.atex',

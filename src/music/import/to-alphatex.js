@@ -119,7 +119,7 @@ export function scoreToAlphaTex(score, trackIndex, source) {
   }
 
   const ks = (first.keySignatureType === 1 ? MINOR : MAJOR)[first.keySignature + 7] + (first.keySignatureType === 1 ? 'minor' : '');
-  const out = [`// ${t('import.from', { name: source, track: trackIndex + 1, trackName: track.name || '-' })}`, ...remarks.map((r) => `// ${r}`)];
+  const out = [`// ${t(track.name ? 'import.fromNamed' : 'import.from', { name: source, track: trackIndex + 1, trackName: track.name })}`, ...remarks.map((r) => `// ${r}`)];
   out.push(`\\title ${quote(score.title || source.replace(/\.[^.]+$/, ''))}`);
   if (score.artist) out.push(`\\artist ${quote(score.artist)}`);
   out.push(`\\tempo ${score.tempo}`, `\\ts ${time[0]} ${time[1]}`, `\\ks ${ks}`);

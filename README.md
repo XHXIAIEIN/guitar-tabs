@@ -24,6 +24,7 @@
 - 跟拍测试：跟着节拍器点击，显示每一下偏早还是偏晚。可以先校准设备的点击延迟。
 - 工具：节拍器、调音器（用麦克风）、六根空弦的标准音。
 - 写曲谱：用 alphaTex 或 ChordPro 写，边写边预览，错误提示带行号。
+- 导入曲谱：把网上下载的 Guitar Pro、MusicXML、Capella 文件转成 alphaTex，存成自己的曲谱。
 
 ## 在电脑上运行
 
@@ -147,6 +148,37 @@ python -m http.server 5173
 - `{meta: instructions …}` 是练习说明，手指标记同 alphaTex。
 - 和弦写在 `{start_of_grid: 段落名}` 和 `{end_of_grid}` 之间。每行以 `|` 开头和结尾，`|` 分开小节。小节里每格占一拍，格数等于拍号的拍数；`.` 表示延续前一个和弦。grid 的一行在页面上占一行。
 - `#` 开头的行是注释。
+
+### 导入曲谱
+
+曲谱页的「导入曲谱」读这些文件：
+
+- Guitar Pro：`.gp` `.gp3` `.gp4` `.gp5` `.gpx` `.gp7`
+- MusicXML：`.xml` `.musicxml` `.mxl`
+- Capella：`.capx`
+- alphaTex 和 ChordPro 文本：`.atex` `.alphatex` `.cho` `.chordpro` `.chopro` `.crd`，原样存下
+
+前三种由 [alphaTab](https://alphatab.net/) 读取，再转成上面的 alphaTex 写法。文件有几条六弦音轨时，先选一条。导入的曲谱存成自己的曲谱，并打开编辑器。
+
+上面的写法装不下的内容会被改写或去掉，每一类改动在曲谱开头写一行注释：
+
+- 非标准调弦换算成标准调弦的品位，比空弦还低的音去掉
+- 延音线后半的音、倚音、第二声部去掉
+- 推弦、滑音、击勾弦、泛音、揉弦、颤音只留音高
+- 反复记号不展开，只按写出的小节记一遍
+- 中途变的拍号和速度统一成第一小节的
+- 短于十六分音符、长于全音符、复附点和三连音以外的连音改成最接近的时值
+- 认不出的和弦名、对不上音符的歌词去掉
+
+alphaTab 放在 `assets/vendor/alphatab/`，只在第一次导入时加载。升级时改 `package.json` 里的版本，然后运行：
+
+```bash
+npm ci
+```
+
+```bash
+node scripts/vendor-alphatab.mjs
+```
 
 ### 内置曲谱
 

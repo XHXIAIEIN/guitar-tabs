@@ -15,7 +15,7 @@ function pickTrack(tracks) {
     let picked = null;
     const close = openPanel(t('import.pickTrack'),
       h('div', { class: 'stack' }, tracks.map(({ index, name }) =>
-        h('button', { class: 'btn', type: 'button', onclick: () => { picked = index; close(); } }, t('import.track', { index: index + 1, name })))),
+        h('button', { class: 'btn', type: 'button', onclick: () => { picked = index; close(); } }, t(name ? 'import.track' : 'import.trackUnnamed', { index: index + 1, name })))),
       { onclose: () => resolve(picked) });
   });
 }

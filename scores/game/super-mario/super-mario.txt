@@ -4,11 +4,11 @@ key: C
 bpm: 100
 time: 4/4
 level: 进阶
-note: FC《超级马里奥兄弟》地上关，第 5、9 小节开头两拍弹三个音。
+note: FC《超级马里奥兄弟》地上关，第 5、9 节开头两拍弹三个音。
 
 # 前奏
-chord: | D7 | G |
-tab:   | e 1/0 1/0 r 1/0 r 2/1 q 1/0 | q 1/3 r 3/0 r |
+chord: | D7 . . . G . | |
+tab:   | e 1/0 1/0 r 1/0 r 2/1 q 1/0 1/3 r | 3/0 r |
 
 # 第一段
 chord: | C | F |
@@ -33,5 +33,5 @@ tab:   | q r e 1/3 1/2 1/1 q 2/4 e 1/0 | e r q 2/1 e 2/1 q 2/1 r |
 chord: | C | F |
 tab:   | q r e 1/3 1/2 1/1 q 2/4 e 1/0 | e r 3/1 3/2 2/1 r 3/2 2/1 2/3 |
 
-chord: | Ab . Bb . | C |
-tab:   | q r 2/4 e r q 2/3 e r | q 2/1 h. r |
+chord: | Ab . Bb . C . . . |
+tab:   | q r 2/4 e r q 2/3 e r q 2/1 h. r |

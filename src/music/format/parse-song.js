@@ -8,10 +8,16 @@ import { meter } from './meter.js';
 import { parseEvents } from './events.js';
 import { META, ROWS, clip, parseTime, splitBars, splitField, stripKeySuffix, stripNumberSuffix, syllables } from './syntax.js';
 
+/**
+ * Chord slots are the beats a bar touches. A bar that starts between beats gets the part before the next beat as its
+ * first slot, so a chord change on a beat lands on that beat.
+ */
 function parseChords(cell, bar, m, report) {
   const toks = cell.split(/\s+/).filter(Boolean);
   if (!toks.length) return;
-  const slots = Math.round(bar.ticks / m.beatTicks);
+  const lead = bar.phase % m.beatTicks;
+  const slots = Math.ceil((lead + bar.ticks) / m.beatTicks);
+  const slotAt = (i) => Math.max(0, i * m.beatTicks - lead);
   const dot = (tok) => tok === '.' || tok === '·';
   const add = (name, at) => {
     const norm = name.replace(/♯/g, '#').replace(/♭/g, 'b');
@@ -20,9 +26,9 @@ function parseChords(cell, bar, m, report) {
   };
   if (toks.some(dot)) {
     if (toks.length !== slots) report(t('parser.chordSlots', { cell: clip(cell), count: toks.length, slots }));
-    toks.forEach((tok, i) => i < slots && !dot(tok) && add(tok, i * m.beatTicks));
+    toks.forEach((tok, i) => i < slots && !dot(tok) && add(tok, slotAt(i)));
   } else {
-    toks.forEach((tok, i) => add(tok, Math.floor((i * slots) / toks.length) * m.beatTicks));
+    toks.forEach((tok, i) => add(tok, slotAt(Math.floor((i * slots) / toks.length))));
   }
 }
 
@@ -143,7 +149,6 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
       line: (tab ?? chord ?? lyric).line,
       // a cell without notes lasts one metric bar, or the pickup when it opens the song
       ticks: index === 0 && song.meta.pickup ? Math.round(song.meta.pickup * m.beatTicks) : m.barTicks,
-      phase: 0,
       // the first bar of a row block starts a new line on the page
       lineStart: k === 0,
       chords: [],
@@ -158,6 +163,9 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
       bar.events = events;
       if (events.length) bar.ticks = total;
     }
+    // where the bar starts inside the metric bar; the first downbeat comes after the pickup
+    const prev = song.bars[index - 1];
+    bar.phase = prev ? (prev.phase + prev.ticks) % m.barTicks : (m.barTicks - (Math.round(song.meta.pickup * m.beatTicks) % m.barTicks)) % m.barTicks;
     if (chord?.cells[k]) parseChords(chord.cells[k], bar, m, (msg) => err(chord.line, inBar(msg)));
     const text = lyric?.cells[k] ?? '';
     const notes = bar.events.filter((e) => e.kind === 'note');
@@ -174,15 +182,10 @@ function buildBlock(song, rows, sectionIndex, m, err, warn) {
 }
 
 function finishBars(song) {
-  const m = song.meter;
-  // the first downbeat comes after the pickup beats
-  let start = -Math.round(song.meta.pickup * m.beatTicks);
   let current = null;
   const used = [];
   const pitches = [];
   for (const bar of song.bars) {
-    bar.phase = ((start % m.barTicks) + m.barTicks) % m.barTicks;
-    start += bar.ticks;
     bar.startChord = bar.chords[0]?.at === 0 ? bar.chords[0].name : current;
     for (const c of bar.chords) {
       current = c.name;

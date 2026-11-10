@@ -30,7 +30,9 @@ export function renderBar(bar, bx, bw, f, m, o, g, F, isFirstInLine, isLast) {
     if (g.beats !== undefined) {
       const beats = Math.round(bar.ticks / m.beatTicks);
       for (let k = 0; k < beats; k++) out += line(xOf(k * m.beatTicks) + 2 * s, g.beats, xOf(k * m.beatTicks) + 2 * s, g.beats + 5 * s, (bar.phase + k * m.beatTicks) % m.barTicks === 0 ? 'beat strong' : 'beat');
-    }  } else {
+    }
+    if (g.lyric !== undefined && bar.lyric) out += text(inner0, g.lyric, bar.lyric, 'lyr', 'start');
+  } else {
     const xs = [];
     let x = inner0;
     bar.events.forEach((e, i) => {

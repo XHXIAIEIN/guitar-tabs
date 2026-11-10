@@ -1,5 +1,6 @@
 // Parser for the subset of ChordPro (https://www.chordpro.org/chordpro/) that chord charts use: metadata and grid
-// sections, where each cell of a bar is one beat.
+// sections, where each cell of a bar is one beat. A grid row can be followed by a `lyric: | … | … |` row, an extension
+// of ChordPro that gives each bar of the row above its lyrics.
 import { t } from '../../core/i18n.js';
 import { meter } from './meter.js';
 import { parseStrum } from './events.js';
@@ -44,6 +45,8 @@ export function parseChordPro(text, song, err, warn) {
 
   // Pass 2: grid rows, one bar per cell.
   let grid = 0;
+  // the bars of the last grid row, while a lyric row may still follow it
+  let row = null;
   lines.forEach((line, k) => {
     const n = k + 1;
     if (!line || line.startsWith('#')) return;
@@ -58,11 +61,23 @@ export function parseChordPro(text, song, err, warn) {
         if (!grid) err(n, t('parser.gridClosed'));
         grid = 0;
       }
+      row = null;
       return;
     }
     if (!grid) return err(n, t('parser.outsideGrid', { line: clip(line) }));
-    if (!line.startsWith('|') || !line.endsWith('|')) return err(n, t('parser.gridRow', { line: clip(line) }));
-    const cells = line.replace(/\|[|.]/g, '|').split('|').slice(1, -1);
+    const lyric = /^lyric:\s*/i.exec(line);
+    const body = lyric ? line.slice(lyric[0].length) : line;
+    if (!body.startsWith('|') || !body.endsWith('|')) return err(n, t('parser.gridRow', { line: clip(line) }));
+    if (lyric) {
+      const texts = body.split('|').slice(1, -1).map((s) => s.trim());
+      if (!row) err(n, t('parser.lyricRow'));
+      else if (texts.length !== row.length) err(n, t('parser.lyricCells', { count: texts.length, bars: row.length }));
+      else row.forEach((bar, c) => (bar.lyric = texts[c]));
+      row = null;
+      return;
+    }
+    const cells = body.replace(/\|[|.]/g, '|').split('|').slice(1, -1);
+    row = [];
     cells.forEach((cell, c) => {
       const bar = newBar(song.bars.length, n);
       bar.ticks = m.barTicks;
@@ -77,6 +92,7 @@ export function parseChordPro(text, song, err, warn) {
         else inBar(t('parser.unknownChord', { name: clip(tok) }));
       });
       song.bars.push(bar);
+      row.push(bar);
     });
   });
   if (grid) err(grid, t('parser.gridUnclosed'));

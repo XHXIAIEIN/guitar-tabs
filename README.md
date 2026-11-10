@@ -139,6 +139,7 @@ python -m http.server 5173
 
 {start_of_grid: 主歌 1}
 | G . . . | Em . . . | C . . . | D . . . |
+lyric: | I found a love for | me / Darling, just | dive right in, / and follow my | lead / Well, I found a |
 | G . . . | Em . . . | C . . . | G . D . |
 {end_of_grid}
 ```
@@ -147,6 +148,7 @@ python -m http.server 5173
 - `{meta: strum …}` 是弹唱的扫弦节奏型，正好一小节：`w h q e s` 是全音符到十六分音符，后面加 `.` 是附点，加 `3` 是三连音；`D` `U` `X` 是下扫、上扫、切音，`r` 是休止。
 - `{meta: instructions …}` 是练习说明，手指标记同 alphaTex。
 - 和弦写在 `{start_of_grid: 段落名}` 和 `{end_of_grid}` 之间。每行以 `|` 开头和结尾，`|` 分开小节。小节里每格占一拍，格数等于拍号的拍数；`.` 表示延续前一个和弦。grid 的一行在页面上占一行。
+- 和弦行下面可以紧跟一行 `lyric: | … | … |`，格数等于上面那行的小节数，每格的歌词显示在对应小节下面。这一行是本应用对 ChordPro 的扩展，其他 ChordPro 软件把它当普通文字。
 - `#` 开头的行是注释。
 
 ### 导入曲谱

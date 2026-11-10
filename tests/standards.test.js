@@ -75,9 +75,10 @@ test('chordsheetjs reads every ChordPro chart and finds the same meta data and g
     assert.equal(meta.instructions, song.meta.instructions);
     assert.ok(meta.strum && song.strum);
     const grids = sheet.paragraphs.filter((p) => p.type === 'grid');
-    assert.deepEqual(grids.map((p) => p.label), song.sections.map((s) => s.name), `${id} sections`);
-    // each literal grid row holds the cells of the bars that start a page line, in order
-    const rows = grids.flatMap((p) => p.lines.flatMap((l) => l.items.filter((it) => 'string' in it).map((it) => it.string)));
+    // a grid without a label goes on in the section before it
+    assert.deepEqual(grids.filter((p) => p.label).map((p) => p.label), song.sections.map((s) => s.name), `${id} sections`);
+    // each literal grid row holds the cells of the bars that start a page line, in order; lyric rows are the app's own
+    const rows = grids.flatMap((p) => p.lines.flatMap((l) => l.items.filter((it) => 'string' in it).map((it) => it.string))).filter((r) => !r.startsWith('lyric:'));
     const cells = rows.flatMap((r) => r.split('|').slice(1, -1).map((c) => c.trim().split(/\s+/)));
     assert.equal(cells.length, song.bars.length, `${id} bars`);
     cells.forEach((cell, k) => {

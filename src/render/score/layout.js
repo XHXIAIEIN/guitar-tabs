@@ -68,7 +68,7 @@ export function lineGeometry(bars, o) {
     g.beats = y + 1 * s;
     y += 12 * s;
   }
-  if (o.show.lyrics && bars.some((b) => b.events.some((e) => e.lyric))) {
+  if (o.show.lyrics && bars.some((b) => b.lyric || b.events.some((e) => e.lyric))) {
     g.lyric = y + 16 * s;
     y += 27 * s;
   }

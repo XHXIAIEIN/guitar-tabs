@@ -11,91 +11,80 @@
 | G . . . |
 {end_of_grid}
 
-{start_of_verse: 主歌 1}
-I found a [G]love for [Em]me
-Darling, just [C]dive right in,
-and follow my [D]lead
-Well, I found a [G]girl,
-Bea[Em]utiful and sweet
-I never [C]knew you were the someone
-waiting for [D]me
-{end_of_verse}
+{start_of_grid: 主歌 1}
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | I found a love for | me / Darling, just | dive right in, / and follow my | lead / Well, I found a |
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | girl, / Bea- | utiful and sweet / I never | knew you were the someone / waiting for | me |
+{end_of_grid}
 
-{start_of_verse: 导歌 1}
-Cause we were just kids when we [G]fell in love
-Not knowing [Em]what it was,
-I will not [C]give you up [G]this [D]time
-Darling just [G]kiss me slow,
-your heart is [Em]all I own
-And in your [C]eyes
-you're holding [D]mine
-{end_of_verse}
+{start_of_grid: 导歌 1}
+| G . . . | Em . . . | C . . . | G . D . |
+lyric: | Cause we were just kids when we fell in love / Not knowing | what it was, / I will not | give you up | this time / Darling just |
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | kiss me slow, / your heart is | all I own / And in your | eyes / you're holding | mine |
+{end_of_grid}
 
-{start_of_chorus: 副歌 1}
-Baby, [Em]I'm [C]dancing in the [G]dark,
-with [D]you between my [Em]arms
-[C]Barefoot on the [G]grass,
-[D]listening to our [Em]favourite song
-When you [C]said you looked a [G]mess,
-I whispered [D]underneath my [Em]breath
-But you [C]heard it, darling
-[G]you look [D]perfect tonight
-{end_of_chorus}
+{start_of_grid: 副歌 1}
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | Baby, I'm | dancing in the | dark, / with | you between my |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | arms | Barefoot on the | grass, | listening to our |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | favourite song / When you | said you looked a | mess, / I whispered | underneath my |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | breath / But you | heard it, darling | you look | perfect tonight |
+{end_of_grid}
 
 {start_of_grid}
 | G D Em D | C . D . |
 {end_of_grid}
 
-{start_of_verse: 主歌 2}
-Well, I found a [G]woman,
-stronger than [Em]anyone I know
-She shares my [C]dreams, I hope that someday
-I'll share her [D]home
-I found a [G]love,
-to carry [Em]more than just my secrets
-To carry [C]love,
-to carry children of our [D]own
-{end_of_verse}
+{start_of_grid: 主歌 2}
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | Well, I found a woman, / stronger than | anyone I know / She shares my | dreams, I hope that someday / I'll share her | home / I found a |
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | love, / to carry | more than just my secrets / To carry | love, / to carry children of our | own |
+{end_of_grid}
 
-{start_of_verse: 导歌 2}
-We are still kids, but we're [G]so in love,
-fighting [Em]against all odds
-I know we'll [C]be alright [G]this [D]time
-Darling just [G]hold my hand,
-be my girl, I'll [Em]be your man
-I see my [C]future in your [D]eyes
-{end_of_verse}
+{start_of_grid: 导歌 2}
+| G . . . | Em . . . | C . . . | G . D . |
+lyric: | We are still kids, but we're so in love, / fighting | against all odds / I know we'll | be alright | this time / Darling just |
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | hold my hand, / be my girl, I'll | be your man / I see my | future in your | eyes |
+{end_of_grid}
 
-{start_of_chorus: 副歌 2}
-Baby, [Em]I'm [C]dancing in the [G]dark,
-with [D]you between my [Em]arms
-[C]Barefoot on the [G]grass,
-[D]listening to our [Em]favourite song
-When I [C]saw you in that [G]dress,
-looking so [D]beautiful
-I [Em]don't de[C]serve this, darling [G]you look [D]perfect tonight
-{end_of_chorus}
+{start_of_grid: 副歌 2}
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | Baby, I'm | dancing in the | dark, / with | you between my |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | arms | Barefoot on the | grass, | listening to our |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | favourite song / When I | saw you in that | dress, / looking so | beautiful / I |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | don't de- | serve this, darling | you look | perfect tonight |
+{end_of_grid}
 
 {start_of_grid: 间奏}
 | G . . . | G . . . | Em . . . | Em . . . |
 | C . . . | C . . . | D . . . | D . . . |
 {end_of_grid}
 
-{start_of_chorus: 副歌 3}
-Baby, [Em]I'm [C]dancing in the [G]dark,
-with [D]you between my [Em]arms
-[C]Barefoot on the [G]grass,
-[D]listening to our [Em]favourite song
-I have [C]faith in what I [G]see,
-now I know [D]I have met an [Em]angel
-In [C]person, and [G]she looks [D]perfect
-{end_of_chorus}
+{start_of_grid: 副歌 3}
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | Baby, I'm | dancing in the | dark, / with | you between my |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | arms | Barefoot on the | grass, | listening to our |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | favourite song / I have | faith in what I | see, / now I know | I have met an |
+| Em . . . | C . . . | G . . . | D . . . |
+lyric: | angel / In | person, and | she looks | perfect |
+{end_of_grid}
 
-{start_of_verse: 尾奏}
-I [C]don't deserve this,
-[D]you look perfect
-tonight [G]
-{end_of_verse}
+{start_of_grid: 尾奏}
+| C . . . | D . . . | G . . . |
+lyric: | I don't deserve this, | you look perfect / tonight |  |
+{end_of_grid}
 
 {start_of_grid}
 | G D Em D | C . D . | G . . . |

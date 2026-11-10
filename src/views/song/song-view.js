@@ -42,8 +42,7 @@ export function songView(root, id, opts = {}) {
   const prefs = prefsFor(entry.prefsId, song);
   const canTranspose = !song.hasEvents;
   if (!canTranspose) prefs.transpose = 0;
-  const hasLyrics = song.bars.some((b) => b.events.some((e) => e.lyric));
-  if (perform) prefs.performShow ??= { tab: !hasLyrics || !song.chordsUsed.length, numbers: false, rhythm: false, lyrics: true, chords: true };
+  if (perform) prefs.performShow ??= { tab: !song.hasLyrics || !song.chordsUsed.length, numbers: false, rhythm: false, lyrics: true, chords: true };
   const live = { metronome: perform ? false : settings.metronome, guitar: perform ? false : settings.guitar };
   const seq = new Sequencer();
   const last = song.bars.length - 1;

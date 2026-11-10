@@ -55,4 +55,5 @@ function finishBars(song) {
   song.chordsUsed = used;
   song.melody = pitches;
   song.hasEvents = song.bars.some((b) => b.events.length);
+  song.hasLyrics = song.bars.some((b) => b.lyric || b.events.some((e) => e.lyric));
 }

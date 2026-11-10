@@ -81,7 +81,9 @@
     "gridCells": "这一小节写了 {count} 格，拍号是每小节 {beats} 拍（每个和弦或 . 占一拍）",
     "gridOpen": "上一个 start_of_grid 还没有 end_of_grid",
     "gridClosed": "这个 end_of_grid 前面没有 start_of_grid",
-    "gridUnclosed": "这个 start_of_grid 没有对应的 end_of_grid"
+    "gridUnclosed": "这个 start_of_grid 没有对应的 end_of_grid",
+    "lyricRow": "lyric: 行要紧跟在一行和弦小节下面",
+    "lyricCells": "这行歌词分了 {count} 格，上面的和弦行有 {bars} 小节"
   },
   "library": {
     "title": "曲谱",
@@ -215,7 +217,7 @@
       "<p><code>\\lyrics \"祝 你 生 日 快 乐\"</code> 写在开头，按顺序对到音符上，休止符不占字。空格分开音节，汉字之间也要空格；两个空格表示这个音不唱新字（拖腔）。英文单词里的 <code>-</code> 也分开音节。</p>",
       "<h3>ChordPro</h3>",
       "<p>开头写 <code>{title: 曲名}</code>、<code>{artist: …}</code>、<code>{key: G}</code>、<code>{capo: 1}</code>、<code>{tempo: 80}</code>、<code>{time: 4/4}</code>。<code>{meta: strum q D e D U r U D U}</code> 是弹唱的节奏型，<code>{meta: instructions …}</code> 是练习说明。</p>",
-      "<p>和弦写在 <code>{start_of_grid: 主歌}</code> 和 <code>{end_of_grid}</code> 之间，冒号后面是段落名。每行用 <code>|</code> 分成小节，小节里每格占一拍：<code>| G . . . | C . D . |</code>，<code>.</code> 表示延续前一个和弦。一行在页面上占一行。</p>",
+      "<p>和弦写在 <code>{start_of_grid: 主歌}</code> 和 <code>{end_of_grid}</code> 之间，冒号后面是段落名。每行用 <code>|</code> 分成小节，小节里每格占一拍：<code>| G . . . | C . D . |</code>，<code>.</code> 表示延续前一个和弦。一行在页面上占一行。下面可以跟一行歌词，同样用 <code>|</code> 分开，每格是上面那个小节的歌词：<code>lyric: | I found a love for | me |</code>。</p>",
       "<h3>注释</h3>",
       "<p>alphaTex 里 <code>//</code> 到行尾是注释；ChordPro 里 <code>#</code> 开头的行是注释。</p>"
     ]

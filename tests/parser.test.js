@@ -85,6 +85,25 @@ test('ChordPro grids give one measure per cell and one beat per token', () => {
   assert.deepEqual(lines(10), [[0, 1, true], [1, 1, false], [2, 1, false], [3, 1, true]]);
 });
 
+test('a lyric row gives each bar of the grid row above it its lyrics', () => {
+  const s = parseSong(`{time: 4/4}
+{start_of_grid}
+| G . . . | C . . . | D . . . |
+lyric: | I found a love | | for me |
+| G . . . |
+{end_of_grid}`);
+  assert.deepEqual(s.errors, []);
+  assert.deepEqual(s.bars.map((b) => b.lyric), ['I found a love', '', 'for me', '']);
+  assert.equal(s.hasLyrics, true);
+  const bad = parseSong(`{time: 4/4}
+{start_of_grid}
+lyric: | a |
+| G . . . | C . . . |
+lyric: | a |
+{end_of_grid}`);
+  assert.deepEqual(bad.errors.map((e) => e.line), [3, 5]);
+});
+
 test('ChordPro problems name their line', () => {
   const s = parseSong(`{title: P}
 {subtitle: x}

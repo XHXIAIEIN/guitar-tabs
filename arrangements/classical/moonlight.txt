@@ -1,0 +1,19 @@
+\transpose -4
+\title "月光奏鸣曲 第一乐章"
+\artist "贝多芬"
+\tempo 54
+\ts 4 4
+\ks C#minor
+\systemsLayout (2 2 2 2 1)
+\instructions "原曲升 c 小调，移到 a 小调。每拍弹三个音的三连音，拍子开头的低音和三连音的第一个音一起弹，让低音一直响。"
+
+\section "引子" (G3 C3).8{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} |
+(G3 B2).8{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} |
+(A3 A2).8{tu 3} C4{tu 3} E4{tu 3} A3{tu 3} C4{tu 3} E4{tu 3} (A3 F3).8{tu 3} Dn4{tu 3} F4{tu 3} A3{tu 3} Dn4{tu 3} F4{tu 3} |
+(G3 G2).8{tu 3} B#3{tu 3} F4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} (G3 G2).8{tu 3} C4{tu 3} D4{tu 3} F3{tu 3} B#3{tu 3} D4{tu 3} |
+
+\section "旋律" (G3 C3).8{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} (G4 G3).8{tu 3} C4{tu 3} (G4 E4).8{tu 3} |
+(G4 G3 B#2).8{tu 3} D4{tu 3} F4{tu 3} G3{tu 3} D4{tu 3} F4{tu 3} G3{tu 3} D4{tu 3} F4{tu 3} (G4 G3).8{tu 3} D4{tu 3} (G4 F4).8{tu 3} |
+(G4 G3 C3).8{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} (A4 A3 F3).8{tu 3} C4{tu 3} F4{tu 3} A3{tu 3} C4{tu 3} F4{tu 3} |
+(G4 G3 G2).8{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} (F4 F3 G2).8{tu 3} B#3{tu 3} D4{tu 3} F3{tu 3} B#3{tu 3} D4{tu 3} |
+(E4 G3 E3).8{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3} G3{tu 3} C4{tu 3} E4{tu 3}

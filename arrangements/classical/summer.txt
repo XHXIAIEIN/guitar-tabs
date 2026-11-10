@@ -1,0 +1,18 @@
+\transpose -12
+\title "Summer"
+\artist "久石让《菊次郎的夏天》"
+\tempo 90
+\ts 4 4
+\ks D
+\systemsLayout (4 4 4 4 1)
+\instructions "前奏是左手的分解和弦。连音线连着的音改成重弹一下。"
+
+\section "前奏" B3.8 F4 B4 F4 G3 D4 G4 D4 | A3.8 E4 A4 E4 D4 A4 D5 A4 | B3.8 F4 B4 F4 G3 D4 G4 D4 | A3.8 E4 A4 E4 D4 A4 A4.16 D5 E5 F5 |
+
+\section "主题" (E5 B3).8 D5.16 D5 D5.4 G3.4 A4.16 D5 E5 F5 | (E5 A3).8 D5.16 E5 E5.8 F5 (F5 D4).4 A4.16 D5 E5 F5 |
+(E5 B3).8 D5.16 D5 D5.4 G3.4 A4.16 D5 E5 F5 | (E5 A3).8 D5.16 E5 E5.8 A5 (F5 D4).4 F5.8 G5 |
+(A5 A3).8 A5.16 A5 A5.8 A5 (A5 G3).8 F5.16 D5 D5.8 F5.16 G5 | (A5 F3).8 A5.16 A5 A5.8 A5 (A5 B3).8 F5.16 D5 D5.8 D5.16 E5 |
+(F5 D5 E3).8 (F5 D5).16 (F5 D5) (F5 D5).8 (F5 D5) (F5 G3).8 B5 E5.16{tu 3} F5{tu 3} E5{tu 3} D5.8 | (E5 A3).4 (E5 B4).8 B4.16 B4 (E5 B4 A3).8 C5 A4.16 D5 E5 F5 |
+(E5 B3).8 D5.16 D5 D5.4 G3.4 A4.16 D5 E5 F5 | (E5 A3).8 D5.16 E5 E5.8 F5 (F5 D4).4 A4.16 D5 E5 F5 |
+(E5 B3).8 D5.16 D5 D5.4 G3.4 A4.16 D5 E5 F5 | (E5 A3).8 D5.16 E5 E5.8 A5 (F5 D4).4 F5.8 G5 |
+(A5 F5 D4).1

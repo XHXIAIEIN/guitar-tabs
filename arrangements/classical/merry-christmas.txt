@@ -1,0 +1,17 @@
+\transpose -12
+\title "圣诞快乐，劳伦斯先生"
+\artist "坂本龙一"
+\tempo 180
+\ts 12 8
+\ks C
+\systemsLayout (2 2 2 2 2 2 2 2)
+\instructions "前奏部分，每小节第一拍的低音用拇指 {T} 弹，让它响满整小节。第 16 小节按第 8 小节补齐。"
+
+\section "前奏" (E5 F3).8 D5 E5 A5 E5 D5 E5 D5 E5 A5 E5 D5 | (E5 F3).8 D5 E5 G5 E5 D5 E5 D5 E5 G5 E5 D5 |
+(D5 E3).8 C5 D5 G5 D5 C5 D5 C5 D5 G5 D5 C5 | (D5 A3).8 C5 D5 G5 D5 C5 (B4 G3).8 A4 B4 E5 B4 A4 |
+(E5 F3).8 D5 E5 A5 E5 D5 E5 D5 E5 A5 E5 D5 | (E5 F3).8 D5 E5 G5 E5 D5 E5 D5 E5 G5 E5 D5 |
+(D5 E3).8 C5 D5 B5 D5 C5 G5 D5 C5 B5 D5 C5 | (D5 A3).8 C5 D5 B5 D5 C5 G5 D5 C5 B5 D5 C5 |
+(E5 F3).8 D5 E5 A5 E5 D5 E5 D5 E5 A5 E5 D5 | (E5 F3).8 D5 E5 G5 E5 D5 E5 D5 E5 G5 E5 D5 |
+(D5 E3).8 C5 D5 G5 D5 C5 D5 C5 D5 G5 D5 C5 | (D5 A3).8 C5 D5 G5 D5 C5 (B4 G3).8 A4 B4 E5 B4 A4 |
+(E5 F3).8 D5 E5 A5 E5 D5 E5 D5 E5 A5 E5 D5 | (E5 F3).8 D5 E5 G5 E5 D5 E5 D5 E5 G5 E5 D5 |
+(D5 E3).8 C5 D5 B5 D5 C5 G5 D5 C5 B5 D5 C5 | (D5 A3).8 C5 D5 B5 D5 C5 G5 D5 C5 B5 D5 C5

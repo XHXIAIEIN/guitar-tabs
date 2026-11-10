@@ -31,5 +31,14 @@
   {"id":"totoro","group":"anime","level":"入门"},
   {"id":"huluwa","group":"anime","level":"入门"},
   {"id":"really-love-you","group":"pop","level":"进阶"},
+  {"id":"fur-elise","group":"classical","level":"进阶"},
+  {"id":"bach-minuet","group":"classical","level":"进阶"},
+  {"id":"chopin-waltz","group":"classical","level":"进阶"},
+  {"id":"turkish-march","group":"classical","level":"进阶"},
+  {"id":"moonlight","group":"classical","level":"进阶"},
+  {"id":"chopin-nocturne","group":"classical","level":"进阶"},
+  {"id":"merry-christmas","group":"classical","level":"进阶"},
+  {"id":"summer","group":"classical","level":"进阶"},
+  {"id":"night-piano-5","group":"classical","level":"进阶"},
   {"id":"perfect","group":"song","format":"cho","level":"进阶"}
 ]

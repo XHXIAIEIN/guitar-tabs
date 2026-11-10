@@ -2,7 +2,7 @@
 // under arrangements/ is alphaTex whose notes are pitch names such as `D4`, `F#3` or `(G2 D4)` instead of
 // `fret.string`. `npm run arrange` picks a string and fret for each note and writes the score at the same path under
 // scores/; the rest of the source passes through unchanged.
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { TUNING, mod12 } from '../src/music/pitch.js';
 import { keyFromPc, parseKey } from '../src/music/key.js';
@@ -60,13 +60,15 @@ function scanEvents(text) {
       group = null;
       i++;
     } else {
-      PITCH.lastIndex = i;
+      // `-.G4` ties to the G4 before it
+      const tie = text.startsWith('-.', i);
+      PITCH.lastIndex = tie ? i + 2 : i;
       const m = /[\w\\]/.test(text[i - 1] ?? '') ? null : PITCH.exec(text);
       if (!m) {
         i++;
         continue;
       }
-      const note = { start: i, end: i + m[0].length, letter: m[1], acc: m[2] ?? '', octave: +m[3], string: m[4] ? +m[4] : null };
+      const note = { start: i, end: PITCH.lastIndex, letter: m[1], acc: m[2] ?? '', octave: +m[3], string: m[4] ? +m[4] : null, tie };
       if (group) group.push(note);
       else events.push([note]);
       i = note.end;
@@ -149,7 +151,7 @@ function fingerings(eventOptions) {
 /**
  * Turns pitch-written source into alphaTex. Pitch names follow the `\ks` key signature unless they carry `#`, `b`, `##`,
  * `bb` or `n` (natural); an accidental holds for its own note only. `\transpose N` moves every note N semitones and
- * changes the key with it. `D4@2` forces string 2.
+ * changes the key with it. `D4@2` forces string 2. `-.D4` ties to the D4 before it and stays on its string.
  */
 export function arrange(source) {
   let text = source;
@@ -173,9 +175,23 @@ export function arrange(source) {
       n.text = text.slice(n.start, n.end);
     }
   }
-  const chosen = fingerings(events.map((notes) => options(notes, lineAt(text, notes[0].start))));
-  const places = chosen.flat().sort((a, b) => b.note.start - a.note.start);
-  for (const { note, s, f } of places) text = text.slice(0, note.start) + `${f}.${s}` + text.slice(note.end);
+  const played = events.map((notes) => notes.filter((n) => !n.tie)).filter((notes) => notes.length);
+  const placed = new Map(fingerings(played.map((notes) => options(notes, lineAt(text, notes[0].start)))).flat().map((p) => [p.note, p]));
+  // A tied note takes the string of the last note of its pitch, which must still be the last note on that string.
+  const all = events.flat();
+  const lastOn = [];
+  for (const [k, n] of all.entries()) {
+    if (n.tie) {
+      const from = all.slice(0, k).findLast((o) => o.midi === n.midi);
+      if (!from) throw new Error(`line ${lineAt(text, n.start)}: ${n.text} has no note to tie to`);
+      const { s } = placed.get(from);
+      if (lastOn[s] !== from) throw new Error(`line ${lineAt(text, n.start)}: another note on string ${s} cuts off the tie ${n.text}`);
+      placed.set(n, { note: n, s });
+    }
+    lastOn[placed.get(n).s] = n;
+  }
+  const places = [...placed.values()].sort((a, b) => b.note.start - a.note.start);
+  for (const { note, s, f } of places) text = text.slice(0, note.start) + (note.tie ? `-.${s}` : `${f}.${s}`) + text.slice(note.end);
   return text;
 }
 
@@ -200,6 +216,7 @@ export function arrangements() {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   for (const [, score, text] of arrangements()) {
+    mkdirSync(new URL('.', new URL(score, ROOT)), { recursive: true });
     writeFileSync(new URL(score, ROOT), text);
     console.log(score);
   }

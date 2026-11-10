@@ -41,7 +41,8 @@
   },
   "version": {
     "simple": "简单版",
-    "full": "完整版"
+    "full": "完整版",
+    "original": "原唱节奏"
   },
   "strum": {
     "D": "下",

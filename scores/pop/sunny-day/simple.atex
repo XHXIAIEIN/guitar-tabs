@@ -1,0 +1,14 @@
+// Generated from arrangements/pop/sunny-day/simple.txt by scripts/arrange.mjs. Edit the source, not this file.
+\title "晴天"
+\artist "周杰伦"
+\tempo 70
+\ts 4 4
+\ks G
+\systemsLayout (4 4 4 3)
+\instructions "钢琴简易版，比钢琴低一个八度。前奏是两只手轮流弹的音，合成一条旋律；主歌只弹右手。"
+
+\section "前奏" 0.1.4 8.2 10.1 8.2 | 5.3 3.2.8 0.1 10.1.4 8.2 | 0.3 7.3 10.1 8.2 | 0.3 10.1 9.5 10.1 |
+7.5 0.3 3.2 0.3 | 3.5 0.4.8 2.4 3.2.4 0.3 | 3.6 0.4 3.2 0.3 | 3.6 3.2 2.6 3.2 |
+
+\section "主歌" r.4 3.2 3.2 0.3 | 0.3.2 2.3.4 0.2 | r.4 3.2 3.2 0.3 | 0.3.4 2.3.8 0.2 2.3 0.3 0.4.4 |
+r.4 3.2 3.2 0.3 | 0.3.2 2.3.4 0.2 | r.4 0.2.2 0.2.4

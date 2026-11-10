@@ -30,6 +30,12 @@ test('a forced string and text in quotes or comments stay as written', () => {
   assert.equal(text, '\\title "A4 B4" // C4\n\\section "E5" 5.2');
 });
 
+test('a tied note goes on the string of the note it continues', () => {
+  assert.equal(arrange('G3.8 -.G3.2 A3.8 | -.A3 G3'), '0.3.8 -.3.2 2.3.8 | -.3 0.3');
+  assert.throws(() => arrange('C4\n-.D4'), /line 2/);
+  assert.throws(() => arrange('G3 A3@3\n-.G3'), /line 2/);
+});
+
 test('a note out of reach names its line', () => {
   assert.throws(() => arrange('\\ks C\nC4\nC2'), /line 3/);
 });

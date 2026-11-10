@@ -37,6 +37,13 @@ const MELODIES = {
     "5 3 5 2 3 2 1 1 7, 6, 7, 1 7, 1 2 3 5 3 5 2' 1' 7 1' 1 7, 6, 7, 1 7, 1 2 1 5 6 7 1' 7 1' 7 6 5 6 5 1 2 3 " +
     "4 3 4 5 1 2 3 3 5 6 7 1' 7 1' 2' 1' 2' 3' 5 1 2 3 4 3 4 3 2 1 7, 1",
   'dandelion-promise': "3, 5, 1 3 3 5 2 2 5 7, 1 3 4 5 1 1 2 3 3, 5, 1 3 3 4 2 2 5 7, 1 3 4 5 1 1 2 1 3,",
+  // two piano arrangements: the simple one opens with the intro, the original one starts at the verse
+  'sunny-day': {
+    simple: '6 1 5 1 4 5 6 5 1 1 5 5 1 1 5 7 5 6 1 5 1 4 5 6 5 1 1 5 5 1 1 5 7 5 5 5 1 1 2 3 5 5 1 1 2 3 2 1 5 5 5 1 1 2 3 3 3',
+    original:
+      '5 5 1 1 2 3 5 5 1 1 2 3 2 1 5 5 5 1 1 2 3 3 3 3 4 3 2 4 3 1 5 1 1 3 4 3 2 1 2 3 3 3 3 2 3 2 1 ' +
+      '5 1 1 3 4 3 2 1 2 3 3 3 3 2 3 2 1 7 1 1 1 7 1 1 1 1 1 7 1 1 1 1 1 7 1 1 1 1 1 5 5 5 5 5 5 5 5 5 5 5 5 5 4 4 3 2 1 7 1',
+  },
 };
 
 const versionsOf = (entry) => entry.versions ?? [{ id: '', text: entry.text }];
@@ -62,7 +69,8 @@ test('built-in songs parse cleanly and their melodies match the written 简谱',
       assert.deepEqual(s.errors, [], `${id} errors`);
       assert.deepEqual(s.warnings, [], `${id} warnings`);
       for (const name of s.chordsUsed) assert.ok(chordShapes(name).length, `${id} uses ${name} without a shape`);
-      const melody = MELODIES[entry.id];
+      const written = MELODIES[entry.id];
+      const melody = typeof written === 'object' ? written[version] : written;
       if (melody) assert.ok(degreesOnly(melodyDigits(s)).startsWith(degreesOnly(melody)), `${id}: ${melodyDigits(s)}`);
     }
   }

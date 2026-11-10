@@ -39,6 +39,7 @@
   {"id":"rainbow","group":"pop","level":"入门"},
   {"id":"under-mount-fuji","group":"pop","level":"进阶"},
   {"id":"chrysanthemum-terrace","group":"pop","level":"进阶"},
+  {"id":"sunny-day","group":"pop","versions":[{"id":"simple","level":"入门"},{"id":"original","level":"进阶"}]},
   {"id":"fur-elise","group":"classical","level":"进阶"},
   {"id":"bach-minuet","group":"classical","level":"进阶"},
   {"id":"canon","group":"classical","level":"进阶"},

@@ -1,0 +1,14 @@
+\transpose -12
+\title "晴天"
+\artist "周杰伦"
+\tempo 70
+\ts 4 4
+\ks G
+\systemsLayout (4 4 4 3)
+\instructions "钢琴简易版，比钢琴低一个八度。前奏是两只手轮流弹的音，合成一条旋律；主歌只弹右手。"
+
+\section "前奏" E5.4 G5 D6 G5 | C5 D5.8 E5 D6.4 G5 | G4 D5 D6 G5 | G4 D6 F4 D6 |
+E4 G4 D5 G4 | C4 D4.8 E4 D5.4 G4 | G3 D4 D5 G4 | G3 D5 F3 D5 |
+
+\section "主歌" r.4 D5 D5 G4 | G4.2 A4.4 B4 | r.4 D5 D5 G4 | G4.4 A4.8 B4 A4 G4 D4.4 |
+r.4 D5 D5 G4 | G4.2 A4.4 B4 | r.4 B4.2 B4.4

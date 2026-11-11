@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v20';
+const CACHE = 'guitar-v21';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -12,12 +12,8 @@ const SHELL = [
   'scores/anime/doraemon.atex',
   'scores/anime/huluwa.atex',
   'scores/anime/conan.atex',
-  'scores/anime/inuyasha.atex',
   'scores/anime/butterfly.atex',
   'scores/anime/dragon-ball.atex',
-  'scores/anime/astro-boy.atex',
-  'scores/anime/slam-dunk.atex',
-  'scores/anime/tiga.atex',
   'scores/anime/big-head-son.atex',
   'scores/anime/big-ear-tutu.atex',
   'scores/anime/chibi-maruko.atex',
@@ -59,8 +55,6 @@ const SHELL = [
   'scores/practice/folk/jasmine-flower.atex',
   'scores/practice/folk/red-river-valley/full.atex',
   'scores/practice/folk/red-river-valley/simple.atex',
-  'scores/practice/folk/saints/full.atex',
-  'scores/practice/folk/saints/simple.atex',
   'scores/practice/folk/santa-lucia.atex',
   'scores/practice/happy-birthday/full.atex',
   'scores/practice/happy-birthday/simple.atex',

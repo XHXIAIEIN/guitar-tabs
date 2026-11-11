@@ -4,16 +4,16 @@
 \tempo 100
 \ts 2 4
 \ks C
-\systemsLayout (4 4 4 4 4 4 4 4 4 2)
-\instructions "原曲是 C 调，这里移到 G 调。2/4 拍，「图图」那句的十六分音符是一短一长一短，先慢慢数清楚。"
+\systemsLayout (4 4 4 4 4 4 3 4 4 2)
+\instructions "原曲是 C 调，这里移到 G 调。2/4 拍，十六分音符先慢慢数清楚。"
 
-\section "全曲" C5.8 E5 G5 C6 | A#5.16 An5.8 G5.16 -.G5.4 | r.8 E5 C5 C5 | A#4.4 C5 |
-r.8 E5 C5 C5 | E5.2 | r.8 E5 C5 C5 | A#4.4 C5 |
-A#4.8 A#4 A#4 An4.16 G4 | -.G4.2 | r.8 E5 C5 C5 | A#4.4 C5 |
-r.8 E5 C5 C5 | E5.2 | r.8 E5 C5 C5 | A#4.4 C5 |
-r.8 D5 D5 D5.16 C5 | -.C5.2 | r.8 F5 F5 F5.16 C5 | D#5.4 F5 |
-r.8 F5.16 C5 D#5.8 Dn5.16 C5 | -.C5.2 | r.8 F5 F5 F5.16 C5 | D#5.4 F5 |
-r.8 G5 G5 F5.16 G5 | -.G5.2 | -.G5.2 | E5.4 C5 |
-r.8 E5.16 C5 E5.8 C5 | E5 C5 E5 F5 | G5 A5.16 G5 -.G5.4 | E5 C5 |
-r.8 E5 E5 F5 | G5 A5 A#5 An5 | G5.4 F5.8 G5 | -.G5.2 |
-E5.4 C5 | -.C5.4 r
+\section "全曲" C5.8 E5 G5 C6 | A#5.16 An5.8{d} G5.4 | E5 C5.8 C5 | A#4.4 C5 |
+E5 C5.8 C5 | E5.2 | E5.4 C5.8 C5 | A#4.4 C5 |
+A#4.8 A#4 A#4 An4 | G4.2 | E5.4 C5.8 C5 | A#4.4 C5 |
+E5 C5.8 C5 | E5.2 | E5.4 C5.8 C5 | A#4.4 C5 |
+D5 D5.8 D5 | C5.2 | F5.4 F5.8 F5.16 C5 | D#5.4 F5 |
+F5.8{d} C5.16 D#5.8 Dn5 | C5.2 | F5.4 F5.8 F5.16 C5 | D#5.4 F5 |
+G5 G5.8 F5 | G5.2 | E5.4 C5 |
+E5.8{d} C5.16 E5.8 C5 | E5 C5 E5 F5 | G5 A5 G5.4 | E5 C5 |
+E5 E5.8 F5 | G5 A5 A#5 An5 | G5.4 F5 | G5.2 |
+E5 | C5

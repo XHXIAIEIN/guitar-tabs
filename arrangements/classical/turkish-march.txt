@@ -4,14 +4,14 @@
 \tempo 100
 \ts 2 4
 \ks Aminor
-\systemsLayout (5 4 4 4 4 4)
+\systemsLayout (5 4 4 4 4 3)
 \instructions "从十六分音符弱起，先降速练顺。两个音叠在一起的三度用 {1} {2} 指或 {2} {3} 指一起按。第 20 小节以后按原曲的结束句收尾。"
 
-\section "主题" \ac B4.16 A4 G#4 A4 | (C5 A3).8 r.8 D5.16 C5 B4 C5 | (E5 A3).8 r.8 F5.16 E5 D#5 E5 | (B5 A3).16 A5 G#5 A5 B5 A5 G#5 A5 | (C6 A3).4 A5.8 C6.8 |
-(B5 E3).8 A5 G#5 A5 | (B5 E3).8 A5 G#5 A5 | (B5 E3).8 A5 G#5 F#5 | (E5 E3).4 (E5 C5).8 (F5 D5).8 |
+\section "主题" \ac B4.16 A4 G#4 A4 | (C5 A3).4 D5.16 C5 B4 C5 | (E5 A3).4 F5.16 E5 D#5 E5 | (B5 A3) A5 G#5 A5 B5 A5 G#5 A5 | (C6 A3).4 A5.8 C6 |
+(B5 E3) A5 G#5 A5 | (B5 E3) A5 G#5 A5 | (B5 E3) A5 G#5 F#5 | (E5 E3).4 (E5 C5).8 (F5 D5) |
 
-\section "中段" (G5 E5 C4).8 (G5 E5).8 A5.16 G5 F5 E5 | (D5 B4 G3).8 G4.8 (E5 C5).8 (F5 D5).8 | (G5 E5 C4).8 (G5 E5).8 A5.16 G5 F5 E5 | (D5 B4 G3).4 (C5 A4).8 (D5 B4).8 |
-(E5 C5 A3).8 (E5 C5).8 F5.16 E5 D5 C5 | (B4 G#4 E3).8 E4.8 (C5 A4).8 (D5 B4).8 | (E5 C5 A3).8 (E5 C5).8 F5.16 E5 D5 C5 | (B4 G#4 E3).4 B4.16 A4 G#4 A4 |
+\section "中段" (G5 E5 C4) (G5 E5) A5.16 G5 F5 E5 | (D5 B4 G3).8 G4 (E5 C5) (F5 D5) | (G5 E5 C4) (G5 E5) A5.16 G5 F5 E5 | (D5 B4 G3).4 (C5 A4).8 (D5 B4) |
+(E5 C5 A3) (E5 C5) F5.16 E5 D5 C5 | (B4 G#4 E3).8 E4 (C5 A4) (D5 B4) | (E5 C5 A3) (E5 C5) F5.16 E5 D5 C5 | (B4 G#4 E3).4 B4.16 A4 G#4 A4 |
 
-\section "主题再现" (C5 A3).8 r.8 D5.16 C5 B4 C5 | (E5 A3).8 r.8 F5.16 E5 D#5 E5 | (B5 A3).16 A5 G#5 A5 B5 A5 G#5 A5 | (C6 A3).4 A5.8 C6.8 |
-(B5 E3).8 A5 G#5 A5 | E5.8 F5 D5 C5 | (B4 E3).4 (A4 A3).4
+\section "主题再现" (C5 A3).4 D5.16 C5 B4 C5 | (E5 A3).4 F5.16 E5 D#5 E5 | (B5 A3) A5 G#5 A5 B5 A5 G#5 A5 | (C6 A3).4 A5.8 C6 |
+(B5 E3) A5 G#5 A5 | E5 F5 D5 C5 | (B4 E3).4 (A4 A3)

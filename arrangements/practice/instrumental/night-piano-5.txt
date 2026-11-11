@@ -4,13 +4,13 @@
 \tempo 90
 \ts 4 4
 \ks Eb
-\systemsLayout (4 4 4 4 4)
+\systemsLayout (4 3 4 4 3)
 \instructions "原曲降 E 大调，移到 A 大调。低音用拇指 {T} 弹，长音时让它一直响。"
 
-\section "第一段" r.2 C5.8 D5 E5 G5 | (C6 A4).2 B4.8 D5 E5 G5 | (C6 B3).2 F6.8 E6 D6 E6 | (C6 C4).1 |
-r.2 C5.8 D5 E5 G5 | (C6 A4).2 C5.8 D5 E5 G5 | (C6 B3).2 F6.8 E6 D6 E6 | (C6 C4).1 |
+\section "第一段" \ac C5.8 D5 E5 G5 | (C6 A4).2 B4.8 D5 E5 G5 | (C6 B3).2 F6.8 E6 D6 E6 | (C6 C4).2 C5.8 D5 E5 G5 |
+(C6 A4).2 C5.8 D5 E5 G5 | (C6 B3).2 F6.8 E6 D6 E6 | (C6 C4).1 |
 
 \section "第二段" (C4).2 G5.8 A5 B5 E6 | (D6 A4).4{d} E6.8 E6 E6 D6 C6 | (D6 B3).2 D6.8 E6 F6 E6 | (G5 E4).4{d} G5.8 B5 A5 B5 E6 |
-(C6 C4).2 C5.8 D5 E5 G5 | (A5 A4).4{d} E6.8 E6 D6 E6 D6 | (C6 B3).2 D6.8 C6 B5 C6 | (C6 C4).1 |
+(C6 C4).2 C5.8 D5 E5 G5 | (A5 A4).4{d} E6.8 E6 D6 E6 D6 | (C6 B3).2 D6.8 C6 B5 C6 | (C6 C4).2 C5.8 D5 E5 G5 |
 
-\section "再现" r.2 C5.8 D5 E5 G5 | (C6 A4).2 B4.8 D5 E5 G5 | (C6 B3).2 F6.8 E6 D6 E6 | (C6 C4).2 r.2
+\section "再现" (C6 A4).2 B4.8 D5 E5 G5 | (C6 B3).2 F6.8 E6 D6 E6 | (C6 C4).1

@@ -7,8 +7,8 @@
 \systemsLayout (3 2 2 2)
 \instructions "原曲降 E 大调，移到 C 大调。从最后一个八分音符弱起，每小节分四组，每组三个八分音符。第 6 到 8 小节的装饰音型简化成第 2 到 4 小节的样子。"
 
-\section "主题" \ac B4.8 | (G5 E4).2 F5.8 G5 (F5 E4).4{d} E5.4 B4.8 | (G5 C4).4 C5.8 C6.4 G5.8 (B5 F4).4{d} A5.4 G5.8 |
-(F5 B3).4{d} G5.4 D5.8 (E5 C4).4{d} C5.4{d} | (B4 B3).8 D6 C6 B5.16 A5 G5 A5 C5 D5 (E5 E4).4{d} r.4 B4.8 |
+\section "主题" \ac B4.8 | (G5 E4).2 F5.8 G5 (F5 E4).4{d} E5 B4.8 | (G5 C4).4 C5.8 C6.4 G5.8 (B5 F4).4{d} A5 G5.8 |
+(F5 B3).4{d} G5 D5.8 (E5 C4).4{d} C5{d} | (B4 B3).8 D6 C6 B5.16 A5 G5 A5 C5 D5 (E5 E4).4{d} B4{d} |
 
-\section "变奏" (G5 E4).4{d} F5.16 G5 F5 En5 F5 G5 (F5 E4).8 E5.4 E5.16 F5 E5 D5 E5 F5 | (G5 C4).4 C5.8 C6.4 G5.8 (B5 F4).4{d} A5.4 G5.8 |
-(F5 B3).4{d} G5.4 D5.8 (E5 C4).4{d} C5.4{d} | (B4 B3).8 D6 C6 B5.16 A5 G5 A5 C5 D5 (E5 E4).2{d}
+\section "变奏" (G5 E4){d} F5.16 G5 F5 En5 F5 G5 (F5 E4).8 E5.4 E5.16 F5 E5 D5 E5 F5 | (G5 C4).4 C5.8 C6.4 G5.8 (B5 F4).4{d} A5 G5.8 |
+(F5 B3).4{d} G5 D5.8 (E5 C4).4{d} C5{d} | (B4 B3).8 D6 C6 B5.16 A5 G5 A5 C5 D5 (E5 E4).2{d}

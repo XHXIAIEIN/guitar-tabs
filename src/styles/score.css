@@ -1,11 +1,12 @@
 /* score elements; sizes scale with --s set on each line's svg */
 .bar-bg { fill: transparent; cursor: pointer; }
 @media (hover: hover) { .bar:hover .bar-bg { fill: var(--hover); } }
-.bar.in-loop .bar-bg { fill: var(--loop-soft); }
+/* a set loop shows only as a thin line over its bars; the tint marks the bars while picking */
+.selecting .bar.in-loop .bar-bg { fill: var(--loop-soft); }
 .bar.is-cursor .bar-bg { fill: color-mix(in srgb, var(--accent) 7%, transparent); }
 .bar.is-current .bar-bg { fill: var(--accent-soft); }
 .loop-mark { fill: var(--loop); opacity: 0; }
-.bar.in-loop .loop-mark { opacity: 1; }
+.bar.in-loop .loop-mark { opacity: 0.5; }
 .cursor-mark { fill: var(--accent); opacity: 0; }
 .bar.is-cursor .cursor-mark { opacity: 1; }
 .selecting .bar-bg { cursor: crosshair; }

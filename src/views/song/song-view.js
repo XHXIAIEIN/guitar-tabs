@@ -1,7 +1,7 @@
 // Song page for practice, and the same page in performance mode (big chords + lyrics, stage colours).
 import { config } from '../../core/config.js';
 import { t } from '../../core/i18n.js';
-import { h } from '../../ui/dom.js';
+import { h, fill } from '../../ui/dom.js';
 import { icon } from '../../ui/icons.js';
 import { iconButton } from '../../ui/controls.js';
 import { closePanel } from '../../ui/panel.js';
@@ -367,7 +367,13 @@ export function songView(root, id, opts = {}) {
     if (prefs.loop) return replaceLoop(null);
     hideTool();
     selecting = 'first';
-    showBanner(t('song.loopPickFirst'));
+    showBanner(t('song.loopPickFirst'), h('button', { class: 'btn small', type: 'button', onclick: loopWhole }, t('song.loopWhole')));
+  }
+
+  function loopWhole() {
+    endSelect();
+    setCursor(0);
+    replaceLoop([0, last]);
   }
 
   function pickLoop(i) {
@@ -393,18 +399,20 @@ export function songView(root, id, opts = {}) {
     scoreEl.classList.remove('selecting');
   }
 
-  function showBanner(msg) {
+  function showBanner(msg, action = null) {
     scoreEl.classList.add('selecting');
     banner.hidden = false;
-    banner.replaceChildren(h('span', null, msg), h('button', { class: 'btn small', type: 'button', onclick: endSelect }, t('common.cancel')));
+    fill(banner, h('span', null, msg), action, h('button', { class: 'btn small', type: 'button', onclick: endSelect }, t('common.cancel')));
   }
+
+  const loopText = ([a, b]) => (a === 0 && b === last ? t('song.loopWholeLabel') : `${a + 1}–${b + 1}`);
 
   function setLoop(range) {
     prefs.loop = range;
     persistPrefs();
     handle.setLoop(...(range ?? [null, null]));
     loopBtn.classList.toggle('on', !!range);
-    loopLabel().textContent = range ? `${range[0] + 1}–${range[1] + 1}` : t('song.loop');
+    loopLabel().textContent = range ? loopText(range) : t('song.loop');
     if (toolBar !== null) openTool(toolBar);
     if (playing) start(range ? range[0] : current ?? cursor);
   }
@@ -413,7 +421,9 @@ export function songView(root, id, opts = {}) {
   function replaceLoop(range) {
     const old = prefs.loop;
     setLoop(range);
-    if (old) toast(t('song.loopCancelled', { from: old[0] + 1, to: old[1] + 1 }), [t('common.undo'), () => setLoop(old)]);
+    if (!old) return;
+    const msg = old[0] === 0 && old[1] === last ? t('song.loopCancelledWhole') : t('song.loopCancelled', { from: old[0] + 1, to: old[1] + 1 });
+    toast(msg, [t('common.undo'), () => setLoop(old)]);
   }
 
   // ---------- bar tool ----------
@@ -501,7 +511,7 @@ export function songView(root, id, opts = {}) {
   updatePlay();
   if (prefs.loop) {
     loopBtn.classList.add('on');
-    loopLabel().textContent = `${prefs.loop[0] + 1}–${prefs.loop[1] + 1}`;
+    loopLabel().textContent = loopText(prefs.loop);
   }
   renderNow();
   scrollTo(0, 0);

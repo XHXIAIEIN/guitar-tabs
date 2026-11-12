@@ -1,5 +1,6 @@
 [
   {"id":"happy-birthday","group":"practice","versions":[{"id":"simple","level":"入门"},{"id":"full","level":"入门"}]},
+  {"id":"stand-by-me","group":"practice","level":"入门"},
   {"id":"note-names","group":"practice","subgroup":"basics","level":"入门"},
   {"id":"spider","group":"practice","subgroup":"basics","level":"入门"},
   {"id":"arpeggio","group":"practice","subgroup":"basics","level":"入门"},
@@ -25,7 +26,6 @@
   {"id":"merry-christmas","group":"practice","subgroup":"instrumental","level":"进阶"},
   {"id":"summer","group":"practice","subgroup":"instrumental","level":"进阶"},
   {"id":"night-piano-5","group":"practice","subgroup":"instrumental","level":"进阶"},
-  {"id":"stand-by-me","group":"practice","subgroup":"instrumental","level":"入门"},
   {"id":"zelda-overworld","group":"game","level":"进阶"},
   {"id":"zelda-lullaby","group":"game","level":"进阶"},
   {"id":"zelda-sarias-song","group":"game","level":"进阶"},

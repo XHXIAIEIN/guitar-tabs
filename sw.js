@@ -1,5 +1,5 @@
 // Offline support: network first so updates arrive at once, cached copy when the network is slow or gone.
-const CACHE = 'guitar-v23';
+const CACHE = 'guitar-v24';
 // Caches this app may delete: its own versions and those of the app it replaced at each published path.
 // One origin hosts several sites, so Cache Storage also holds other sites' caches.
 const OWN_CACHES = /^(guitar-v\d|guitar-tabs-(cafcda4b|ac0a22bf)-)/;
@@ -43,7 +43,6 @@ const SHELL = [
   'scores/pop/encounter.atex',
   'scores/pop/rainbow.atex',
   'scores/pop/really-love-you.atex',
-  'scores/pop/stand-by-me.atex',
   'scores/pop/sunny-day/original.atex',
   'scores/pop/sunny-day/simple.atex',
   'scores/practice/basics/arpeggio.atex',
@@ -66,6 +65,7 @@ const SHELL = [
   'scores/practice/instrumental/nokia-tune.atex',
   'scores/practice/instrumental/ode-to-joy/full.atex',
   'scores/practice/instrumental/ode-to-joy/simple.atex',
+  'scores/practice/instrumental/stand-by-me.atex',
   'scores/practice/instrumental/summer.atex',
   'scores/practice/nursery/find-friends/full.atex',
   'scores/practice/nursery/find-friends/simple.atex',

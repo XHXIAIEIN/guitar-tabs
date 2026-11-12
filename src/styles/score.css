@@ -1,12 +1,10 @@
 /* score elements; sizes scale with --s set on each line's svg */
 .bar-bg { fill: transparent; cursor: pointer; }
 @media (hover: hover) { .bar:hover .bar-bg { fill: var(--hover); } }
-/* a set loop shows only as a thin line over its bars; the tint marks the bars while picking */
+/* a set loop only colours its bar numbers; the tint marks the bars while picking */
 .selecting .bar.in-loop .bar-bg { fill: var(--loop-soft); }
 .bar.is-cursor .bar-bg { fill: color-mix(in srgb, var(--accent) 7%, transparent); }
 .bar.is-current .bar-bg { fill: var(--accent-soft); }
-.loop-mark { fill: var(--loop); opacity: 0; }
-.bar.in-loop .loop-mark { opacity: 0.5; }
 .cursor-mark { fill: var(--accent); opacity: 0; }
 .bar.is-cursor .cursor-mark { opacity: 1; }
 .selecting .bar-bg { cursor: crosshair; }
@@ -24,6 +22,7 @@
 .barline.faint { stroke: var(--line); }
 .barline-end { fill: var(--ink-2); }
 .bar-no { font-size: calc(9.5px * var(--s)); fill: var(--muted); }
+.bar.in-loop .bar-no:not(.bar-time) { fill: var(--loop); }
 .bar-time { font-weight: 700; fill: var(--ink-2); }
 .fret {
   font-size: calc(12.5px * var(--s));

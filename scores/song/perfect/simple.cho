@@ -1,0 +1,37 @@
+{title: Perfect}
+{artist: Ed Sheeran · 和弦谱}
+{key: G}
+{capo: 1}
+{tempo: 63}
+{time: 4/4}
+{meta: strum q D D D D}
+{meta: instructions 老师的简化谱：从头到尾每拍下扫一下，只用 G、Em、C、D 四个和弦。主歌一个和弦扫四下，副歌一个和弦扫两下，换得更快。最后两个和弦各扫一下，让它响满两拍。}
+
+{start_of_grid: 主歌}
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | I found a love for | me / Darling, just | dive right in, / and follow my | lead / Well, I found a |
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | girl, / Bea- | utiful and sweet / I never | knew you were the someone / waiting for | me |
+{end_of_grid}
+
+{start_of_grid: 导歌}
+| G . . . | Em . . . | C . . . | G . D . |
+lyric: | Cause we were just kids when we fell in love / Not knowing | what it was, / I will not | give you up | this time / Darling just |
+| G . . . | Em . . . | C . . . | D . . . |
+lyric: | kiss me slow, / your heart is | all I own / And in your | eyes / you're holding | mine |
+{end_of_grid}
+
+{start_of_grid: 副歌}
+| Em . C . | G . D . |
+lyric: | Baby, I'm dancing in the | dark, / with you between my |
+| Em . C . | G . D . |
+lyric: | arms / Barefoot on the | grass, / listening to our |
+| Em . C . | G . D . |
+lyric: | favourite song / When you said you looked a | mess, / I whispered underneath my |
+| Em . C . | G . D . |
+lyric: | breath / But you heard it, darling | you look perfect tonight |
+{end_of_grid}
+
+{start_of_grid: 结尾}
+| G D Em D | C . D . |
+{end_of_grid}

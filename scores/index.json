@@ -52,6 +52,7 @@
   {"id":"dandelion-promise","group":"pop","level":"入门"},
   {"id":"rainbow","group":"pop","level":"入门"},
   {"id":"chrysanthemum-terrace","group":"pop","level":"进阶"},
+  {"id":"stand-by-me","group":"pop","level":"入门"},
   {"id":"sunny-day","group":"pop","versions":[{"id":"simple","level":"入门"},{"id":"original","level":"进阶"}]},
   {"id":"fur-elise","group":"classical","level":"进阶"},
   {"id":"bach-minuet","group":"classical","level":"进阶"},
